@@ -1,0 +1,163 @@
+import 'package:roomies/controllers/controllers.dart';
+import 'package:roomies/models/models.dart';
+import 'package:roomies/services/database.dart';
+import 'package:roomies/util/style.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../widgets/widgets.dart';
+
+class FollowerMatchGridPage extends StatefulWidget {
+  final Function callback;
+  final String title;
+  final bool fromroom;
+  FollowerMatchGridPage({this.callback, this.title,this.fromroom});
+  @override
+  _FollowerMatchGridPageState createState() => _FollowerMatchGridPageState();
+}
+
+class _FollowerMatchGridPageState extends State<FollowerMatchGridPage> {
+  UserModel myProfile = Get.find<UserController>().user;
+  bool loading = false;
+  final globalScaffoldKey = GlobalKey<ScaffoldState>();
+  final TextEditingController textController = new TextEditingController();
+  List<UserModel> allusers = [];
+  List<UserModel> roomallusers = [];
+  List<UserModel> pinggedusers = [];
+
+  userclickCallBack(UserModel user) {
+
+    if(roomallusers.indexWhere((element) => element.uid == user.uid) ==-1){
+      roomallusers.add(user);
+    } else if(roomallusers.indexWhere((element) => element.uid == user.uid) !=-1){
+      roomallusers.removeAt(roomallusers.indexWhere((element) => element.uid == user.uid));
+    }
+    setState(() {});
+    if(widget.fromroom == true){
+      widget.callback(user);
+    }else{
+      widget.callback(roomallusers);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return buildAvailableChatList(context);
+  }
+
+  Widget buildAvailableChatTitle() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          'AVAILABLE TO CHAT',
+          style: TextStyle(
+            color: Style.DarkBrown,
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+          ),
+        ),
+        Expanded(
+          child: Container(
+            height: 1,
+            color: Style.DarkBrown,
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<UserModel> _buildSearchList(String userSearchTerm) {
+    List<UserModel> _searchList = [];
+
+    if (userSearchTerm.isEmpty) {
+      return allusers;
+    }
+    for (int i = 0; i < allusers.length; i++) {
+      String name = allusers[i].getName();
+      if (name.toLowerCase().contains(userSearchTerm.toLowerCase())) {
+        _searchList.add(allusers[i]);
+      }
+    }
+    return _searchList;
+  }
+
+  Widget buildAvailableChatList(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                widget.title,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "DONE",
+                    style: TextStyle(color: Colors.blueAccent, fontSize: 16),
+                  ))
+            ],
+          ),
+        ),
+        Container(
+            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            decoration: BoxDecoration(
+              color: Style.followColor,
+              borderRadius: BorderRadius.circular(8)
+            ),
+            child: TextFormField(
+                controller: textController,
+                decoration: InputDecoration(
+                  hintText: "Search",
+                  prefixIcon: Icon(Icons.search),
+                  focusedBorder: InputBorder.none,
+                  border: InputBorder.none
+                ),
+                onChanged: (value) {
+                  //4
+                  setState(() {
+                    // _tempListOfUsers = _buildSearchList(value);
+                  });
+                })),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: StreamBuilder(
+                stream: Database.getWeFollowEachOther(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: loadingWidget());
+                  }
+                  if (snapshot.data == null) {
+                    return Center(child: noDataWidget("No users whom you follow each others"));
+                  }
+                  if (snapshot.data.length == 0) {
+                    return Center(child: Text("No users who you follow each others"));
+                  }
+                  allusers = snapshot.data;
+                  return GridView.builder(
+                    itemCount: _buildSearchList(textController.text).length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3),
+                    itemBuilder: (BuildContext context, int index) {
+                      print(roomallusers.indexWhere((element) => element.uid == _buildSearchList(textController.text)[index].uid));
+                      return userWidget(
+                          user: _buildSearchList(textController.text)[index],
+                          selected: roomallusers.indexWhere((element) => element.uid == _buildSearchList(textController.text)[index].uid) !=-1 ? true : false,
+                          clickCallBack: userclickCallBack);
+                      // }
+                    },
+                  );
+                }),
+          ),
+        ),
+      ],
+    );
+  }
+}

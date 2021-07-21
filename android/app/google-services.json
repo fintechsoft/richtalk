@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "443190301690",
+    "project_id": "roomy-a3fd0",
+    "storage_bucket": "roomy-a3fd0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:443190301690:android:f8fca3241a6eea6cad4a43",
+        "android_client_info": {
+          "package_name": "com.aluta.roomies"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "443190301690-ige3l513p8cj735maof13j8tqqd6di70.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aluta.roomies",
+            "certificate_hash": "6ccc98a100b5bb4afea0f59a26a5504d852eb170"
+          }
+        },
+        {
+          "client_id": "443190301690-ae9uaadhejjcs5cn0kdqpq4rirrn317c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzfIGwTpssISZs1jZ0tHs6KMQzATDLgTU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "443190301690-ae9uaadhejjcs5cn0kdqpq4rirrn317c.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "443190301690-h4smv6gffjfgi58kabu0njscgfm6bf0r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.aluta.roomies"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
