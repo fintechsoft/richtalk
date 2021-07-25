@@ -10,8 +10,8 @@ Uses firebase for phone authentication, firestore to store user data, rooms info
 Agora for hosting audio conversations
 Nodejs to generate room token
 
-App Features:
-	- create open, closed and private rooms
+<ul>App Features:
+	<li>- create open, closed and private rooms </li>
 	- join active rooms and participate in the rooms talks
 	- ping users to a room
 	- block, report and add users to a room
@@ -26,7 +26,7 @@ App Features:
 	- set when and how you want to receive notifications
 	- add interests in your profile
 	- and much much more exciting features.
-
+</ul>
 
 What will you get:
 
