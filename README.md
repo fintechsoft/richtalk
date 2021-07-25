@@ -1,6 +1,6 @@
 Roomies is flutter framework clubhouse like application, it supports both android and ios, its a audio social app for people to hold audio chats, rooms etc, you can pop in to existing rooms and participate in the discussion or you can create your rooms and invite people to join.
 
-Google play store demo url
+Google play store demo url <br/>
 <a href="https://play.google.com/store/apps/details?id=com.aluta.roomies"><img width="100" src="https://fgodex.com/images/gg.png" /></a>
 
 
