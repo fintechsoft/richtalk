@@ -9,8 +9,8 @@ Roomies is Flutter framework application which supports both android and ios. It
 Uses firebase for phone authentication, firestore to store user data, rooms info etc
 Agora for hosting audio conversations
 Nodejs to generate room token
-
-<ul>App Features:
+<h2>App Features:</h2>
+<ul>
 	<li> create open, closed and private rooms </li>
 	<li>  join active rooms and participate in the rooms talks </li>
 	<li>  ping users to a room</li>
