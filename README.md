@@ -1,34 +1,43 @@
-# 👋 Flutter Clubhouse UI Clone [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+Roomies is flutter framework clubhouse like application, it supports both android and ios, its a audio social app for people to hold audio chats, rooms etc, you can pop in to existing rooms and participate in the discussion or you can create your rooms and invite people to join.
 
-This project was made by referring to the Clubhouse app.
-
-<p align="left">
- <img src="readme/main.gif" width='512'/>
-</p>
-
-## Preview
-<p align="center">
- <img src="readme/preview.png" width='1024'/>
-</p>
+Google play store demo url
+<a href="https://play.google.com/store/apps/details?id=com.aluta.roomies"><img src="https://fgodex.com/images/gg.png" /></a>
 
 
-## Flutter Web
+Roomies is Flutter framework application which supports both android and ios. Its clubhouse like app with all clubhouse features and much more.
 
-Flutter has been upgraded to 2.0 so you can build a web in the stable version.
+Uses firebase for phone authentication, firestore to store user data, rooms info etc
+Agora for hosting audio conversations
+Nodejs to generate room token
 
-~~~
-flutter run -d chrome
-~~~
+App Features:
+	- create open, closed and private rooms
+	- join active rooms and participate in the rooms talks
+	- ping users to a room
+	- block, report and add users to a room
+	- Raise your hand to speak and be notified by the moderator
+	- view other users profile in a room
+	- search users to follow
+	- chat with users whom you follow each other
+	- receive and view activities
+	- create upcoming rooms/events
+	- add co-hosts in your upcoming room/event
+	- view first 4 upcoming events in the homepage
+	- set when and how you want to receive notifications
+	- add interests in your profile
+	- and much much more exciting features.
 
 
-## Youtube
-[Flutter Clubhouse App UI Clone - SpeedCode](https://youtu.be/82yRZZ2ydmE)
-<p align="center">
- <img src="readme/youtube.png" width='1024'/>
-</p>
+What will you get:
+
+Full source code
+Step by step setup documentation
+
+Note:
+Follow setup documentation.
+
+For Advance customizations, Dart and or flutter knowledge is required .
 
 
-## Packages
-* country_code_picker : https://pub.dev/packages/country_code_picker
-
-* pull_to_refresh : https://pub.dev/packages/pull_to_refresh
+Support:
+roomies254@gmail.com
