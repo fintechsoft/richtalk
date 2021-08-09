@@ -62,6 +62,7 @@ class CustomButton extends StatelessWidget {
         style: TextStyle(
           fontSize: fontSize,
           color: txtcolor,
+            fontFamily: "InterBold"
         ),
       ) : child,
     );

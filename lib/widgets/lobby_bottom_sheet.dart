@@ -1,27 +1,14 @@
+import 'package:get/get.dart';
+import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/models/models.dart';
+import 'package:roomies/util/firebase_refs.dart';
 import 'package:roomies/widgets/round_button.dart';
 import 'package:roomies/util/style.dart';
 import 'package:roomies/widgets/round_image.dart';
 import 'package:flutter/material.dart';
 import 'package:roomies/pages/room/followers_match_grid_sheet.dart';
 
-List lobbyBottomSheets = [
-  {
-    'image': 'assets/images/open.png',
-    'text': 'Open',
-    'selectedMessage': 'Start a room open to everyone',
-  },
-  {
-    'image': 'assets/images/social.png',
-    'text': 'Social',
-    'selectedMessage': 'Start a room with people I follow',
-  },
-  {
-    'image': 'assets/images/closed.png',
-    'text': 'Closed',
-    'selectedMessage': 'Start a room for people I choose',
-  },
-];
+List lobbyBottomSheets = [];
 
 class LobbyBottomSheet extends StatefulWidget {
   final Function onButtonTap;
@@ -42,9 +29,54 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
 
   final globalScaffoldKey = GlobalKey<ScaffoldState>();
 
-  callback(List<UserModel> users) {
+  callback(List<UserModel> users, Room room, StateSetter state) {
+    print("callback ${users.length.toString()}");
     roomusers = users;
-    globalScaffoldKey.currentState.setState(() {});
+    state(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    lobbyBottomSheets = [
+
+      {
+        'image': 'assets/images/open.png',
+        'text': 'Open',
+        'club': null,
+        'selectedMessage': 'Start a room open to everyone',
+      },
+      {
+        'image': 'assets/images/social.png',
+        'text': 'Social',
+        'club': null,
+        'selectedMessage': 'Start a room with people I follow',
+      },
+      {
+        'image': 'assets/images/closed.png',
+        'text': 'Closed',
+        'club': null,
+        'selectedMessage': 'Start a room for people I choose',
+      },
+
+    ];
+
+    clubRef
+        .where("ownerid", isEqualTo: Get.find<UserController>().user.uid)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        Club club = Club.fromJson(element);
+        lobbyBottomSheets.add({
+          'image': '',
+          'text': club.title,
+          'selectedMessage': 'Start a room for ${club.title}',
+          'club': club
+        });
+      });
+      setState(() {});
+    });
   }
 
   @override
@@ -86,62 +118,122 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
             ),
           ),
           SizedBox(
-            height: 20,
+            height: 10,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          Column(
             children: [
-              for (var i = 0, len = 3; i < len; i++)
-                InkWell(
-                  borderRadius: BorderRadius.circular(15),
-                  onTap: () {
-                    setState(() {
-                      selectedButtonIndex = i;
-                    });
-                    widget.onChange(
-                        lobbyBottomSheets[selectedButtonIndex]['text']);
-                  },
-                  child: Ink(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 5,
-                    ),
-                    decoration: BoxDecoration(
-                        color: i == selectedButtonIndex
-                            ? Style.SelectedItemGrey
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(
-                          color: i == selectedButtonIndex
-                              ? Style.SelectedItemBorderGrey
-                              : Colors.transparent,
-                        )),
-                    child: Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(bottom: 5),
-                          child: RoundImage(
-                            width: 80,
-                            height: 80,
-                            borderRadius: 20,
-                            path: lobbyBottomSheets[i]['image'],
-                          ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  for (var i = 0, len = 3; i < len; i++)
+                    InkWell(
+                      borderRadius: BorderRadius.circular(15),
+                      onTap: () {
+                        setState(() {
+                          selectedButtonIndex = i;
+                        });
+                        widget.onChange(
+                            lobbyBottomSheets[selectedButtonIndex]['text']);
+                      },
+                      child: Ink(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
                         ),
-                        Text(
-                          lobbyBottomSheets[i]['text'],
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        decoration: BoxDecoration(
+                            color: i == selectedButtonIndex
+                                ? Style.SelectedItemGrey
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              color: i == selectedButtonIndex
+                                  ? Style.SelectedItemBorderGrey
+                                  : Colors.transparent,
+                            )),
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 5),
+                              child: RoundImage(
+                                width: 80,
+                                height: 80,
+                                borderRadius: 20,
+                                path: lobbyBottomSheets[i]['image'],
+                              ),
+                            ),
+                            Text(
+                              lobbyBottomSheets[i]['text'],
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  for (var i = 3, len = lobbyBottomSheets.length; i < len; i++)
+                    InkWell(
+                      borderRadius: BorderRadius.circular(15),
+                      onTap: () {
+                        setState(() {
+                          selectedButtonIndex = i;
+                        });
+                        widget.onChange(
+                            lobbyBottomSheets[selectedButtonIndex]['text']);
+                      },
+                      child: Ink(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        decoration: BoxDecoration(
+                            color: i == selectedButtonIndex
+                                ? Style.SelectedItemGrey
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              color: i == selectedButtonIndex
+                                  ? Style.SelectedItemBorderGrey
+                                  : Colors.transparent,
+                            )),
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 5),
+                              child: RoundImage(
+                                width: 80,
+                                height: 80,
+                                borderRadius: 20,
+                                url: lobbyBottomSheets[i]['image'],
+                                txt: lobbyBottomSheets[i]['text'],
+                              ),
+                            ),
+                            Text(
+                              lobbyBottomSheets[i]['text'].toString().length > 15 ? lobbyBottomSheets[i]['text'].toString().substring(0, 15)+"...." : lobbyBottomSheets[i]['text'].toString(),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "InterBold"),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ],
           ),
           Divider(
             thickness: 1,
-            height: 60,
+            height: 40,
             indent: 20,
             endIndent: 20,
           ),
@@ -171,7 +263,7 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
                         builder: (context) {
                           //3
                           return StatefulBuilder(builder:
-                              (BuildContext context, StateSetter setState) {
+                              (BuildContext context, StateSetter customState) {
                             return DraggableScrollableSheet(
                                 expand: false,
                                 builder: (BuildContext context,
@@ -179,10 +271,11 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
                                   return Container(
                                       padding: EdgeInsets.only(top: 20),
                                       child: FollowerMatchGridPage(
-                                        callback: callback,
-                                        title: "With...",
-                                        fromroom: false,
-                                      ));
+                                          callback: callback,
+                                          title: "With...",
+                                          fromroom: false,
+                                          state: setState,
+                                          customState: customState));
                                 });
                           });
                         });
@@ -195,7 +288,8 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
                     widget.onButtonTap(
                         lobbyBottomSheets[selectedButtonIndex]['text'],
                         _textFieldController.text,
-                        roomusers);
+                        roomusers,
+                        lobbyBottomSheets[selectedButtonIndex]['club']);
                   },
                   text: '🎉 Let\'s go',
                 )
@@ -233,6 +327,7 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
             actions: <Widget>[
               TextButton(
                 child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                     color: Colors.red,
                     child: Text(
                       'CANCEL',
@@ -247,6 +342,7 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
               TextButton(
                 child: Container(
                     color: Colors.red,
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                     child: Text(
                       'SET TOPIC',
                       style: TextStyle(color: Colors.white),

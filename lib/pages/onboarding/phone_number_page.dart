@@ -27,6 +27,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
   String error = "";
   bool loading = false;
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,6 +89,13 @@ class _PhoneScreenState extends State<PhoneScreen> {
               print("on init ${code.name} ${code.dialCode} ${code.name}");
             },
             padding: const EdgeInsets.all(8),
+            onChanged: (code){
+              countrycode = code.dialCode;
+              countryname = code.name;
+              user.countrycode = code.dialCode;
+              user.countryname = code.name;
+
+            },
             textStyle: TextStyle(
               fontSize: 20,
             ),
@@ -185,6 +193,10 @@ class _PhoneScreenState extends State<PhoneScreen> {
 
   Future<void> verifyPhone(phoneNumber) async {
     final PhoneVerificationCompleted verified = (AuthCredential authResult) {
+
+      setState(() {
+        loading = false;
+      });
       AuthService().signIn(context, authResult);
     };
 
@@ -193,16 +205,11 @@ class _PhoneScreenState extends State<PhoneScreen> {
         loading = false;
         error = "Technical error happened";
       });
-      print('ttt ${authException.message}');
+      print('ttt ${authException.toString()}');
     };
 
     final PhoneCodeSent smsSent = (String verId, [int forceResend]) {
       this.verificationId = verId;
-
-      setState(() {
-        loading = false;
-        error = "Technical error happened";
-      });
       Get.to(() => SmsScreen(verificationId:this.verificationId));
     };
 
@@ -244,6 +251,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
         loading = true;
         error = "";
       });
+      print(user.countrycode+""+_phoneNumberController.text);
       verifyPhone(user.countrycode+""+_phoneNumberController.text);
     }
 

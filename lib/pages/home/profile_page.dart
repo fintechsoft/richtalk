@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/models/models.dart';
 import 'package:roomies/models/user_model.dart';
+import 'package:roomies/pages/clubs/new_club.dart';
+import 'package:roomies/pages/clubs/view_club.dart';
 import 'package:roomies/pages/room/room_screen.dart';
 import 'package:roomies/services/database.dart';
 import 'package:roomies/services/dynamic_link_service.dart';
@@ -19,6 +21,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:share/share.dart';
 import 'settings_page.dart';
+
 //ignore: must_be_immutable
 class ProfilePage extends StatefulWidget {
   UserModel profile;
@@ -40,8 +43,10 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     followersFollowingListener();
   }
+
   @override
   void dispose() {
     streamSubscription.cancel();
@@ -104,104 +109,171 @@ class _ProfilePageState extends State<ProfilePage> {
         padding: const EdgeInsets.symmetric(
           horizontal: 20,
         ),
-        child: Column(
-          children: [
-            buildProfile(context),
-            SizedBox(
-              height: 20,
-            ),
-            if(widget.fromRoom == true ) CustomButton(
-              minimumWidth: MediaQuery.of(context).size.width,
-              color: Colors.grey[200],
-              text: "Move to Audience",
-              txtcolor: Colors.black,
-              fontSize: 13,
-              onPressed: (){
-                Navigator.pop(context);
-                var user = widget.room.users[widget.room.users.indexWhere((element) => element.uid == widget.profile.uid)];
-                if(widget.room.users.length == 0){
-                  Get.snackbar("", "",
-                      snackPosition: SnackPosition.TOP,
-                      borderRadius: 0,
-                      margin: EdgeInsets.all(0),
-                      backgroundColor: Colors.red,
-                      colorText: Colors.white,
-                      messageText: Text.rich(TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "You are the only speaker so you cant go to the audience",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      )));
-                }else{
-                  Database().updateRoomData(widget.room.roomid, {
-                    'users': [
-                      user.toMap(
-                          callmute: true,
-                          usertype: "others",
-                          callerid: user.callerid
-                      )
-                    ],
-                  });
-                  engine.setClientRole(ClientRole.Audience);
-                }
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildProfile(context),
+              SizedBox(
+                height: 20,
+              ),
+              if (widget.fromRoom == true)
+                CustomButton(
+                  minimumWidth: MediaQuery.of(context).size.width,
+                  color: Colors.grey[200],
+                  text: "Move to Audience",
+                  txtcolor: Colors.black,
+                  fontSize: 13,
+                  onPressed: () async {
+                    var currentprofileuser = widget.room.users[widget.room.users
+                        .indexWhere(
+                            (element) => element.uid == widget.profile.uid)];
 
-              },
-            ),
-            SizedBox(height: 20,),
-            if(widget.fromRoom == true ) CustomButton(
-              minimumWidth: MediaQuery.of(context).size.width,
-              color: Colors.grey[200],
-              text: "Move to Moderator",
-              txtcolor: Colors.black,
-              fontSize: 13,
-              onPressed: (){
-                Navigator.pop(context);
-                print("widget.room.users "+widget.room.users.length.toString());
-                var user = widget.room.users[widget.room.users.indexWhere((element) => element.uid == widget.profile.uid)];
-                if(user.usertype == "host" || user.usertype == "speaker"){
-                  Get.snackbar("", "",
-                      snackPosition: SnackPosition.TOP,
-                      borderRadius: 0,
-                      margin: EdgeInsets.all(0),
-                      backgroundColor: Colors.red,
-                      colorText: Colors.white,
-                      messageText: Text.rich(TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "You are already a moderrator",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      )));
-                }else {
-                  Database().updateRoomData(widget.room.roomid, {
-                    'users': [
-                      user.toMap(
-                          callmute: true,
-                          usertype: "speaker",
-                          callerid: user.callerid
-                      )
-                    ],
-                  });
-                  engine.setClientRole(ClientRole.Broadcaster);
-                }
-              },
-            ),
-            if(widget.fromRoom == false)builderInviter(),
-          ],
+                    var currentuser = widget.room.users[widget.room.users
+                        .indexWhere((element) =>
+                            element.uid == Get.find<UserController>().user.uid)];
+
+                    Navigator.pop(context);
+                    if (currentprofileuser.uid == currentuser.uid ||
+                        (currentuser.usertype == "speaker" ||
+                            currentuser.usertype == "host")) {
+                      await Database().updateRoomData(widget.room.roomid, {
+                        "users": widget.room.users
+                            .map((i) => i.toMap(
+                                usertype: i.uid == currentprofileuser.uid
+                                    ? "others"
+                                    : i.usertype,
+                                callmute: i.uid == currentprofileuser.uid
+                                    ? true
+                                    : i.callmute,
+                                callerid: i.callerid))
+                            .toList()
+                      });
+                      engine.setClientRole(ClientRole.Audience);
+                    }
+                  },
+                ),
+              SizedBox(
+                height: 20,
+              ),
+              if (widget.fromRoom == true)
+                CustomButton(
+                  minimumWidth: MediaQuery.of(context).size.width,
+                  color: Colors.grey[200],
+                  text: "Move to Moderator",
+                  txtcolor: Colors.black,
+                  fontSize: 13,
+                  onPressed: () async {
+                    var currentprofileuser = widget.room.users[widget.room.users
+                        .indexWhere(
+                            (element) => element.uid == widget.profile.uid)];
+
+                    var currentuser = widget.room.users[widget.room.users
+                        .indexWhere((element) =>
+                            element.uid == Get.find<UserController>().user.uid)];
+
+                    if (currentuser.usertype == "speaker" ||
+                        currentuser.usertype == "host") {
+                      Navigator.pop(context);
+                      await Database().updateRoomData(widget.room.roomid, {
+                        "users": widget.room.users
+                            .map((i) => i.toMap(
+                                usertype: i.uid == currentprofileuser.uid
+                                    ? "host"
+                                    : i.usertype,
+                                callmute: i.callmute,
+                                callerid: i.callerid))
+                            .toList()
+                      });
+                      engine.setClientRole(ClientRole.Broadcaster);
+                    }
+                  },
+                ),
+              if (widget.fromRoom == false) builderInviter(),
+              SizedBox(
+                height: 30,
+              ),
+              Text(
+                "Member of",
+                style: TextStyle(fontSize: 16),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              myClubs()
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Widget myClubs() {
+    return StreamBuilder(
+        stream: Database.getMyClubs(),
+        builder: (context, snapshot) {
+          if(snapshot.hasError){
+            print(snapshot.error.toString());
+          }
+          if (snapshot.hasData) {
+            List<Club> club = snapshot.data;
+            return Row(
+              children: [
+                Container(
+                  height: 40,
+                  child: ListView(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    children: club.map((e) => InkWell(
+                      onTap: () {
+                        Get.to(() => ViewClub(club: e,));
+                      },
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        margin: EdgeInsets.only(right: 5),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Style.SelectedItemGrey),
+                        child: Center(
+                            child: Text(
+                              e.title.substring(0,2).toUpperCase(),
+                              style: TextStyle(fontFamily: "InterSemiBold"),
+                            )),
+                      ),
+
+                    )).toList(),
+                  ),
+                ),
+                SizedBox(width: 5,),
+                if (widget.profile.uid == Get.find<UserController>().user.uid) InkWell(
+                  onTap: () {
+                    if(userModel.clubs.length >= 3){
+                      topTrayPopup("You can only add 3 clubs");
+                    }else{
+                      Get.to(() => NewClub());
+                    }
+
+                  },
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Style.SelectedItemGrey),
+                    child: Center(
+                        child: Text(
+                          "+",
+                          style: TextStyle(fontSize: 20),
+                        )),
+                  ),
+                )
+              ],
+            );
+          }else{
+            return Container();
+          }
+        });
   }
 
   /*
@@ -217,7 +289,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child:
                   const Text('Share Profile..', style: TextStyle(fontSize: 16)),
               onPressed: () {
-                if(widget.room !=null){
+                if (widget.room != null) {
                   final RenderBox box = context.findRenderObject();
                   DynamicLinkService()
                       .createGroupJoinLink(widget.room.roomid)
@@ -226,9 +298,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     await Share.share(value,
                         subject: "Join " + widget.room.title,
                         sharePositionOrigin:
-                        box.localToGlobal(Offset.zero) & box.size);
+                            box.localToGlobal(Offset.zero) & box.size);
                   });
-
                 }
               },
             ),
@@ -325,12 +396,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      if (widget.profile.uid != Get.find<UserController>().user.uid) IconButton(
-                        icon: Icon(Icons.more_horiz),
-                        onPressed: () {
-                          userActionSheet();
-                        },
-                      ),
+                      if (widget.profile.uid !=
+                          Get.find<UserController>().user.uid)
+                        IconButton(
+                          icon: Icon(Icons.more_horiz),
+                          onPressed: () {
+                            userActionSheet();
+                          },
+                        ),
                       IconButton(
                         icon: Icon(CupertinoIcons.xmark),
                         onPressed: () {
@@ -342,47 +415,49 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(
                   height: 10,
                 ),
-                if( widget.profile.uid != Get.find<UserController>().user.uid)  Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      child: InkWell(
-                          onTap: () {
-                            topTrayPopup(
-                                "You will be notified when ${widget.profile.getName()} is talking");
-                          },
-                          child: Icon(
-                            CupertinoIcons.bell_circle,
-                            size: 35,
-                            color: Colors.blue,
-                          )),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                   InkWell(
-                      onTap: () {
-                        if (userModel.following.contains(widget.profile.uid)) {
-                          Database().unFolloUser(widget.profile.uid);
-                        } else {
-                          Database().folloUser(widget.profile);
-                        }
-                        setState(() {});
-                      },
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.blue),
-                        child: Text(
-                          followtxt,
-                          style: TextStyle(color: Colors.white),
+                if (widget.profile.uid != Get.find<UserController>().user.uid)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        child: InkWell(
+                            onTap: () {
+                              topTrayPopup(
+                                  "You will be notified when ${widget.profile.getName()} is talking");
+                            },
+                            child: Icon(
+                              CupertinoIcons.bell_circle,
+                              size: 35,
+                              color: Colors.blue,
+                            )),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          if (userModel.following
+                              .contains(widget.profile.uid)) {
+                            Database().unFolloUser(widget.profile.uid);
+                          } else {
+                            Database().folloUser(widget.profile);
+                          }
+                          setState(() {});
+                        },
+                        child: Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.blue),
+                          child: Text(
+                            followtxt,
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                )
+                    ],
+                  )
               ],
             ),
           ],
@@ -451,21 +526,23 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ],
         ),
-        if(widget.fromRoom == false)Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          child: InkWell(
-            onTap: () {
-              addBio();
-            },
-            child: Text(
-              widget.profile.bio.isEmpty ? "Add Bio" : widget.profile.bio,
-              style: TextStyle(
-                  fontSize: 15,
-                  color:
-                      widget.profile.bio.isEmpty ? Colors.blue : Colors.black),
+        if (widget.fromRoom == false)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: InkWell(
+              onTap: () {
+                addBio();
+              },
+              child: Text(
+                widget.profile.bio.isEmpty ? "Add Bio" : widget.profile.bio,
+                style: TextStyle(
+                    fontSize: 15,
+                    color: widget.profile.bio.isEmpty
+                        ? Colors.blue
+                        : Colors.black),
+              ),
             ),
           ),
-        ),
       ],
     );
   }
@@ -607,10 +684,12 @@ class _ProfilePageState extends State<ProfilePage> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            widget.profile.lastAccessTime ==null ? Text("") :Text("Joined " +
-                new DateFormat('d MMMM yyyy').format(
-                    DateTime.fromMicrosecondsSinceEpoch(
-                        widget.profile.lastAccessTime))),
+            widget.profile.lastAccessTime == null
+                ? Text("")
+                : Text("Joined " +
+                    new DateFormat('d MMMM yyyy').format(
+                        DateTime.fromMicrosecondsSinceEpoch(
+                            widget.profile.lastAccessTime))),
             SizedBox(
               height: 3,
             ),
@@ -621,7 +700,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     text: 'Nominated by ',
                   ),
                   TextSpan(
-                    text: 'fredish',
+                    text: 'roomies',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),

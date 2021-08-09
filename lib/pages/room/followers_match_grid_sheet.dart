@@ -11,7 +11,10 @@ class FollowerMatchGridPage extends StatefulWidget {
   final Function callback;
   final String title;
   final bool fromroom;
-  FollowerMatchGridPage({this.callback, this.title,this.fromroom});
+  final StateSetter state;
+  final StateSetter customState;
+  final Room room;
+  FollowerMatchGridPage({this.customState,this.state,this.callback, this.title,this.fromroom, this.room});
   @override
   _FollowerMatchGridPageState createState() => _FollowerMatchGridPageState();
 }
@@ -32,12 +35,12 @@ class _FollowerMatchGridPageState extends State<FollowerMatchGridPage> {
     } else if(roomallusers.indexWhere((element) => element.uid == user.uid) !=-1){
       roomallusers.removeAt(roomallusers.indexWhere((element) => element.uid == user.uid));
     }
-    setState(() {});
     if(widget.fromroom == true){
-      widget.callback(user);
+      widget.callback(user,widget.room,widget.customState);
     }else{
-      widget.callback(roomallusers);
+      widget.callback(roomallusers,widget.room,widget.state);
     }
+    widget.customState(() {});
   }
 
   @override
@@ -129,11 +132,11 @@ class _FollowerMatchGridPageState extends State<FollowerMatchGridPage> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: StreamBuilder(
-                stream: Database.getWeFollowEachOther(),
+                stream: Database.getmyFollowers(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: loadingWidget());
-                  }
+                  // if (snapshot.connectionState == ConnectionState.waiting) {
+                  //   return Center(child: loadingWidget());
+                  // }
                   if (snapshot.data == null) {
                     return Center(child: noDataWidget("No users whom you follow each others"));
                   }

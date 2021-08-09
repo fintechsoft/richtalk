@@ -11,4 +11,5 @@ class UserController extends GetxController {
   UserModel get user => _userModel.value;
 
   set user(UserModel value) => this._userModel.value = value;
+  set room(Room room) => this._userModel.value.activeRoom = room;
 }

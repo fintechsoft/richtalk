@@ -4,9 +4,7 @@ import 'package:roomies/services/database.dart';
 import 'package:roomies/widgets/upcomingroom_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:roomies/widgets/widgets.dart';
-
 
 final eventcontroller = TextEditingController();
 final descriptioncontroller = TextEditingController();
@@ -27,7 +25,7 @@ class UpcomingRoomScreen extends StatefulWidget {
 }
 
 class _UpcomingRoomScreenState extends State<UpcomingRoomScreen> {
-  String show = "mine";
+  String show = "";
   bool keyboardup = false;
 
   @override
@@ -36,12 +34,11 @@ class _UpcomingRoomScreenState extends State<UpcomingRoomScreen> {
     if (widget.room != null) {
       _modalBottomSheetMenu();
     }
-
   }
 
   void _modalBottomSheetMenu() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await upcomingroomBottomSheet(context, widget.room,loading, keyboardup);
+      await upcomingroomBottomSheet(context, widget.room, loading, keyboardup);
     });
   }
 
@@ -49,115 +46,215 @@ class _UpcomingRoomScreenState extends State<UpcomingRoomScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Expanded(
+              child: Container(
+                  child: InkWell(
+                onTap: () {
+                  showCupertinoModalPopup(
+                    context: context,
+                    builder: (BuildContext context) => CupertinoActionSheet(
+                        title: Text('What would you like to see?'),
+                        actions: [
+                          CupertinoActionSheetAction(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: const Text('Upcoming For You',
+                                      style: TextStyle(fontSize: 16)),
+                                ),
+                                if (show != "mine")
+                                  Icon(
+                                    Icons.check,
+                                    color: Colors.blue,
+                                  )
+                              ],
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              setState(() {
+                                show = "";
+                              });
+                            },
+                            isDefaultAction: true,
+                          ),
+                          CupertinoActionSheetAction(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: const Text('My Events',
+                                      style: TextStyle(fontSize: 16)),
+                                ),
+                                if (show == "mine")
+                                  Icon(
+                                    Icons.check,
+                                    color: Colors.blue,
+                                  )
+                              ],
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                show = "mine";
+                              });
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                        cancelButton: CupertinoActionSheetAction(
+                          child: Text(
+                            'Cancel',
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        )),
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      show == "mine" ? "MY EVENTS" : "UPCOMING FOR YOU",
+                      style: TextStyle(fontSize: 17, color: Colors.black),
+                    ),
+                    Icon(
+                      Icons.arrow_drop_down,
+                      size: 20,
+                    )
+                  ],
+                ),
+              )),
+            ),
+            IconButton(
+              padding: EdgeInsets.zero,
+              icon: Icon(
+                CupertinoIcons.calendar_badge_plus,
+                size: 35,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                createUpcomingRoomSheet(context, false);
+              },
+            )
+          ],
+        ),
+      ),
+      // appBar: AppBar(
+      //   // padding: EdgeInsetsDirectional.only(top: 15, end: 10,bottom: 10),
+      //   leading: InkWell(
+      //     onTap: () {
+      //       Get.back();
+      //     },
+      //     child: Icon(
+      //       CupertinoIcons.back,
+      //       size: 35,
+      //       color: Colors.black,
+      //     ),
+      //   ),
+      //   // border: Border(bottom: BorderSide(color: Colors.transparent)),
+      //   backgroundColor: Colors.white,
+      //   middle: InkWell(
+      //     onTap: () {
+      //       showCupertinoModalPopup(
+      //         context: context,
+      //         builder: (BuildContext context) => CupertinoActionSheet(
+      //             title: Text('What would you like to see?'),
+      //             actions: [
+      //               CupertinoActionSheetAction(
+      //                 child: Row(
+      //                   mainAxisAlignment: MainAxisAlignment.center,
+      //                   children: [
+      //                     Padding(
+      //                       padding: const EdgeInsets.only(right: 8.0),
+      //                       child: const Text('Upcoming For You',
+      //                           style: TextStyle(fontSize: 16)),
+      //                     ),
+      //                     if (show != "mine")
+      //                       Icon(
+      //                         Icons.check,
+      //                         color: Colors.blue,
+      //                       )
+      //                   ],
+      //                 ),
+      //                 onPressed: () {
+      //                   Navigator.pop(context);
+      //                   setState(() {
+      //                     show = "";
+      //                   });
+      //                 },
+      //                 isDefaultAction: true,
+      //               ),
+      //               CupertinoActionSheetAction(
+      //                 child: Row(
+      //                   mainAxisAlignment: MainAxisAlignment.center,
+      //                   children: [
+      //                     Padding(
+      //                       padding: const EdgeInsets.only(right: 8.0),
+      //                       child: const Text('My Events',
+      //                           style: TextStyle(fontSize: 16)),
+      //                     ),
+      //                     if (show == "mine")
+      //                       Icon(
+      //                         Icons.check,
+      //                         color: Colors.blue,
+      //                       )
+      //                   ],
+      //                 ),
+      //                 onPressed: () {
+      //                   setState(() {
+      //                     show = "mine";
+      //                   });
+      //                   Navigator.pop(context);
+      //                 },
+      //               ),
+      //             ],
+      //             cancelButton: CupertinoActionSheetAction(
+      //               child: Text(
+      //                 'Cancel',
+      //               ),
+      //               onPressed: () {
+      //                 Navigator.pop(context);
+      //               },
+      //             )),
+      //       );
+      //     },
+      //     child: Row(
+      //       mainAxisAlignment: MainAxisAlignment.center,
+      //       children: [
+      //         Text(
+      //           show == "mine" ? "MY EVENTS" : "UPCOMING FOR YOU",
+      //           style: TextStyle(fontSize: 17),
+      //         ),
+      //         Icon(
+      //           Icons.arrow_drop_down,
+      //           size: 20,
+      //         )
+      //       ],
+      //     ),
+      //   ),
+      //   trailing: IconButton(
+      //     padding: EdgeInsets.zero,
+      //     icon: Icon(
+      //       CupertinoIcons.calendar_badge_plus,
+      //       size: 35,
+      //       color: Colors.black,
+      //     ),
+      //     onPressed: () {
+      //       createUpcomingRoomSheet(context, false);
+      //     },
+      //   ),
+      // ),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 20),
           child: Column(
             children: [
-              CupertinoNavigationBar(
-                leading: GestureDetector(
-                  onTap: () {
-                    Get.back();
-                  },
-                  child: Icon(
-                    CupertinoIcons.back,
-                    size: 35,
-                    color: Colors.black,
-                  ),
-                ),
-                border: Border(bottom: BorderSide(color: Colors.transparent)),
-                backgroundColor: Colors.white,
-                middle: InkWell(
-                  onTap: () {
-                    showCupertinoModalPopup(
-                      context: context,
-                      builder: (BuildContext context) => CupertinoActionSheet(
-                          title: Text('What would you like to see?'),
-                          actions: [
-                            CupertinoActionSheetAction(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: const Text('Upcoming For You',
-                                        style: TextStyle(fontSize: 16)),
-                                  ),
-                                  if (show != "mine")
-                                    Icon(
-                                      Icons.check,
-                                      color: Colors.blue,
-                                    )
-                                ],
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                setState(() {
-                                  show = "";
-                                });
-                              },
-                              isDefaultAction: true,
-                            ),
-                            CupertinoActionSheetAction(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: const Text('My Events',
-                                        style: TextStyle(fontSize: 16)),
-                                  ),
-                                  if (show == "mine")
-                                    Icon(
-                                      Icons.check,
-                                      color: Colors.blue,
-                                    )
-                                ],
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  show = "mine";
-                                });
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                          cancelButton: CupertinoActionSheetAction(
-                            child: Text(
-                              'Cancel',
-                            ),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          )),
-                    );
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        show == "mine" ? "MY EVENTS" : "UPCOMING FOR YOU",
-                        style: TextStyle(fontSize: 17),
-                      ),
-                      Icon(
-                        Icons.arrow_drop_down,
-                        size: 20,
-                      )
-                    ],
-                  ),
-                ),
-                trailing: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  child: Icon(
-                    CupertinoIcons.calendar_badge_plus,
-                    size: 35,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    createUpcomingRoomSheet(context,keyboardup);
-                  },
-                ),
-              ),
               StreamBuilder<QuerySnapshot>(
                 stream: Database.getEvents(show),
                 builder: (BuildContext context,
@@ -202,7 +299,4 @@ class _UpcomingRoomScreenState extends State<UpcomingRoomScreen> {
       ),
     );
   }
-
-
-
 }

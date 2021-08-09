@@ -74,7 +74,7 @@ class _FollowerPageState extends State<FollowerPage> {
 
   Widget buildAvailableChatList(BuildContext context) {
     return StreamBuilder<List<UserModel>>(
-        stream: Database.getWeFollowEachOther(),
+        stream: Database.getmyFollowers(),
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasError) {
             return Text("Technical Error");
@@ -99,6 +99,7 @@ class _FollowerPageState extends State<FollowerPage> {
                 onProfileTap: () {
                   Get.to(() => ProfilePage(
                         profile: users[index],
+                        fromRoom: false,
                       ));
                 },
                 onRoomButtonTap: () async {
@@ -110,10 +111,10 @@ class _FollowerPageState extends State<FollowerPage> {
                   var ref = await Database().createRoom(
                       userData: Get.put(UserController()).user,
                       topic: "",
-                      type: "closed");
+                      type: "closed", context: context, users: [users[index]]);
 
                   ref.get().then((value) async {
-                    print("data here " + value.data().toString());
+
                     Room room = Room.fromJson(value);
                     await Permission.microphone.request();
                     showModalBottomSheet(
@@ -127,12 +128,21 @@ class _FollowerPageState extends State<FollowerPage> {
                         );
                       },
                     );
+
+
+
+                    //send notification to users i follow
+                    Database().sendNotificationToUsersiFollow("${room.title} is happening right now","By ${Get.find<UserController>().user.getName()}");
+
+
                   });
 
                   // if (mounted)
                   setState(() {
                     loading = false;
                   });
+
+
                 },
               );
             },

@@ -104,13 +104,13 @@ class _SmsScreenState extends State<SmsScreen> {
           color: Style.AccentBlue,
           minimumWidth: 230,
           disabledColor: Style.AccentBlue.withOpacity(0.3),
-          onPressed: () {
+          onPressed: () async {
             errortxt = "";
             setState(() {
               loading = true;
             });
             print("vv");
-            AuthService()
+            await AuthService()
                 .signInWithOTP(
                     context, _smsController.text, widget.verificationId)
                 .then((value) {

@@ -76,8 +76,11 @@ class AuthService {
     try {
       var result = await FirebaseAuth.instance.signInWithCredential(authCreds);
       if (result.user != null) {
-        Database().getUserProfile(result.user.uid).then((value){
+        Database().getUserProfile(result.user.uid).then((value) async {
           Get.put(UserController()).user = value;
+          await Database().updateProfileData(result.user.uid, {
+            "firebasetoken" : await FirebaseAuth.instance.currentUser.getIdToken()
+          });
           if(value !=null){
             return Get.offAll(()=>HomePage());
           }else{

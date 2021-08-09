@@ -2,6 +2,7 @@ import 'package:roomies/models/room.dart';
 import 'package:roomies/widgets/round_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:roomies/widgets/widgets.dart';
 
 class RoomCard extends StatelessWidget {
   final Room room;
@@ -32,13 +33,7 @@ class RoomCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
-                child: Text(
-                  room.title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
+                child: roomTitle(room),
               ),
               if (room.roomtype == "Closed")
                 IconButton(

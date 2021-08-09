@@ -121,7 +121,29 @@ class _PickPhotoPageState extends State<PickPhotoPage> {
         setState(() {
           loading = true;
         });
-        await Database().createUserInfo(FirebaseAuth.instance.currentUser.uid);
+        if(_imageFile != null){
+          await Database().createUserInfo(FirebaseAuth.instance.currentUser.uid);
+        }else{
+          Get.snackbar("", "",
+              snackPosition: SnackPosition.BOTTOM,
+              borderRadius: 0,
+              margin: EdgeInsets.all(0),
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+              messageText: Text.rich(TextSpan(
+                children: [
+                  TextSpan(
+                    text: "Choose your profile image first",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              )));
+        }
+
 
         setState(() {
           loading = false;

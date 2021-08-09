@@ -5,6 +5,7 @@ import 'package:roomies/models/models.dart';
 import 'package:roomies/services/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:roomies/util/utils.dart';
 import 'package:roomies/widgets/widgets.dart';
 
 class UpcomingRoomCard extends StatefulWidget {
@@ -23,7 +24,6 @@ class _UpcomingRoomCardState extends State<UpcomingRoomCard> {
   bool  loading = false ;
   @override
   Widget build(BuildContext context) {
-    print("_UpcomingRoomCardState"+widget.room.users.indexWhere((element) => element.uid == Get.find<UserController>().user.uid).toString());
     return GestureDetector(
       onTap: (){
         upcomingroomBottomSheet(context, widget.room,loading, false);
@@ -55,11 +55,31 @@ class _UpcomingRoomCardState extends State<UpcomingRoomCard> {
               ],
             ),
             Text(
-              widget.room.title.toUpperCase(),
-              style: TextStyle(
-                  fontSize: 16.0, fontFamily: "InterBold")
+                widget.room.title.toUpperCase(),
+                style: TextStyle(
+                    fontSize: 16.0, fontFamily: "InterBold")
 
             ),
+            widget.room.clubname.isNotEmpty ? Row(
+              children: [
+                Text(
+                  "From "+widget.room.clubname,
+                  style: TextStyle(
+                      color: Style.AccentGrey,
+                      fontSize: 12,
+                      fontFamily: "InterBold"
+                  ),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Icon(
+                  Icons.home,
+                  color: Style.AccentGreen,
+                  size: 18,
+                )
+              ],
+            ) : Container(),
             SizedBox(height: 5,),
             widget.room.users.length==0 ? Container() : Container(
               height: 43,
@@ -99,16 +119,15 @@ class _UpcomingRoomCardState extends State<UpcomingRoomCard> {
                 children: [
                   Text("W/",style: TextStyle(fontStyle: FontStyle.italic),),
                   ...widget.room.users.map((e) => Text("${e.firstname} ${e.lastname}, ",style: TextStyle(fontStyle: FontStyle.italic),)).toList(),
-                  Text(
-                    "---- "+widget.room.description,
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: "InterLight"
-                    ),
-                  )
+
                 ],
               ),
-            ),
+            ),Text(widget.room.description,
+              style: TextStyle(
+                  fontSize: 14,
+                  fontFamily: "InterLight"
+              ),
+            )
 
           ],
         ),

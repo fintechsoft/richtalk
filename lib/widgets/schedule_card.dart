@@ -1,10 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:roomies/models/models.dart';
 import 'package:roomies/services/database.dart';
 import 'package:roomies/util/style.dart';
 import 'package:flutter/material.dart';
+import 'package:roomies/widgets/widgets.dart';
 
-class ScheduleCard extends StatelessWidget {
+class ScheduleCard extends StatefulWidget {
+  @override
+  _ScheduleCardState createState() => _ScheduleCardState();
+}
+
+class _ScheduleCardState extends State<ScheduleCard> {
+  int _index = 0;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -21,89 +30,52 @@ class ScheduleCard extends StatelessWidget {
             return Container();
           }
           return snapshot.hasData
-              ? Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 10,
-            ),
-            decoration: BoxDecoration(
-              color: Style.AccentBrown,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListView(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: snapshot.data.docs.map((DocumentSnapshot document) {
-                    UpcomingRoom room = UpcomingRoom.fromJson(document);
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: buildScheduleItem(room.timedisplay, room.title),
-                    );
-                  }).toList(),
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                        margin: EdgeInsets.symmetric(horizontal: 30),
+                        child: Text("Upcoming Events".toUpperCase(),
+                            style: TextStyle(color: Style.AccentGrey))),
+                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height,
+                      child: PageView.builder(
+                          itemCount: snapshot.data.docs.length,
+                          controller: PageController(viewportFraction: 0.8),
+                          onPageChanged: (int index) =>
+                              setState(() => _index = index),
+                          itemBuilder: (_, i) {
+                            UpcomingRoom room = UpcomingRoom.fromJson(
+                                snapshot.data.docs[_index]);
+
+                            return Transform.scale(
+                              scale: i == _index ? 1 : 0.9,
+                              child: InkWell(
+                                onTap: (){
+                                  upcomingroomBottomSheet(context, room,false, false);
+                                },
+                                child: Card(
+                                  color: Style.AccentBrown,
+                                  elevation: 2,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20, horizontal: 10),
+                                    child: buildScheduleItem(room),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                    ),
+                  ],
                 )
-              ],
-            ),
-          ): Center(
-            child: CircularProgressIndicator(),
-          );
+              : Center(
+                  child: CircularProgressIndicator(),
+                );
         });
   }
 
-  Widget buildScheduleItem(String time, String text) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 75,
-          child: Text(
-            time,
-            style: TextStyle(
-              color: Style.DarkBrown,
-            ),
-          ),
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        Flexible(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    'COMMUNITY CLUB',
-                    style: TextStyle(
-                      color: Style.AccentGrey,
-                      fontSize: 12,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Icon(
-                    Icons.home,
-                    color: Style.AccentGreen,
-                    size: 15,
-                  )
-                ],
-              ),
-              Text(
-                text,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: Colors.black,
-                ),
-              )
-            ],
-          ),
-        )
-      ],
-    );
-  }
 }

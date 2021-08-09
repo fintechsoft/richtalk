@@ -45,12 +45,19 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
         .user
         .following
         .add(Get.find<UserController>().user.uid);
+
     List<String> removeusers = Get.find<UserController>().user.following;
 
     //query users that i can follow
-    usersRef.where("uid", whereNotIn: removeusers).get().then((value) {
+    usersRef.snapshots().listen((value) {
+      _allUsers.clear();
       value.docs.forEach((element) {
-        _allUsers.add(UserModel.fromJson(element.data()));
+        UserModel userModel = UserModel.fromJson(element.data());
+        // _allUsers.add(UserModel.fromJson(element.data()));
+
+        if (!removeusers.contains(userModel.uid)) {
+          _allUsers.add(UserModel.fromJson(element.data()));
+        }
       });
       setState(() {});
     });
@@ -100,67 +107,7 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
     return val;
   }
 
-  List<Widget> listMyWidgets(List<dynamic> docs) {
-    List<Widget> list = [];
 
-    for (var itemm in docs) {
-      Interest item = Interest.fromJson2(itemm, docs.indexOf(itemm).toString());
-      list.add(GestureDetector(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7),
-          margin: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-          child: Text(
-            item.title,
-            style: TextStyle(
-                fontSize: 15,
-                fontFamily: "InterRegular",
-                color: getColor(item.title) ? Colors.white : Colors.black),
-          ),
-          decoration: BoxDecoration(
-            color: getColor(item.title) ? Colors.red : Colors.white,
-            borderRadius: BorderRadius.circular(25),
-            boxShadow: [
-              BoxShadow(
-                  // color: ccc.getactiveBgColor.value,
-                  // blurRadius: 4,
-                  ),
-            ],
-          ),
-        ),
-        onTap: () {
-          bool isAddData = true;
-          for (var i = 0; i < selectedItemList.length; i++) {
-            if (selectedItemList[i].title == item.title) {
-              isAddData = false;
-              selectedItemList.removeAt(i);
-
-              break;
-            } else {
-              isAddData = true;
-            }
-          }
-          if (isAddData) {
-            selectedItemList.add(Interest(title: item.title));
-          }
-          setState(() {});
-        },
-      ));
-    }
-    return list;
-  }
-
-  Widget funListViewData({List list, String categoryName}) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Container(
-        width: 650,
-        child: Wrap(
-          direction: Axis.horizontal,
-          children: listMyWidgets(list),
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -207,11 +154,9 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
                     focusNode: _focus,
                     controller: _controller,
                     onChanged: (value) {
-                      if (value.isNotEmpty) {
-                        setState(() {
-                          _buildSearchList(value);
-                        });
-                      }
+                      setState(() {
+                        _buildSearchList(value);
+                      });
                     },
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(8.0, 13.0, 8.0, 8.0),
@@ -312,6 +257,9 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
             width: 16,
           ),
           TextButton(
+            style: ButtonStyle(
+              overlayColor: MaterialStateProperty.all(Colors.transparent),
+            ),
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               decoration: BoxDecoration(
@@ -320,10 +268,11 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
                     width: 2,
                     style: BorderStyle.solid,
                   ),
-                  borderRadius: BorderRadius.circular(20)
-              ),
+                  borderRadius: BorderRadius.circular(20)),
               child: Text(
-                userModel.following.contains(user.uid) ? "Following" : "Follow",
+                userModel != null && userModel.following.contains(user.uid)
+                    ? "Following"
+                    : "Follow",
                 textScaleFactor: 1,
                 style: TextStyle(
                   color: Style.indigo,
@@ -332,8 +281,10 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
             ),
             onPressed: () {
               if (userModel.following.contains(user.uid)) {
+                print("unfollow " + user.uid);
                 Database().unFolloUser(user.uid);
               } else {
+                print("follow " + user.uid);
                 Database().folloUser(user);
               }
               setState(() {});

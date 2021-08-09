@@ -133,8 +133,7 @@ class _AddCoHostScreenState extends State<AddCoHostScreen> {
       child: InkWell(
         onTap: (){
           if(!selectedusers.contains(user)) widget.clickCallback(user);
-          print(selectedusers.contains(user).toString());
-          widget.mystate(() {
+          setState(() {
 
           });
           Get.back();

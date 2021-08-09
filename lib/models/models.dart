@@ -6,3 +6,4 @@ export 'room.dart';
 export 'upcoming_room.dart';
 export 'interest.dart';
 export 'activity.dart';
+export 'club.dart';

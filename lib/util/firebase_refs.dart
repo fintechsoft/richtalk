@@ -9,8 +9,10 @@ final chatsRef = _firestore.collection('chats');
 final usersRef = _firestore.collection('users');
 final roomsRef = _firestore.collection('rooms');
 final upcomingroomsRef = _firestore.collection('upcomingrooms');
+final clubRef = _firestore.collection('clubs');
 final activitiesRef = _firestore.collection('activities');
 final interestsRef = _firestore.collection('interests');
+final settingsRef = _firestore.collection('settings');
 
 //firebase initialize storage
 final storageRef = FirebaseStorage.instance.ref();

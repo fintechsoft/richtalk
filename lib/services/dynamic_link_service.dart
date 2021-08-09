@@ -1,6 +1,9 @@
+import 'package:agora_rtc_engine/rtc_engine.dart';
+import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/models/models.dart';
 import 'package:roomies/pages/room/upcoming_roomsreen.dart';
 import 'package:roomies/pages/room/room_screen.dart';
+import 'package:roomies/services/database.dart';
 import 'package:roomies/util/configs.dart';
 import 'package:roomies/util/firebase_refs.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
@@ -80,6 +83,12 @@ class DynamicLinkService {
         roomsRef.doc(groupid).get().then((value) async {
           if(value.exists){
             Room room = Room.fromJson(value);
+
+            //leave any existing room
+            await Database().leaveActiveRoom();
+
+            //add user to a room
+            await Database().addUserToRoom(room: room, role: ClientRole.Audience,user: Get.find<UserController>().user);
             Get.to(()=>RoomScreen(roomid: groupid, room: room,));
           }
         });

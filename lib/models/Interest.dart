@@ -16,12 +16,20 @@ class Interest extends GetxController{
   Interest({this.title, this.active,this.id,this.icon,this.bgcolor,this.txtcolor});
 
   factory Interest.fromJson(json) {
-    print(json.id);
     return Interest(
       id: json.id,
       title: json.id,
     );
   }
+
+
+  Map<String, dynamic> toMap() {
+    return {
+      "id": this.id,
+      "title": this.title,
+    };
+  }
+
   factory Interest.fromJson2(String name, String index) {
     return Interest(
       id: index,
