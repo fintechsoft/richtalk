@@ -3,6 +3,7 @@ import 'package:roomies/models/user_model.dart';
 import 'package:roomies/util/style.dart';
 import 'package:roomies/widgets/round_image.dart';
 import 'package:flutter/material.dart';
+import 'package:roomies/widgets/user_profile_image.dart';
 
 import 'widgets.dart';
 
@@ -44,10 +45,12 @@ class RoomProfile extends StatelessWidget {
                       bottomRight: Radius.circular(size / 2 - size / 18),
                       bottomLeft: Radius.circular(size / 2 - size / 18)),
                 ),
-                child: RoundImage(
-                  url: user.imageurl,
+                child: UserProfileImage(
+                  user: user,
                   width: size,
                   height: size,
+                  txtsize: 21,
+                  borderRadius: 30,
                 ),
               ),
             ),

@@ -231,6 +231,8 @@ class _NewUpcomingRoomState extends State<NewUpcomingRoom> {
                                                       RoundImage(
                                                         url: hosts[index]
                                                             .imageurl,
+                                                        txt: hosts[index].firstname,
+                                                        txtsize: 10,
                                                         width: 30,
                                                         height: 30,
                                                         borderRadius: 15,

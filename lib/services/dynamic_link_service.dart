@@ -1,6 +1,7 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/models/models.dart';
+import 'package:roomies/pages/home/profile_page.dart';
 import 'package:roomies/pages/room/upcoming_roomsreen.dart';
 import 'package:roomies/pages/room/room_screen.dart';
 import 'package:roomies/services/database.dart';
@@ -10,12 +11,11 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:get/get.dart';
 
 class DynamicLinkService {
-
   /*
     generate sharing dynamic link
    */
   Future<String> createGroupJoinLink(String groupId, [type]) async {
-    final DynamicLinkParameters parameters =  DynamicLinkParameters(
+    final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: deeplinkuriPrefix,
       link: Uri.parse('$websitedomain/?groupid=$groupId&type=$type'),
       androidParameters: AndroidParameters(
@@ -40,21 +40,16 @@ class DynamicLinkService {
   Future handleDynamicLinks() async {
     // 1. Get the initial dynamic link if the app is opened with a dynamic link
     final PendingDynamicLinkData data =
-    await FirebaseDynamicLinks.instance.getInitialLink();
+        await FirebaseDynamicLinks.instance.getInitialLink();
 
-    // 2. handle link that has been retrieved
     _handleDeepLink(data);
 
-    // 3. Register a link callback to fire if the app is opened up from the background
-    // using a dynamic link.
     FirebaseDynamicLinks.instance.onLink(
         onSuccess: (PendingDynamicLinkData dynamicLink) async {
-          // 3a. handle link that has been retrieved
           _handleDeepLink(dynamicLink);
-        }, onError: (OnLinkErrorException e) async {
-    });
+        },
+        onError: (OnLinkErrorException e) async {});
   }
-
 
   /*
       handle dynamic link redirection logic
@@ -65,31 +60,56 @@ class DynamicLinkService {
       var groupid = deepLink.queryParameters['groupid'];
 
       //check if the shared link is an upcoming room
-      if(deepLink.queryParameters['type'] =="upcomingroom"){
+      if (deepLink.queryParameters['type'] == "upcomingroom") {
         roomsRef.doc(groupid).get().then((value) async {
-          if(value.exists){
-            Get.to(()=>RoomScreen(roomid: groupid));
-          }else{
+          if (value.exists) {
+            Get.to(() => RoomScreen(roomid: groupid));
+          } else {
             upcomingroomsRef.doc(groupid).get().then((value) async {
-              if(value.exists){
+              if (value.exists) {
                 UpcomingRoom room = UpcomingRoom.fromJson(value);
-                Get.to(()=> UpcomingRoomScreen(room:room));
+                Get.to(() => UpcomingRoomScreen(room: room));
               }
             });
           }
         });
-      }else{
+      } //check if the shared link is an upcoming room
+      else if (deepLink.queryParameters['type'] == "profile") {
+        usersRef.doc(groupid).get().then((value) async {
+          if (value.exists) {
+            Get.to(
+              () => ProfilePage(
+                profile: UserModel.fromJson(value.data()),
+                fromRoom: false,
+              ),
+            );
+          } else {
+            upcomingroomsRef.doc(groupid).get().then((value) async {
+              if (value.exists) {
+                UpcomingRoom room = UpcomingRoom.fromJson(value);
+                Get.to(() => UpcomingRoomScreen(room: room));
+              }
+            });
+          }
+        });
+      } else {
         var groupid = deepLink.queryParameters['groupid'];
         roomsRef.doc(groupid).get().then((value) async {
-          if(value.exists){
+          if (value.exists) {
             Room room = Room.fromJson(value);
 
             //leave any existing room
             await Database().leaveActiveRoom();
 
             //add user to a room
-            await Database().addUserToRoom(room: room, role: ClientRole.Audience,user: Get.find<UserController>().user);
-            Get.to(()=>RoomScreen(roomid: groupid, room: room,));
+            await Database().addUserToRoom(
+                room: room,
+                role: ClientRole.Audience,
+                user: Get.find<UserController>().user);
+            Get.to(() => RoomScreen(
+                  roomid: groupid,
+                  room: room,
+                ));
           }
         });
       }

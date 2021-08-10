@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/models/models.dart';
@@ -11,6 +10,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:roomies/widgets/noitem_widget.dart';
+import 'package:roomies/widgets/user_profile_image.dart';
+import 'package:roomies/widgets/widgets.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({
@@ -219,17 +220,13 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
     return Container(
       child: Row(
         children: [
-          Container(
-            height: 45,
+          UserProfileImage(
+            user: user,
+            txt: user.firstname,
             width: 45,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            clipBehavior: Clip.hardEdge,
-            child: CachedNetworkImage(
-              imageUrl: user.imageurl,
-              fit: BoxFit.cover,
-            ),
+            height: 45,
+            txtsize: 16,
+            borderRadius: 18,
           ),
           SizedBox(
             width: 16,

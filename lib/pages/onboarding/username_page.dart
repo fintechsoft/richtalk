@@ -1,8 +1,10 @@
 import 'package:roomies/controllers/controllers.dart';
+import 'package:roomies/services/database.dart';
 import 'package:roomies/widgets/round_button.dart';
 import 'package:roomies/util/style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:roomies/widgets/widgets.dart';
 
 import 'pick_photo_page.dart';
 
@@ -14,6 +16,7 @@ class UsernamePage extends StatefulWidget {
 class _UsernamePageState extends State<UsernamePage> {
   final _userNameController = TextEditingController();
   final _userNameformKey = GlobalKey<FormState>();
+  bool loading = false;
   Function onNextButtonClick;
 
   @override
@@ -63,6 +66,7 @@ class _UsernamePageState extends State<UsernamePage> {
           textAlign: TextAlign.center,
           onChanged: (value) {
             _userNameformKey.currentState.validate();
+
           },
           validator: (value) {
             if (value.isEmpty) {
@@ -102,7 +106,9 @@ class _UsernamePageState extends State<UsernamePage> {
   }
 
   Widget buildBottom() {
-    return CustomButton(
+    return loading == true ? Center(
+      child: CircularProgressIndicator(),
+    ) : CustomButton(
       color: Style.AccentBlue,
       minimumWidth: 230,
       disabledColor: Style.AccentBlue.withOpacity(0.3),
@@ -129,7 +135,25 @@ class _UsernamePageState extends State<UsernamePage> {
   }
 
   next() {
-    Get.find<OnboardingController>().username = _userNameController.text;
-    Get.to(() => PickPhotoPage());
+    setState(() {
+      loading = true;
+    });
+    print(_userNameController.text);
+    Database.checkUsername(_userNameController.text).then((value){
+      if(value == 0){
+        setState(() {
+          onNextButtonClick = next;
+          Get.find<OnboardingController>().username = _userNameController.text;
+          Get.to(() => PickPhotoPage());
+        });
+      }else{
+        topTrayPopup("Username is already taken");
+      }
+
+      setState(() {
+        loading = false;
+      });
+    });
+
   }
 }

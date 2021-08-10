@@ -12,6 +12,7 @@ import 'package:roomies/services/dynamic_link_service.dart';
 import 'package:roomies/util/configs.dart';
 import 'package:roomies/util/firebase_refs.dart';
 import 'package:roomies/widgets/round_image.dart';
+import 'package:roomies/widgets/user_profile_image.dart';
 import 'package:roomies/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -333,10 +334,12 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
                         ),
                       );
                     },
-                    child: RoundImage(
-                      url: myProfile.imageurl,
+                    child: UserProfileImage(
+                      user: myProfile,
                       width: 40,
                       height: 40,
+                      txtsize: 16,
+                      borderRadius: 20,
                     ),
                   ),
                 ],
@@ -546,7 +549,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
                             },
                           ),
                         ],
-                        cancelButton: room.ownerid != myProfile.uid ? null : CupertinoActionSheetAction(
+                        cancelButton: room.ownerid == myProfile.uid ? null : CupertinoActionSheetAction(
                           child: Text(
                             'End Room',
                             style: TextStyle(color: Colors.red),
@@ -705,7 +708,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
                                       crossAxisCount: 3),
                               itemBuilder: (BuildContext context, int index) {
                                 if (textController.text.isEmpty) {
-                                  return userWidget(
+                                  return userWidgetWithInfo(
                                       user: _tempListOfUsers[index],
                                       clickCallBack: searchUserClickCallBack);
                                 } else if (_tempListOfUsers[index]
@@ -716,7 +719,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
                                         .lastname
                                         .toLowerCase()
                                         .contains(textController.text)) {
-                                  return userWidget(
+                                  return userWidgetWithInfo(
                                       user: _tempListOfUsers[index],
                                       clickCallBack: searchUserClickCallBack);
                                 }

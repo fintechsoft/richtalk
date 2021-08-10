@@ -1,7 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/models/models.dart';
 import 'package:roomies/models/user_model.dart';
@@ -36,16 +40,50 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String followtxt = "";
-  UserModel userModel;
+  UserModel userModel = Get.find<UserController>().user;
   StreamSubscription<DocumentSnapshot> streamSubscription;
+  final picker = ImagePicker();
+  File _imageFile;
+  List<Interest> selectedTopicsList = [];
+  List<String> selectedTopicsListString = [];
+
+  bool loading = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
     followersFollowingListener();
   }
+
+  _cropImage(filePath, setState) async {
+    File croppedImage = await ImageCropper.cropImage(
+        sourcePath: filePath,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        aspectRatioPresets: [CropAspectRatioPreset.square],
+        compressQuality: 70,
+        compressFormat: ImageCompressFormat.jpg,
+        iosUiSettings: IOSUiSettings(
+          minimumAspectRatio: 1.0,
+          rotateClockwiseButtonHidden: false,
+          rotateButtonsHidden: false,
+        ));
+    if (croppedImage != null) {
+      print("croppedImage ");
+      _imageFile = croppedImage;
+      Get.put(OnboardingController()).imageFile = _imageFile;
+      setState(() {});
+    }
+  }
+
+  _getFromGallery(setState) async {
+    PickedFile pickedFile = await picker.getImage(
+      source: ImageSource.gallery,
+    );
+    _cropImage(pickedFile.path,setState);
+  }
+
+
 
   @override
   void dispose() {
@@ -91,6 +129,22 @@ class _ProfilePageState extends State<ProfilePage> {
           : AppBar(
               backgroundColor: Colors.white,
               actions: [
+
+                IconButton(
+                  icon: Icon(Icons.share),
+                  onPressed: () {
+                    final RenderBox box = context.findRenderObject();
+                    DynamicLinkService()
+                        .createGroupJoinLink(widget.profile.uid,"profile")
+                        .then((value) async {
+                      await Share.share(value,
+                          subject: "Share " + widget.profile.getName()+" Profile",
+                          sharePositionOrigin:
+                          box.localToGlobal(Offset.zero) &
+                          box.size);
+                    });
+                  },
+                ),
                 if (widget.profile.uid == Get.find<UserController>().user.uid)
                   IconButton(
                       icon: Icon(Icons.settings),
@@ -114,85 +168,81 @@ class _ProfilePageState extends State<ProfilePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               buildProfile(context),
-              SizedBox(
-                height: 20,
-              ),
               if (widget.fromRoom == true)
-                CustomButton(
-                  minimumWidth: MediaQuery.of(context).size.width,
-                  color: Colors.grey[200],
-                  text: "Move to Audience",
-                  txtcolor: Colors.black,
-                  fontSize: 13,
-                  onPressed: () async {
-                    var currentprofileuser = widget.room.users[widget.room.users
-                        .indexWhere(
-                            (element) => element.uid == widget.profile.uid)];
+                Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: CustomButton(
+                    minimumWidth: MediaQuery.of(context).size.width,
+                    color: Colors.grey[200],
+                    text: "Move to Audience",
+                    txtcolor: Colors.black,
+                    fontSize: 13,
+                    onPressed: () async {
+                      var currentprofileuser = widget.room.users[widget.room.users
+                          .indexWhere(
+                              (element) => element.uid == widget.profile.uid)];
 
-                    var currentuser = widget.room.users[widget.room.users
-                        .indexWhere((element) =>
-                            element.uid == Get.find<UserController>().user.uid)];
+                      var currentuser = widget.room.users[widget.room.users
+                          .indexWhere((element) =>
+                              element.uid == Get.find<UserController>().user.uid)];
 
-                    Navigator.pop(context);
-                    if (currentprofileuser.uid == currentuser.uid ||
-                        (currentuser.usertype == "speaker" ||
-                            currentuser.usertype == "host")) {
-                      await Database().updateRoomData(widget.room.roomid, {
-                        "users": widget.room.users
-                            .map((i) => i.toMap(
-                                usertype: i.uid == currentprofileuser.uid
-                                    ? "others"
-                                    : i.usertype,
-                                callmute: i.uid == currentprofileuser.uid
-                                    ? true
-                                    : i.callmute,
-                                callerid: i.callerid))
-                            .toList()
-                      });
-                      engine.setClientRole(ClientRole.Audience);
-                    }
-                  },
-                ),
-              SizedBox(
-                height: 20,
-              ),
-              if (widget.fromRoom == true)
-                CustomButton(
-                  minimumWidth: MediaQuery.of(context).size.width,
-                  color: Colors.grey[200],
-                  text: "Move to Moderator",
-                  txtcolor: Colors.black,
-                  fontSize: 13,
-                  onPressed: () async {
-                    var currentprofileuser = widget.room.users[widget.room.users
-                        .indexWhere(
-                            (element) => element.uid == widget.profile.uid)];
-
-                    var currentuser = widget.room.users[widget.room.users
-                        .indexWhere((element) =>
-                            element.uid == Get.find<UserController>().user.uid)];
-
-                    if (currentuser.usertype == "speaker" ||
-                        currentuser.usertype == "host") {
                       Navigator.pop(context);
-                      await Database().updateRoomData(widget.room.roomid, {
-                        "users": widget.room.users
-                            .map((i) => i.toMap(
-                                usertype: i.uid == currentprofileuser.uid
-                                    ? "host"
-                                    : i.usertype,
-                                callmute: i.callmute,
-                                callerid: i.callerid))
-                            .toList()
-                      });
-                      engine.setClientRole(ClientRole.Broadcaster);
-                    }
-                  },
+                      if (currentprofileuser.uid == currentuser.uid ||
+                          (currentuser.usertype == "speaker" ||
+                              currentuser.usertype == "host")) {
+                        await Database().updateRoomData(widget.room.roomid, {
+                          "users": widget.room.users
+                              .map((i) => i.toMap(
+                                  usertype: i.uid == currentprofileuser.uid
+                                      ? "others"
+                                      : i.usertype,
+                                  callmute: i.uid == currentprofileuser.uid
+                                      ? true
+                                      : i.callmute,
+                                  callerid: i.callerid))
+                              .toList()
+                        });
+                        engine.setClientRole(ClientRole.Audience);
+                      }
+                    },
+                  ),
                 ),
-              if (widget.fromRoom == false) builderInviter(),
-              SizedBox(
-                height: 30,
-              ),
+              if (widget.fromRoom == true)
+                Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: CustomButton(
+                    minimumWidth: MediaQuery.of(context).size.width,
+                    color: Colors.grey[200],
+                    text: "Move to Moderator",
+                    txtcolor: Colors.black,
+                    fontSize: 13,
+                    onPressed: () async {
+                      var currentprofileuser = widget.room.users[widget.room.users
+                          .indexWhere(
+                              (element) => element.uid == widget.profile.uid)];
+
+                      var currentuser = widget.room.users[widget.room.users
+                          .indexWhere((element) =>
+                              element.uid == Get.find<UserController>().user.uid)];
+
+                      if (currentuser.usertype == "speaker" ||
+                          currentuser.usertype == "host") {
+                        Navigator.pop(context);
+                        await Database().updateRoomData(widget.room.roomid, {
+                          "users": widget.room.users
+                              .map((i) => i.toMap(
+                                  usertype: i.uid == currentprofileuser.uid
+                                      ? "host"
+                                      : i.usertype,
+                                  callmute: i.callmute,
+                                  callerid: i.callerid))
+                              .toList()
+                        });
+                        engine.setClientRole(ClientRole.Broadcaster);
+                      }
+                    },
+                  ),
+                ),
               Text(
                 "Member of",
                 style: TextStyle(fontSize: 16),
@@ -383,11 +433,18 @@ class _ProfilePageState extends State<ProfilePage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RoundImage(
-              url: widget.profile.imageurl,
-              width: 100,
-              height: 100,
-              borderRadius: 35,
+            InkWell(
+              onTap: (){
+                updateUserPhoto();
+              },
+              child: RoundImage(
+                url: widget.profile.imageurl,
+                txtsize: 35,
+                txt: widget.profile.firstname,
+                width: 100,
+                height: 100,
+                borderRadius: 35,
+              ),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -526,8 +583,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ],
         ),
-        if (widget.fromRoom == false)
-          Padding(
+        if (widget.profile.uid == userModel.uid && widget.profile.bio.isEmpty) Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: InkWell(
               onTap: () {
@@ -540,6 +596,20 @@ class _ProfilePageState extends State<ProfilePage> {
                     color: widget.profile.bio.isEmpty
                         ? Colors.blue
                         : Colors.black),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: InkWell(
+              onTap: () {
+                addBio();
+              },
+              child: Text(
+                widget.profile.bio,
+                style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.black),
               ),
             ),
           ),
@@ -670,50 +740,125 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   /*
-    user invited by widget
+      user profile photo
    */
-  Widget builderInviter() {
-    return Row(
-      children: [
-        RoundImage(
-          path: 'assets/images/puzzleleaf.png',
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            widget.profile.lastAccessTime == null
-                ? Text("")
-                : Text("Joined " +
-                    new DateFormat('d MMMM yyyy').format(
-                        DateTime.fromMicrosecondsSinceEpoch(
-                            widget.profile.lastAccessTime))),
-            SizedBox(
-              height: 3,
-            ),
-            RichText(
-              text: TextSpan(
-                children: <TextSpan>[
-                  TextSpan(
-                    text: 'Nominated by ',
+  updateUserPhoto() {
+
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      backgroundColor: Style.AccentBrown,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(15),
+        topRight: Radius.circular(15),
+      )),
+      builder: (context) {
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return DraggableScrollableSheet(
+              initialChildSize: 0.9,
+              expand: false,
+              builder:
+                  (BuildContext context, ScrollController scrollController) {
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        "Change your photo",
+                        style: TextStyle(fontSize: 21),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          _getFromGallery(setState);
+                        },
+                        child: _imageFile !=null ? Container(
+                          width: 150,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(80),
+                          ),
+                          child: _imageFile !=null ? Container(
+                            child: ClipOval(
+                              child: Image.file(
+                                _imageFile,
+                                height: 150,
+                                width: 150,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ) : Icon(
+                            Icons.add_photo_alternate_outlined,
+                            size: 100,
+                            color: Style.AccentBlue,
+                          ),
+                        )  : RoundImage(
+                          url: userModel.imageurl,
+                          txt: userModel.firstname,
+                          txtsize: 35,
+                          width: 150,
+                          height: 150,
+                          borderRadius: 60,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      loading == true ? Container(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ) : CustomButton(
+                        text: "Done",
+                        color: Style.AccentBlue,
+                        onPressed: _imageFile == null ? null: () async {
+                          setState(() {
+                            loading = true;
+                          });
+                          if(_imageFile != null){
+                            await Database().uploadImage(FirebaseAuth.instance.currentUser.uid, update: true);//createUserInfo(FirebaseAuth.instance.currentUser.uid);
+                          }else{
+                            Get.snackbar("", "",
+                                snackPosition: SnackPosition.BOTTOM,
+                                borderRadius: 0,
+                                margin: EdgeInsets.all(0),
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                                messageText: Text.rich(TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: "Choose your profile image first",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                )));
+                          }
+
+
+                          Navigator.pop(context);
+                          setState(() {
+                            loading = false;
+                            _imageFile = null;
+                          });
+                        },
+                      )
+                    ],
                   ),
-                  TextSpan(
-                    text: 'roomies',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-                style: TextStyle(
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
+                );
+              });
+        });
+      },
     );
   }
+
 }

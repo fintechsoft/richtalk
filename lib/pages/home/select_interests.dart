@@ -1,12 +1,18 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/models/models.dart';
+import 'package:roomies/pages/home/search_view.dart';
+import 'package:roomies/pages/onboarding/follow_friends.dart';
 import 'package:roomies/services/database.dart';
 import 'package:roomies/util/firebase_refs.dart';
 import 'package:roomies/util/style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:roomies/widgets/widgets.dart';
 /*
     interests pick screen
  */
@@ -17,7 +23,9 @@ class InterestsPick extends StatefulWidget {
   final String subtitle;
   final Club club;
   final Function selectedItemsCallback;
-  InterestsPick({this.title,this.subtitle,this.selectedItemsCallback,this.club});
+  final showbackarrow;
+  final fromsignup;
+  InterestsPick({this.title,this.subtitle,this.selectedItemsCallback,this.club,this.showbackarrow = true, this.fromsignup = true});
 
   @override
   _InterestsPickState createState() => _InterestsPickState();
@@ -26,6 +34,7 @@ class InterestsPick extends StatefulWidget {
 class _InterestsPickState extends State<InterestsPick> {
   bool isCallApi = false;
   bool loading = false;
+  StreamSubscription<DocumentSnapshot> userlisterner;
 
   @override
   void initState() {
@@ -34,6 +43,19 @@ class _InterestsPickState extends State<InterestsPick> {
       selectedItemList = widget.club.topics;
     }
     getFirebaseData();
+    userlisterner = usersRef.doc(FirebaseAuth.instance.currentUser.uid).snapshots().listen((event) {
+      Get.put(UserController()).user = UserModel.fromJson(event.data());
+      setState(() {
+
+      });
+    });
+
+  }
+
+  @override
+  void dispose() {
+    userlisterner.cancel();
+    super.dispose();
   }
 
   QuerySnapshot tempList;
@@ -47,78 +69,101 @@ class _InterestsPickState extends State<InterestsPick> {
     ) : Scaffold(
         backgroundColor: Style.LightBrown,
         resizeToAvoidBottomInset: false, // set
-        body: Container(
-          padding: EdgeInsets.only(left: 10, right: 10),
-          child: isCallApi
-              ? Center(child: CircularProgressIndicator())
-              : ListView(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Stack(
-                  children: [
-
-                    IconButton(
-                      onPressed: ()=>Get.back(),
-                      icon: Icon(Icons.arrow_back_ios),
-                    ),
-
-                    Center(
-                      child: Text(
-                        widget.title !=null ? widget.title : 'Interests',
-                        style:
-                        TextStyle(
-                            fontFamily: "InterExtraBold", fontSize: 25
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 30,),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Center(
-                  child: Text(widget.subtitle !=null ? widget.subtitle : 'Add your interests so we can begin to personalize Roomy for you. Interests are private to you.',
-                      style: TextStyle(
-                          fontFamily: "InterLight",
-                          fontSize: 16,
-                          color: Color(0XFF7B7B7B)
-                      ),
-                    textAlign: TextAlign.center,
-
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: tempList.docs.length,
-                  itemBuilder: (BuildContext context, int i) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+        body: Stack(
+          children: [
+            Container(
+              padding: EdgeInsets.only(left: 10, right: 10),
+              child: isCallApi
+                  ? Center(child: CircularProgressIndicator())
+                  : ListView(
+                children: [
+                  if(widget.showbackarrow == true) Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Stack(
                       children: [
-                        Text('${tempList.docs[i].id}',
-                            style: TextStyle(
-                                fontSize: 15.0,
-                                color: Colors.black,
-                                fontFamily: "InterSemiBold"
-                            )
-                        ),
-                        SizedBox(height: 10),
 
-                        funListViewData(
-                            list: tempList.docs[i]['data'],
-                            categoryName:
-                            tempList.docs[i].id.toString()
+                        IconButton(
+                          onPressed: ()=>Get.back(),
+                          icon: Icon(Icons.arrow_back_ios),
                         ),
-                        SizedBox(height: 20),
+
+                        Center(
+                          child: Text(
+                            widget.title !=null ? widget.title : 'Interests',
+                            style:
+                            TextStyle(
+                                fontFamily: "InterExtraBold", fontSize: 25
+                            ),
+                          ),
+                        ),
                       ],
-                    );
-                  }),
-            ],
-          ),
+                    ),
+                  ),
+                  SizedBox(height: 30,),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: Center(
+                      child: Text(widget.subtitle !=null ? widget.subtitle : 'Add your interests so we can begin to personalize Roomy for you. Interests are private to you.',
+                          style: TextStyle(
+                              fontFamily: "InterLight",
+                              fontSize: 16,
+                              color: Color(0XFF7B7B7B)
+                          ),
+                        textAlign: TextAlign.center,
+
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: tempList.docs.length,
+                      itemBuilder: (BuildContext context, int i) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('${tempList.docs[i].id}',
+                                style: TextStyle(
+                                    fontSize: 15.0,
+                                    color: Colors.black,
+                                    fontFamily: "InterSemiBold"
+                                )
+                            ),
+                            SizedBox(height: 10),
+
+                            funListViewData(
+                                list: tempList.docs[i]['data'],
+                                categoryName:
+                                tempList.docs[i].id.toString()
+                            ),
+                            SizedBox(height: 20),
+                          ],
+                        );
+                      }),
+                ],
+              ),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Center(
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  width: 200,
+                  child: CustomButton(
+                      padding: EdgeInsets.symmetric(vertical: 13, horizontal: 25),
+                      onPressed: () {
+                        Get.to(() => FollowFriends());
+                      },
+                      color: Style.AccentBlue,
+                      text: 'Next'),
+                ),
+              ),
+            )
+          ],
         ),
 
     );
@@ -187,8 +232,13 @@ class _InterestsPickState extends State<InterestsPick> {
     }
     if (isAddData) {
       selectedItemList.add(Interest(title: item.title));
-      widget.selectedItemsCallback(selectedItemList);
-      usersRef.doc(Get.find<UserController>().user.uid).update({
+
+      //check if its from signup
+      if(widget.fromsignup == false){
+        widget.selectedItemsCallback(selectedItemList);
+      }
+
+      usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
         "interests" : FieldValue.arrayUnion([item.title])
       });
     }

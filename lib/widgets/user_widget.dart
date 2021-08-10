@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../models/models.dart';
 
-Widget userWidget({bool selected, UserModel user, Function clickCallBack}) {
+Widget userWidgetWithInfo({bool selected, UserModel user, Function clickCallBack}) {
   return Container(
     child: InkWell(
       onTap: () {

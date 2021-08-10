@@ -6,10 +6,11 @@ class RoundImage extends StatelessWidget {
   final String txt;
   final double width;
   final double height;
+  final double txtsize;
   final EdgeInsets margin;
   final double borderRadius;
 
-  const RoundImage({Key key, this.txt,this.url = "", this.path = "", this.margin, this.width = 40, this.height = 40, this.borderRadius = 40}) : super(key: key);
+  const RoundImage({Key key,this.txtsize = 23, this.txt,this.url = "", this.path = "", this.margin, this.width = 40, this.height = 40, this.borderRadius = 40}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class RoundImage extends StatelessWidget {
           fit: BoxFit.cover,
         ) : null,
       ),
-      child:Center(child: Text(txt !=null ? txt.substring(0, 2).toUpperCase() : "", style: TextStyle(fontSize: 23),)),
+      child:url.isEmpty ?  Center(child: Text(txt !=null && txt.length>0 ? txt.substring(0, 2).toUpperCase() : "", style: TextStyle(fontSize: txtsize, color: Colors.black, fontFamily: "InterBold"),)) : null,
     );
   }
 }

@@ -123,9 +123,7 @@ class _FollowerMatchGridPageState extends State<FollowerMatchGridPage> {
                   border: InputBorder.none
                 ),
                 onChanged: (value) {
-                  //4
                   setState(() {
-                    // _tempListOfUsers = _buildSearchList(value);
                   });
                 })),
         Expanded(
@@ -134,9 +132,6 @@ class _FollowerMatchGridPageState extends State<FollowerMatchGridPage> {
             child: StreamBuilder(
                 stream: Database.getmyFollowers(),
                 builder: (context, snapshot) {
-                  // if (snapshot.connectionState == ConnectionState.waiting) {
-                  //   return Center(child: loadingWidget());
-                  // }
                   if (snapshot.data == null) {
                     return Center(child: noDataWidget("No users whom you follow each others"));
                   }
@@ -150,7 +145,7 @@ class _FollowerMatchGridPageState extends State<FollowerMatchGridPage> {
                         crossAxisCount: 3),
                     itemBuilder: (BuildContext context, int index) {
                       print(roomallusers.indexWhere((element) => element.uid == _buildSearchList(textController.text)[index].uid));
-                      return userWidget(
+                      return userWidgetWithInfo(
                           user: _buildSearchList(textController.text)[index],
                           selected: roomallusers.indexWhere((element) => element.uid == _buildSearchList(textController.text)[index].uid) !=-1 ? true : false,
                           clickCallBack: userclickCallBack);

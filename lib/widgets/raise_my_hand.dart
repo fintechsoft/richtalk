@@ -55,7 +55,7 @@ raiseMyHandView(BuildContext context, Room room, UserModel myProfile) {
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 21, vertical: 10),
+                              horizontal: 21, vertical: 12),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
                               color: Colors.red
@@ -70,7 +70,7 @@ raiseMyHandView(BuildContext context, Room room, UserModel myProfile) {
                         )),
                     Container(
                       padding: EdgeInsets.symmetric(
-                          horizontal: 13),
+                          horizontal: 8),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
                           color: Colors.red

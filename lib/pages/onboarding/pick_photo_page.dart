@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/services/database.dart';
 import 'package:roomies/widgets/round_button.dart';
@@ -13,8 +14,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PickPhotoPage extends StatefulWidget {
-
-
   @override
   _PickPhotoPageState createState() => _PickPhotoPageState();
 }
@@ -36,6 +35,25 @@ class _PickPhotoPageState extends State<PickPhotoPage> {
           ),
           child: Column(
             children: [
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 15),
+                child: InkWell(
+                  onTap: () async {
+                    setState(() {
+                      loading = true;
+                    });
+                      Get.find<OnboardingController>().imageFile = null;
+                        await Database().createUserInfo(FirebaseAuth.instance.currentUser.uid);
+                      setState(() {
+                        loading = false;
+                      });
+                  },
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text("Skip", style: TextStyle(fontSize: 21),),
+                  ),
+                ),
+              ),
               buildTitle(),
               Spacer(
                 flex: 1,
@@ -81,32 +99,76 @@ class _PickPhotoPageState extends State<PickPhotoPage> {
       ),
     );
   }
-
-  Widget buildContents() {
-    return InkWell(
-      onTap: () {
-        _getFromGallery();
-      },
-      child: Container(
-        width: 200,
-        height: 200,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(80),
-        ),
-        child: _imageFile !=null ? Container(
-              child: ClipOval(
-                child: Image.file(
-                  _imageFile,
-                  height: 200,
-                  width: 200,
-                  fit: BoxFit.cover,
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: false,
+          title: const Text('Add a profile photo'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 10,),
+              InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                  _getFromGallery();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text("Choose from galley"),
                 ),
               ),
-            ) : Icon(
-          Icons.add_photo_alternate_outlined,
-          size: 100,
-          color: Style.AccentBlue,
+              SizedBox(height: 20,),
+              InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                  _getFromCamera();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text("Take photo"),
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+  Widget buildContents() {
+    return Container(
+      child: GestureDetector(
+        onTap: () {
+          // _getFromGallery();
+          _showMyDialog();
+
+        },
+        child: Container(
+          width: 200,
+          height: 200,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(80),
+          ),
+          child: _imageFile !=null ? Container(
+                child: ClipOval(
+                  child: Image.file(
+                    _imageFile,
+                    height: 200,
+                    width: 200,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ) : Icon(
+            Icons.add_photo_alternate_outlined,
+            size: 100,
+            color: Style.AccentBlue,
+          ),
         ),
       ),
     );
@@ -117,34 +179,11 @@ class _PickPhotoPageState extends State<PickPhotoPage> {
       color: Style.AccentBlue,
       minimumWidth: 230,
       disabledColor: Style.AccentBlue.withOpacity(0.3),
-      onPressed: () async{
+      onPressed: _imageFile == null ? null : () async{
         setState(() {
           loading = true;
         });
-        if(_imageFile != null){
-          await Database().createUserInfo(FirebaseAuth.instance.currentUser.uid);
-        }else{
-          Get.snackbar("", "",
-              snackPosition: SnackPosition.BOTTOM,
-              borderRadius: 0,
-              margin: EdgeInsets.all(0),
-              backgroundColor: Colors.red,
-              colorText: Colors.white,
-              messageText: Text.rich(TextSpan(
-                children: [
-                  TextSpan(
-                    text: "Choose your profile image first",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              )));
-        }
-
-
+        await Database().createUserInfo(FirebaseAuth.instance.currentUser.uid);
         setState(() {
           loading = false;
         });
@@ -173,6 +212,12 @@ class _PickPhotoPageState extends State<PickPhotoPage> {
   _getFromGallery() async {
     PickedFile pickedFile = await picker.getImage(
       source: ImageSource.gallery,
+    );
+    _cropImage(pickedFile.path);
+  }
+  _getFromCamera() async {
+    PickedFile pickedFile = await picker.getImage(
+      source: ImageSource.camera,
     );
     _cropImage(pickedFile.path);
   }

@@ -24,6 +24,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:roomies/models/models.dart';
 import 'package:roomies/widgets/schedule_card_old.dart';
+import 'package:roomies/widgets/user_profile_image.dart';
 import 'package:roomies/widgets/widgets.dart';
 
 class RommiesScreen extends StatefulWidget {
@@ -40,6 +41,8 @@ class _RommiesScreenState extends State<RommiesScreen>
   //current user object
   UserModel myProfile = Get.find<UserController>().user;
 
+  StreamSubscription<DocumentSnapshot> listener;
+
   //initialize varaibles
   String roomtype = "open";
   bool loading = false;
@@ -51,6 +54,13 @@ class _RommiesScreenState extends State<RommiesScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     Data.addInterests();
+    listener = usersRef.doc(myProfile.uid).snapshots().listen((event) {
+      myProfile = UserModel.fromJson(event.data());
+      Get.find<UserController>().user = myProfile;
+      setState(() {
+
+      });
+    });
   }
 
   Future<void> registerNewRoom({roomtype, topic, List<UserModel> users,Club club}) async {
@@ -112,6 +122,7 @@ class _RommiesScreenState extends State<RommiesScreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    listener.cancel();
     super.dispose();
   }
 
@@ -368,19 +379,23 @@ class _RommiesScreenState extends State<RommiesScreen>
                     child: Stack(
                       children: [
                         activeroom.users.length > 1
-                            ? RoundImage(
-                                url: activeroom.users[1].imageurl,
-                                width: 45,
-                                height: 45,
-                                borderRadius: 20,
-                              )
+                            ? Container(
+                              child: UserProfileImage(
+                                  user: activeroom.users[1],
+                                  width: 45,
+                                  height: 45,
+                                  borderRadius: 20,
+                                ),
+                            )
                             : Container(),
-                        RoundImage(
+                        Container(
                           margin: EdgeInsets.only(left: 42),
-                          url: activeroom.users[0].imageurl,
-                          width: 45,
-                          height: 45,
-                          borderRadius: 20,
+                          child: UserProfileImage(
+                            user: activeroom.users[0],
+                            width: 45,
+                            height: 45,
+                            borderRadius: 20,
+                          ),
                         ),
                         activeroom.users.length > 2
                             ? RoundImage(

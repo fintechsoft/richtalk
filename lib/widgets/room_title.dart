@@ -29,7 +29,7 @@ roomTitle([Room room]){
           )
         ],
       ) : Container(),
-       if(room !=null) Text(
+       if(room !=null && room.title.isNotEmpty) Text(
         room.title,
         style: TextStyle(
           fontWeight: FontWeight.bold,

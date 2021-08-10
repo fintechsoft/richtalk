@@ -100,6 +100,8 @@ class _NotificationActivitiesState extends State<NotificationActivities> {
                                 children: [
                                   RoundImage(
                                     url: activities[index].imageurl,
+                                    txtsize: 10,
+                                    txt: activities[index].name,
                                     borderRadius: 18,
                                   ),
                                   SizedBox(

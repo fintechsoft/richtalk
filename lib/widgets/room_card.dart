@@ -74,10 +74,13 @@ class RoomCard extends StatelessWidget {
       children: [
         room.users.length > 1 ? RoundImage(
           margin: const EdgeInsets.only(top: 15, left: 25),
+          txt: room.users[1].firstname,
           url: room.users[1].imageurl,
         ) : Container(),
         RoundImage(
           url:room.users[0].imageurl,
+          txt: room.users[0].firstname,
+          txtsize: 21,
         ),
       ],
     );
@@ -94,7 +97,7 @@ class RoomCard extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  room.users[i].username,
+                  room.users[i].username !=null ? room.users[i].username : "",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,

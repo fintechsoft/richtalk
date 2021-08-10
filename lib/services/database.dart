@@ -7,6 +7,7 @@ import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/functions/functions.dart';
 import 'package:roomies/models/models.dart';
 import 'package:roomies/pages/home/home_page.dart';
+import 'package:roomies/pages/home/select_interests.dart';
 import 'package:roomies/pages/room/upcoming_roomsreen.dart';
 import 'package:roomies/util/firebase_refs.dart';
 import 'package:roomies/util/utils.dart';
@@ -17,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/io_client.dart';
 import 'package:path/path.dart';
+import 'package:roomies/widgets/widgets.dart';
 
 class Database {
   //get profile user data
@@ -45,6 +47,8 @@ class Database {
     UserModel user = Get.find<OnboardingController>().onboardingUser;
     if (user.imagefile != null) {
       String fileName = basename(user.imagefile.path);
+      print(user.imagefile);
+      print(fileName);
       Reference firebaseSt =
           FirebaseStorage.instance.ref().child('profile/$fileName');
       UploadTask uploadTask = firebaseSt.putFile(user.imagefile);
@@ -53,14 +57,60 @@ class Database {
         String storagePath = await firebaseSt.getDownloadURL();
         user.imageurl = storagePath;
       });
-
+      String link = Get.find<UserController>().user.imageurl;
+      link =  link.split("/")[7];
+      link = link.replaceAll("%20"," ");
+      link = link.replaceAll("%2C", ",");
+      link = link.substring(0, link.indexOf('.jpg'));
+      link = link.replaceAll("%2F", "/");
       if (update == true) {
         Reference storageReferance = FirebaseStorage.instance.ref();
         storageReferance
-            .child(Get.find<UserController>().user.imageurl)
+            .child("/"+link+".jpg")
             .delete()
             .then((_) => print(
                 'Successfully deleted ${Get.find<UserController>().user.imageurl} storage item'));
+        updateProfileData(Get.find<UserController>().user.uid, {
+          "imageurl" : user.imageurl
+        });
+      }
+    }else{
+      user.imageurl = "";
+    }
+  }
+  //upload image to firebase store and then returns image url
+  uploadClubImage(String clubid, {bool update = false, File file, String previousurl = ""}) async {
+    if (file != null) {
+      String fileName = basename(file.path);
+      print(fileName);
+      Reference firebaseSt =
+      FirebaseStorage.instance.ref().child('clubicons/$fileName');
+      UploadTask uploadTask = firebaseSt.putFile(file);
+
+      await uploadTask.whenComplete(() async {
+        String storagePath = await firebaseSt.getDownloadURL();
+        updateClub(clubid, {
+          "iconurl": storagePath,
+        });
+      });
+
+      //delete previous icon url
+      if(previousurl.isNotEmpty){
+
+        String link = previousurl;
+        link =  link.split("/")[7];
+        link = link.replaceAll("%20"," ");
+        link = link.replaceAll("%2C", ",");
+        link = link.substring(0, link.indexOf('.jpg'));
+        link = link.replaceAll("%2F", "/");
+        if (update == true) {
+          Reference storageReferance = FirebaseStorage.instance.ref();
+          storageReferance
+              .child("/"+link+".jpg")
+              .delete()
+              .then((_) => print(
+              'Successfully deleted ${Get.find<UserController>().user.imageurl} storage item'));
+        }
       }
     }
   }
@@ -100,7 +150,11 @@ class Database {
     };
     await usersRef.doc(id).set(data);
     FirebaseMessaging.instance.subscribeToTopic("all");
-    Get.to(() => HomePage());
+    Get.to(() => InterestsPick(
+      title: "Add your interests so we can begin to personalize Roomies for you. Interests are private to you",
+      showbackarrow: false,
+      fromsignup: true,
+    ));
   }
 
   //leave any existing room
@@ -552,24 +606,46 @@ class Database {
       bool allowfollowers,
       bool membercanstartrooms,
       bool membersprivate,
-      List<Interest> selectedTopicsList}) async {
-    var ref = await clubRef.add({
-      "title": title,
-      "members": FieldValue.arrayUnion([Get.find<UserController>().user.uid]),
-      "invited": [],
-      "topics": selectedTopicsList.map((i) => i.toMap()).toList(),
-      "description": description,
-      "ownerid": Get.find<UserController>().user.uid,
-      "published_date": FieldValue.serverTimestamp(),
-      "allowfollowers": allowfollowers,
-      "membercanstartrooms": membercanstartrooms,
-      "membersprivate": membersprivate
-    });
+      List<Interest> selectedTopicsList, File image}) async {
 
-    await updateProfileData(Get.find<UserController>().user.uid, {
-      "clubs": FieldValue.arrayUnion([ref.id])
+
+    return await clubRef
+        .where("title",
+        isEqualTo: title)
+        .get()
+        .then((value) async {
+      if (value.docs.length > 0) {
+        topTrayPopup(
+            "a club with that name already exists");
+      } else {
+        var ref = await clubRef.add({
+          "title": title,
+          "members":
+              FieldValue.arrayUnion([Get.find<UserController>().user.uid]),
+          "invited": [],
+          "topics": selectedTopicsList.map((i) => i.toMap()).toList(),
+          "description": description,
+          "ownerid": Get.find<UserController>().user.uid,
+          "published_date": FieldValue.serverTimestamp(),
+          "allowfollowers": allowfollowers,
+          "membercanstartrooms": membercanstartrooms,
+          "membersprivate": membersprivate
+        });
+
+        await updateProfileData(Get.find<UserController>().user.uid, {
+          "clubs": FieldValue.arrayUnion([ref.id])
+        });
+
+        //upload club image icon
+
+        if(image !=null){
+          await uploadClubImage(ref.id, file: image);
+        }
+
+        return ref;
+      }
+
     });
-    return ref;
   }
 
   //UPDATE UPCOMING EVENT
@@ -629,7 +705,6 @@ class Database {
 
   static List<UpcomingRoom> _upcomingroomsFromFirebase(
       QuerySnapshot querySnapshot) {
-    print("UpcomingRoom ${querySnapshot.docs.length}");
     return querySnapshot.docs.map((e) => UpcomingRoom.fromJson(e)).toList();
   }
 
@@ -673,5 +748,16 @@ class Database {
         .where("uid", whereIn: club.members)
         .snapshots()
         .map(_usersFromFirebase);
+  }
+
+  static Future<int>  checkUsername(String text) async{
+    return await usersRef.where("username", isEqualTo: text).get().then((value) {
+      return value.docs.length;
+    });
+  }
+
+  static friendsToFollow() {
+    print(Get.put(UserController()).user.countrycode);
+    return usersRef.where("countrycode", isEqualTo: Get.put(UserController()).user.countrycode).orderBy("membersince", descending: true).snapshots().map(_usersFromFirebase);
   }
 }

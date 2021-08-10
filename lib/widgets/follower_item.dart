@@ -25,6 +25,8 @@ class FollowerItem extends StatelessWidget {
             children: [
               RoundImage(
                 url: user.imageurl,
+                txt: user.firstname,
+                txtsize: 12,
                 borderRadius: 15,
               ),
               Positioned(

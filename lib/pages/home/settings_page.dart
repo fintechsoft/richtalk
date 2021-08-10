@@ -101,6 +101,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             margin: EdgeInsets.only(right: 20),
                             child: RoundImage(
                               url: widget.profile.imageurl,
+                              txtsize: 18,
+                              txt: widget.profile.firstname,
                               width: 50,
                               height: 50,
                               borderRadius: 15,

@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:roomies/pages/room/notifications.dart';
+import 'package:roomies/widgets/user_profile_image.dart';
 class HomeAppBar extends StatelessWidget {
   final UserModel profile;
   final Function onProfileTab;
@@ -83,8 +84,9 @@ class HomeAppBar extends StatelessWidget {
                   borderRadius: BorderRadius.circular(40),
                 ),
                 child:Text(profile.firstname.substring(0,2))
-              ) :RoundImage(
-                url: profile.imageurl,
+              ) :UserProfileImage(
+                user: profile,
+                borderRadius: 20,
                 width: 40,
                 height: 40,
               ),
