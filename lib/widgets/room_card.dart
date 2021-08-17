@@ -44,7 +44,7 @@ class RoomCard extends StatelessWidget {
             ],
           ),
           SizedBox(
-            height: 15,
+            height: 5,
           ),
           Row(
             children: [

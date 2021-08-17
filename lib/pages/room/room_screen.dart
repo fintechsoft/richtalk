@@ -5,13 +5,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/functions/functions.dart';
 import 'package:roomies/models/models.dart';
-import 'package:roomies/pages/home/profile_page.dart';
 import 'package:roomies/util/utils.dart';
 import 'package:roomies/widgets/room_profile.dart';
 import 'package:roomies/services/dynamic_link_service.dart';
 import 'package:roomies/util/configs.dart';
 import 'package:roomies/util/firebase_refs.dart';
-import 'package:roomies/widgets/round_image.dart';
 import 'package:roomies/widgets/user_profile_image.dart';
 import 'package:roomies/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
@@ -325,22 +323,12 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
                     ),
                   ),
                   Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(
-                        () => ProfilePage(
-                          profile: myProfile,
-                          fromRoom: false,
-                        ),
-                      );
-                    },
-                    child: UserProfileImage(
-                      user: myProfile,
-                      width: 40,
-                      height: 40,
-                      txtsize: 16,
-                      borderRadius: 20,
-                    ),
+                  UserProfileImage(
+                    user: myProfile,
+                    width: 40,
+                    height: 40,
+                    txtsize: 16,
+                    borderRadius: 20,
                   ),
                 ],
               ),

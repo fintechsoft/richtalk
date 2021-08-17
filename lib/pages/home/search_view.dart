@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/models/models.dart';
+import 'package:roomies/pages/clubs/view_club.dart';
 import 'package:roomies/services/database.dart';
 import 'package:roomies/util/firebase_refs.dart';
 import 'package:roomies/util/style.dart';
@@ -24,20 +25,27 @@ class SearchView extends StatefulWidget {
   }
 }
 
-class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
+class _SearchViewState extends State<SearchView> with WidgetsBindingObserver, SingleTickerProviderStateMixin  {
   StreamSubscription<DocumentSnapshot> streamSubscription;
   UserModel userModel;
   QuerySnapshot tempList;
   List<Interest> selectedItemList = [];
-  bool isCallApi = false;
+  bool isCallApi = false, loading = false;
   FocusNode _focus = new FocusNode();
   List<UserModel> _allUsers = [];
+  TabController _tabController;
 
   TextEditingController _controller = new TextEditingController();
   var profile = Get.put(OnboardingController());
 
+  Stream<List<UserModel>> users;
+  Stream<List<Club>> clubs;
+
+  int tabindex = 0;
+
   @override
   void initState() {
+    _tabController = TabController(length: 2, vsync: this);
     followersFollowingListener();
     _focus.addListener(_onFocusChange);
 
@@ -68,6 +76,9 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
 
   void _onFocusChange() {
     debugPrint("Focus: " + _focus.hasFocus.toString());
+    setState(() {
+
+    });
   }
 
   @override
@@ -107,19 +118,16 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
     }
     return val;
   }
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Style.followColor,
+      backgroundColor: Style.AccentBrown,
       body: CupertinoPageScaffold(
-        backgroundColor: Style.followColor,
+        backgroundColor: Style.AccentBrown,
         navigationBar: CupertinoNavigationBar(
           border: null,
-          padding: EdgeInsetsDirectional.zero,
-          backgroundColor: Style.followColor,
+          padding: EdgeInsetsDirectional.only(top: 20),
+          backgroundColor: Style.AccentBrown,
           automaticallyImplyLeading: false,
           leading: CupertinoButton(
             padding: EdgeInsets.zero,
@@ -135,70 +143,211 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
           middle: Text(
             "EXPLORE",
             textScaleFactor: 1.0,
-            style: TextStyle(fontSize: 21, color: Colors.black),
+            style: TextStyle(fontSize: 18, fontFamily: "InterLight"),
           ),
         ),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Style.themeColor),
-                child: TextField(
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.blueAccent,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(left: 20, right: 10, top: 20),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Style.themeColor),
+                      child: TextField(
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: Colors.blueAccent,
+                          ),
+                          focusNode: _focus,
+                          controller: _controller,
+                          onChanged: (value) async {
+                            loading = true;
+                            setState(() {
+
+                            });
+                            searchData(value);
+
+                            loading = false;
+                          },
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.fromLTRB(8.0, 13.0, 8.0, 8.0),
+                            prefixIcon: Icon(Icons.search),
+                            hintText: "Find People and Clubs",
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                          )),
                     ),
-                    focusNode: _focus,
-                    controller: _controller,
-                    onChanged: (value) {
+                  ),
+                  if(_focus.hasFocus) Padding(
+                    padding: const EdgeInsets.only(top: 18, right: 20),
+                    child: TextButton(onPressed : (){
+                      _focus.unfocus();
+                      _controller.text = "";
+                      searchData("");
                       setState(() {
-                        _buildSearchList(value);
+
                       });
-                    },
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(8.0, 13.0, 8.0, 8.0),
-                      prefixIcon: Icon(Icons.search),
-                      hintText: "Find People",
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                    )),
+                    },child: Center(child: Text("cancel", style: TextStyle(fontSize: 16, color: Style.AccentGrey), textAlign: TextAlign.center,))),
+                  )
+                ],
               ),
-              SizedBox(
-                height: 20,
-              ),
-              if (_buildSearchList(_controller.text).length > 0)
-                Text(
-                  "PEOPLE TO FOLLOW",
-                  style: TextStyle(fontSize: 16),
+              if(_focus.hasFocus) Expanded(child: Container(margin:EdgeInsets.only(top: 20),child: tabsSearch())),
+              if(!_focus.hasFocus)Expanded(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      if (_buildSearchList(_controller.text).length > 0)
+                        Text(
+                          "PEOPLE TO FOLLOW",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      if (_buildSearchList(_controller.text).length == 0)
+                        noDataWidget("No users yet to follow"),
+                      if (_buildSearchList(_controller.text).length > 0)
+                        Expanded(
+                            child: ListView.separated(
+                              separatorBuilder: (c, i) {
+                                return Container(
+                                  height: 15,
+                                );
+                              },
+                              itemCount: _buildSearchList(_controller.text).length,
+                              itemBuilder: (context, index) {
+                                return singleItem(
+                                    _buildSearchList(_controller.text)[index]);
+                              },
+                            )),
+                    ],
+                  ),
                 ),
-              SizedBox(
-                height: 20,
               ),
-              if (_buildSearchList(_controller.text).length == 0)
-                noDataWidget("No users yet to follow"),
-              if (_buildSearchList(_controller.text).length > 0)
-                Expanded(
-                    child: ListView.separated(
-                  separatorBuilder: (c, i) {
-                    return Container(
-                      height: 15,
-                    );
-                  },
-                  itemCount: _buildSearchList(_controller.text).length,
-                  itemBuilder: (context, index) {
-                    return singleItem(
-                        _buildSearchList(_controller.text)[index]);
-                  },
-                )),
+
             ],
           ),
         ),
       ),
+    );
+  }
+
+  tabsSearch(){
+    return Column(
+      children: [
+        // give the tab bar a height [can change hheight to preferred height]
+        Container(
+          height: 35,
+          child: TabBar(
+            indicatorColor: Style.indigo,
+            indicatorWeight: 3,
+            controller: _tabController,
+            labelColor: Colors.black,
+            unselectedLabelColor: Colors.black,
+            onTap: (index){
+              setState(() {
+                tabindex = index;
+              });
+              searchData(_controller.text);
+            },
+            tabs: [
+              // first tab [you can add an icon using the icon property]
+              Tab(
+                child: Text(
+                  "People",
+                  style: TextStyle(fontFamily: "InterSemiBold",fontSize: 15),
+                ),
+              ),
+              // first tab [you can add an icon using the icon property]
+              Tab(
+                child: Text(
+                  "Clubs",
+                  style: TextStyle(fontFamily: "InterSemiBold",fontSize: 15),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                // first tab bar view widget
+                loading == true ? Center(
+                  child: CircularProgressIndicator(),
+                ) : Container(
+                  margin: EdgeInsets.only(top: 20),
+                  child: StreamBuilder(
+                      stream: users,
+                      builder: (context, snapshot) {
+                        if(snapshot.data !=null){
+                          List<UserModel> users = snapshot.data;
+                          if(users.length == 0) return Container();
+                          return ListView.separated(
+                            separatorBuilder: (c, i) {
+                              return Container(
+                                height: 15,
+                              );
+                            },
+                            itemCount: users.length,
+                            itemBuilder: (context, index) {
+                              return singleItem(users[index]);
+                            },
+                          );
+                        }else{
+                          return Container();
+                        }
+                      }
+                  ),
+                ),
+                // first tab bar view widget
+                loading == true ? Center(
+                  child: CircularProgressIndicator(),
+                ) : Container(
+                  margin: EdgeInsets.only(top: 20),
+                  child: StreamBuilder(
+                      stream: clubs,
+                      builder: (context, snapshot) {
+                        if(snapshot.data !=null){
+                          List<Club> clubs = snapshot.data;
+                          if(clubs.length == 0) return Container();
+                          return ListView.separated(
+                            separatorBuilder: (c, i) {
+                              return Container(
+                                height: 15,
+                              );
+                            },
+                            itemCount: clubs.length,
+                            itemBuilder: (context, index) {
+                              return singleClub(clubs[index]);
+                            },
+                          );
+                        }else{
+                          return Container();
+                        }
+                      }
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
+      ],
     );
   }
 
@@ -253,12 +402,12 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
           SizedBox(
             width: 16,
           ),
-          TextButton(
+          if(!_focus.hasFocus) TextButton(
             style: ButtonStyle(
               overlayColor: MaterialStateProperty.all(Colors.transparent),
             ),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
               decoration: BoxDecoration(
                   border: Border.all(
                     color: Style.indigo,
@@ -273,6 +422,8 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
                 textScaleFactor: 1,
                 style: TextStyle(
                   color: Style.indigo,
+                  fontFamily: "InterSemiBold",
+                  fontSize: 13
                 ),
               ),
             ),
@@ -290,5 +441,57 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
         ],
       ),
     );
+  }
+  Widget singleClub(Club club) {
+    return InkWell(
+      onTap: (){
+        Get.to(() => ViewClub(club: club,));
+      },
+      child: Container(
+        child: Row(
+          children: [
+            RoundImage(
+              url: club.imageurl,
+              txt: club.title,
+              width: 55,
+              height: 55,
+              txtsize: 16,
+              borderRadius: 18,
+            ),
+            SizedBox(
+              width: 16,
+            ),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    club.title.toUpperCase(),
+                    textScaleFactor: 1,
+                    style: TextStyle(fontSize: 12,fontFamily: "InterSemiBold"),
+                  ),
+                  SizedBox(height: 5,),
+                  Text(
+                    club.members.length.toString()+" Members",
+                    textScaleFactor: 1,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  searchData(value) {
+    if(tabindex == 0){
+      users =  Database.searchUser(value);
+    }else if(tabindex == 1){
+      clubs =  Database.searchClub(value);
+    }
   }
 }

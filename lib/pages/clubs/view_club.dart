@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,8 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/functions/functions.dart';
 import 'package:roomies/models/models.dart';
@@ -13,8 +16,10 @@ import 'package:roomies/pages/home/select_interests.dart';
 import 'package:roomies/pages/room/followers_list.dart';
 import 'package:roomies/pages/room/new_upcoming_room.dart';
 import 'package:roomies/services/database.dart';
+import 'package:roomies/services/dynamic_link_service.dart';
 import 'package:roomies/util/utils.dart';
 import 'package:roomies/widgets/widgets.dart';
+import 'package:share/share.dart';
 //ignore: must_be_immutable
 class ViewClub extends StatefulWidget {
   Club club;
@@ -25,20 +30,31 @@ class ViewClub extends StatefulWidget {
   _ViewClubState createState() => _ViewClubState();
 }
 
-class _ViewClubState extends State<ViewClub> {
+class _ViewClubState extends State<ViewClub> with SingleTickerProviderStateMixin {
   bool keyboardup = false;
   int _index = 0;
 
+  final picker = ImagePicker();
+  File _imageFile;
   StreamSubscription<DocumentSnapshot> clubliten;
+  TabController _tabController;
+
+  Stream<List<UserModel>> members;
+  Stream<List<Club>> followers;
+  int tabindex = 0;
+
+  var loading = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
     clubliten = clubRef.doc(widget.club.id).snapshots().listen((event) {
       widget.club = Club.fromJson(event);
       setState(() {});
     });
+
   }
 
 
@@ -60,6 +76,7 @@ class _ViewClubState extends State<ViewClub> {
       case "allowfolloers":
         Database.updateClub(
             widget.club.id, {"allowfollowers": !widget.club.allowfollowers});
+        Database.getusersInaClub(widget.club);
         break;
       case "start":
         Database.updateClub(widget.club.id,
@@ -76,6 +93,7 @@ class _ViewClubState extends State<ViewClub> {
         usersRef.doc(widget.club.ownerid).update({
           "clubs" : FieldValue.arrayRemove([widget.club.id])
         });
+
         clubRef.doc(widget.club.id).delete();
         Get.back();
         break;
@@ -132,11 +150,80 @@ class _ViewClubState extends State<ViewClub> {
     return list;
   }
 
+  _cropImage(filePath) async {
+    File croppedImage = await ImageCropper.cropImage(
+        sourcePath: filePath,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        aspectRatioPresets: [CropAspectRatioPreset.square],
+        compressQuality: 70,
+        compressFormat: ImageCompressFormat.jpg,
+        iosUiSettings: IOSUiSettings(
+          minimumAspectRatio: 1.0,
+          rotateClockwiseButtonHidden: false,
+          rotateButtonsHidden: false,
+        ));
+    if (croppedImage != null) {
+      _imageFile = croppedImage;
+      setState(() {
+        loading = true;
+      });
+
+      Database().uploadClubImage(widget.club.id,file: _imageFile, update: true,previousurl: widget.club.imageurl);
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  _getFromGallery(ImageSource imageSource) async {
+    PickedFile pickedFile = await picker.getImage(
+      source: imageSource,
+    );
+    _cropImage(pickedFile.path);
+  }
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: false,
+          title: const Text('Add a profile photo'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 10,),
+              InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                  _getFromGallery(ImageSource.gallery);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text("Choose from galley"),
+                ),
+              ),
+              SizedBox(height: 20,),
+              InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                  _getFromGallery(ImageSource.camera);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text("Take photo"),
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
-    // if (widget.justadded == true) {
-
-    // }
     return Scaffold(
       appBar: AppBar(
         leading: InkWell(
@@ -151,10 +238,21 @@ class _ViewClubState extends State<ViewClub> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Icon(
+            IconButton(icon: Icon(
               Icons.share,
               size: 30,
-            ),
+            ), onPressed: (){
+              final RenderBox box = context.findRenderObject();
+              DynamicLinkService()
+                  .createGroupJoinLink(widget.club.id,"club")
+                  .then((value) async {
+                await Share.share(value,
+                    subject: "Share " + widget.club.title+" Club",
+                    sharePositionOrigin:
+                    box.localToGlobal(Offset.zero) &
+                    box.size);
+              });
+            }),
           ],
         ),
         actions: widget.club.ownerid != Get.find<UserController>().user.uid ? null : <Widget>[
@@ -164,7 +262,7 @@ class _ViewClubState extends State<ViewClub> {
               return options.map((List choice) {
                 return PopupMenuItem<String>(
                   value: choice[0],
-                  child: Text(choice[1]),
+                  child: Text(choice[0] == "allowfolloers" && widget.club.allowfollowers == false ? "Allow Followers" : choice[1] ),
                 );
               }).toList();
             },
@@ -182,23 +280,21 @@ class _ViewClubState extends State<ViewClub> {
               children: [
                 Column(
                   children: [
-                    widget.club.imageurl.isNotEmpty ? RoundImage(
-                      url: widget.club.imageurl,
-                      width: 120,
-                      height: 120,
-                      txt: widget.club.title,
-                    ) :Center(
-                      child: Container(
+                    InkWell(
+                      onTap: (){
+                        if(widget.club.ownerid == Get.find<UserController>().user.uid){
+                        _showMyDialog();
+                        }
+                      },
+                      child: loading == true ? Container(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ) : RoundImage(
+                        url: widget.club.imageurl,
                         width: 120,
                         height: 120,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(40),
-                            color: Style.SelectedItemGrey),
-                        child: Center(
-                            child: Text(
-                          widget.club.title.toUpperCase().substring(0, 2),
-                          style: TextStyle(fontSize: 20),
-                        )),
+                        txt: widget.club.title,
                       ),
                     ),
                     SizedBox(
@@ -282,19 +378,102 @@ class _ViewClubState extends State<ViewClub> {
                         ],
                       ),
                     if (widget.club.ownerid != Get.find<UserController>().user.uid)
-                      Container(
-                        margin: EdgeInsets.only(top: 30),
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            color: Style.indigo),
-                        child: Text(
-                          "${widget.club.members.contains(Get.find<UserController>().user.uid) ? "Member" : "Follow"}",
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                              fontFamily: "InterSemiBold"),
-                        ),
+                      Row(
+
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          widget.club.members.contains(Get.find<UserController>().user.uid) == true ? InkWell(
+                            onTap: (){
+                              showModalBottomSheet(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
+                                  ),
+                                  context: context,
+                                  builder: (context) {
+                                    return InkWell(
+                                      onTap: (){
+                                        Navigator.pop(context);
+                                        Database.leaveClub(widget.club);
+                                      },
+                                      child: Container(padding: const EdgeInsets.symmetric(horizontal: 30,vertical: 20),
+                                        child: Text("Leave Club", style: TextStyle(fontSize: 21),),
+                                      ),
+                                    );
+                                  });
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(top: 30),
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: Style.indigo),
+                              child: Text(
+                                "Member",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    fontFamily: "InterSemiBold"),
+                              ),
+                            ),
+                          ) : InkWell(
+                            onTap: (){
+                              setState(() {
+                                loading = true;
+                              });
+                              Database.acceptClubInvite(widget.club.id);
+                              setState(() {
+                                loading = false;
+                              });
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(top: 30),
+                              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: Style.indigo),
+                              child: Text("Join",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    fontFamily: "InterSemiBold"),
+                              ),
+                            ),
+                          ),
+                          if(widget.club.allowfollowers == true && widget.club.members.contains(Get.find<UserController>().user.uid) == false && widget.club.members.contains(Get.find<UserController>().user.uid) == false ) InkWell(
+                            onTap: (){
+                              setState(() {
+                                loading = true;
+                              });
+                              if(widget.club.followers.contains(Get.find<UserController>().user.uid)){
+                                Database.unFolloClub(widget.club);
+                              }else{
+                                Database.followClub(widget.club);
+                              }
+
+                              setState(() {
+                                loading = false;
+                              });
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(top: 30),
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  border: Border.all(
+                                    color: Style.indigo,
+                                    width: 2.0,
+                                  ),
+                                  color: Colors.white),
+                              child: Text(
+                                widget.club.followers.contains(Get.find<UserController>().user.uid) ? "Unfollow" : "Follow",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Style.indigo,
+                                    fontFamily: "InterSemiBold"),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                   ],
                 ),
@@ -507,41 +686,50 @@ class _ViewClubState extends State<ViewClub> {
                 SizedBox(
                   height: 5,
                 ),
-                Text(
-                  "${widget.club.members.length} Members",
-                  style: TextStyle(color: Style.AccentGrey),
+                if(widget.club.allowfollowers == true) tabs(),
+                if(widget.club.allowfollowers == false) Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${widget.club.members.length} Members",
+                        style: TextStyle(color: Style.AccentGrey),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Divider(
+                        thickness: 1,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      if(widget.club.members.length < 20) Expanded(
+                        child: StreamBuilder<List<UserModel>>(
+                            stream: Database.getusersInaClub(widget.club),
+                            builder: (BuildContext context, snapshot) {
+                              if (snapshot.hasData) {
+                                List<UserModel> users = snapshot.data;
+                                return ListView.separated(
+                                  separatorBuilder: (c, i) {
+                                    return Container(
+                                      height: 15,
+                                    );
+                                  },
+                                  itemCount: users.length,
+                                  itemBuilder: (context, index) {
+                                    return singleItem(users[index]);
+                                  },
+                                );
+                              } else {
+                                return Container();
+                              }
+                            }),
+                      )
+                    ],
+                  ),
                 ),
-                SizedBox(
-                  height: 5,
-                ),
-                Divider(
-                  thickness: 1,
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                if(widget.club.members.length < 20) Expanded(
-                  child: StreamBuilder<List<UserModel>>(
-                      stream: Database.getusersInaClub(widget.club),
-                      builder: (BuildContext context, snapshot) {
-                        if (snapshot.hasData) {
-                          List<UserModel> users = snapshot.data;
-                          return ListView.separated(
-                            separatorBuilder: (c, i) {
-                              return Container(
-                                height: 15,
-                              );
-                            },
-                            itemCount: users.length,
-                            itemBuilder: (context, index) {
-                              return singleItem(users[index]);
-                            },
-                          );
-                        } else {
-                          return Container();
-                        }
-                      }),
-                )
               ],
             ),
           ),
@@ -550,6 +738,114 @@ class _ViewClubState extends State<ViewClub> {
     );
   }
 
+
+  tabs(){
+    return Expanded(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // give the tab bar a height [can change hheight to preferred height]
+          Container(
+            height: 35,
+            child: TabBar(
+              indicatorColor: Style.indigo,
+              indicatorWeight: 3,
+              controller: _tabController,
+              labelColor: Colors.black,
+              unselectedLabelColor: Colors.black,
+              onTap: (index){
+                setState(() {
+                  tabindex = index;
+                });
+                getTabsData();
+              },
+
+              tabs: [
+                // first tab [you can add an icon using the icon property]
+                Tab(
+                  child: Text(
+                    "Member",
+                    style: TextStyle(fontFamily: "InterSemiBold",fontSize: 15),
+                  ),
+                ),
+                // first tab [you can add an icon using the icon property]
+                Tab(
+                  child: Text(
+                    "Followers",
+                    style: TextStyle(fontFamily: "InterSemiBold",fontSize: 15),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  // first tab bar view widget
+                  Container(
+                    margin: EdgeInsets.only(top: 10),
+                    child: StreamBuilder(
+                        stream: members,
+                        builder: (BuildContext context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<UserModel> users = snapshot.data;
+                            return ListView.separated(
+                              separatorBuilder: (c, i) {
+                                return Container(
+                                  height: 15,
+                                );
+                              },
+                              itemCount: users.length,
+                              itemBuilder: (context, index) {
+                                return singleItem(users[index]);
+                              },
+                            );
+                          } else {
+                            return Container();
+                          }
+                        }),
+                  ),
+                  // first tab bar view widget
+                  Container(
+                    child: StreamBuilder(
+                        stream: followers,
+                        builder: (BuildContext context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<UserModel> users = snapshot.data;
+                            return ListView.separated(
+                              separatorBuilder: (c, i) {
+                                return Container(
+                                  height: 15,
+                                );
+                              },
+                              itemCount: users.length,
+                              itemBuilder: (context, index) {
+                                return singleItem(users[index]);
+                              },
+                            );
+                          } else {
+                            return Container();
+                          }
+                        }),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+  Future<void> getTabsData() async {
+    if(tabindex == 0){
+      members = await Database.getusersInaClub(widget.club);
+    }else if(tabindex == 1){
+      followers = await Database.getClubFollowers(widget.club);
+    }
+  }
   Widget singleItem(UserModel user) {
     return Container(
       child: Row(

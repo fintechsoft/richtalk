@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_indicator/loading_indicator.dart';
-import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/models/models.dart';
 import 'package:roomies/pages/clubs/view_club.dart';
 import 'package:roomies/pages/home/select_interests.dart';

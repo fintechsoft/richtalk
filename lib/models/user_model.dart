@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:roomies/models/Interest.dart';
 import 'package:roomies/models/room.dart';
 /*
   type : Model
@@ -23,10 +22,11 @@ class UserModel {
   String profileImage;
   int lastAccessTime;
   int callerid;
-  List<Interest> interests;
+  List<String> interests;
   List<String> followers;
   List<String> clubs;
   List<String> following;
+  List<String> blocked;
   bool isNewUser = true;
   bool callmute = false;
   bool moderator = false;
@@ -54,6 +54,7 @@ class UserModel {
     this.clubs,
     this.activeroom,
     this.bio,
+    this.blocked,
     this.firstname,
     this.moderator,
     this.online,
@@ -87,6 +88,7 @@ class UserModel {
       "pausenotifications": pausenotifications,
       "pausedtime": pausedtime,
       "subothernot": subothernot,
+      "blocked": blocked,
       "subtrend": subtrend,
       "subroomtopic": subroomtopic,
       "valume": valume,
@@ -122,14 +124,18 @@ class UserModel {
         ? []
         : List<String>.from(json["clubs"].map((item) => item));
 
-    List<Interest> interests = [];//json["interests"] == null
-        // ? []
-        // : List<Interest>.from(json["interests"].map((item) {
-        //     return new Interest.fromJson2(item["title"], item["id"]);
-        //   }));
+    List<String> blocked = json["blocked"] == null
+        ? []
+        : List<String>.from(json["blocked"].map((item) => item));
+
+    List<String> interests = json["interests"] == null
+        ? []
+        : List<String>.from(json["interests"].map((item) => item));
+
     return UserModel(
       lastname: json['lastname'],
       clubs: clubs,
+    blocked: blocked,
       subothernot: json['subothernot'] ?? false,
       sendfewernotifications: json['sendfewernotifications'] ?? false,
       pausenotifications: json['pausenotifications'] ?? false,

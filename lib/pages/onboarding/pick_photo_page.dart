@@ -99,47 +99,6 @@ class _PickPhotoPageState extends State<PickPhotoPage> {
       ),
     );
   }
-  Future<void> _showMyDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          scrollable: false,
-          title: const Text('Add a profile photo'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 10,),
-              InkWell(
-                onTap: (){
-                  Navigator.pop(context);
-                  _getFromGallery();
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text("Choose from galley"),
-                ),
-              ),
-              SizedBox(height: 20,),
-              InkWell(
-                onTap: (){
-                  Navigator.pop(context);
-                  _getFromCamera();
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text("Take photo"),
-                ),
-              )
-            ],
-          ),
-        );
-      },
-    );
-  }
   Widget buildContents() {
     return Container(
       child: GestureDetector(
@@ -209,6 +168,47 @@ class _PickPhotoPageState extends State<PickPhotoPage> {
     );
   }
 
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: false,
+          title: const Text('Add a profile photo'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 10,),
+              InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                  _getFromGallery();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text("Choose from galley"),
+                ),
+              ),
+              SizedBox(height: 20,),
+              InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                  _getFromCamera();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text("Take photo"),
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
   _getFromGallery() async {
     PickedFile pickedFile = await picker.getImage(
       source: ImageSource.gallery,

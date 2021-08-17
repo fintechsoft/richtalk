@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
- topTrayPopup(String title){
+ topTrayPopup(String title, {Color bgcolor = Colors.red }){
    Get.snackbar("",
       " $title",
       // " you  raised your hand! we'll let the speakers know you want to talk..",
       snackPosition: SnackPosition.TOP,
       borderRadius: 0,
       margin: EdgeInsets.all(0),
-      backgroundColor: Colors.red,
+      backgroundColor: bgcolor,
       colorText: Colors.white,
       messageText: Text.rich(TextSpan(
         children: [

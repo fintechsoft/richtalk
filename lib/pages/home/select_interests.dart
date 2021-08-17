@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/models/models.dart';
-import 'package:roomies/pages/home/search_view.dart';
 import 'package:roomies/pages/onboarding/follow_friends.dart';
 import 'package:roomies/services/database.dart';
 import 'package:roomies/util/firebase_refs.dart';
@@ -25,7 +24,7 @@ class InterestsPick extends StatefulWidget {
   final Function selectedItemsCallback;
   final showbackarrow;
   final fromsignup;
-  InterestsPick({this.title,this.subtitle,this.selectedItemsCallback,this.club,this.showbackarrow = true, this.fromsignup = true});
+  InterestsPick({this.title,this.subtitle,this.selectedItemsCallback,this.club,this.showbackarrow = true, this.fromsignup = false});
 
   @override
   _InterestsPickState createState() => _InterestsPickState();
@@ -144,7 +143,7 @@ class _InterestsPickState extends State<InterestsPick> {
                 ],
               ),
             ),
-            Positioned(
+            if(widget.fromsignup == true)Positioned(
               left: 0,
               right: 0,
               bottom: 0,
@@ -185,11 +184,11 @@ class _InterestsPickState extends State<InterestsPick> {
             item.title,
             style: TextStyle(
                 fontSize: 15, fontFamily: "InterRegular",
-                color: getColor(item.title) ? Colors.white : Colors.black
+                color: getColor(item.title) || Get.put(UserController()).user.interests.contains(item.title) ? Colors.white : Colors.black
             ),
           ),
           decoration: BoxDecoration(
-            color: getColor(item.title) ? Colors.red : Colors.white,
+            color: getColor(item.title) || Get.put(UserController()).user.interests.contains(item.title) ? Colors.red : Colors.white,
             borderRadius: BorderRadius.circular(25),
             boxShadow: [
               BoxShadow(
@@ -234,7 +233,7 @@ class _InterestsPickState extends State<InterestsPick> {
       selectedItemList.add(Interest(title: item.title));
 
       //check if its from signup
-      if(widget.fromsignup == false){
+      if( widget.selectedItemsCallback !=null ){
         widget.selectedItemsCallback(selectedItemList);
       }
 

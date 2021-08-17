@@ -22,7 +22,6 @@ import 'package:roomies/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:share/share.dart';
 import 'settings_page.dart';
 
@@ -69,16 +68,15 @@ class _ProfilePageState extends State<ProfilePage> {
           rotateButtonsHidden: false,
         ));
     if (croppedImage != null) {
-      print("croppedImage ");
       _imageFile = croppedImage;
       Get.put(OnboardingController()).imageFile = _imageFile;
       setState(() {});
     }
   }
 
-  _getFromGallery(setState) async {
+  _getFromGallery(setState,ImageSource imageSource) async {
     PickedFile pickedFile = await picker.getImage(
-      source: ImageSource.gallery,
+      source: imageSource,
     );
     _cropImage(pickedFile.path,setState);
   }
@@ -102,9 +100,13 @@ class _ProfilePageState extends State<ProfilePage> {
       userModel = UserModel.fromJson(event.data());
       if (userModel.following.contains(widget.profile.uid)) {
         followtxt = "Unfollow";
-      } else {
+      }else if (userModel.blocked.contains(widget.profile.uid)) {
+        followtxt = "Blocked";
+      } else if (!userModel.following.contains(widget.profile.uid))  {
         followtxt = "Follow";
       }
+
+
       setState(() {});
     });
 
@@ -113,7 +115,9 @@ class _ProfilePageState extends State<ProfilePage> {
       widget.profile = UserModel.fromJson(event.data());
       if (userModel.following.contains(widget.profile.uid)) {
         followtxt = "Unfollow";
-      } else {
+      }else if (userModel.blocked.contains(widget.profile.uid)) {
+        followtxt = "Blocked";
+      } else if (!userModel.following.contains(widget.profile.uid))  {
         followtxt = "Follow";
       }
       setState(() {});
@@ -133,9 +137,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 IconButton(
                   icon: Icon(Icons.share),
                   onPressed: () {
+                    print(widget.profile.username);
                     final RenderBox box = context.findRenderObject();
                     DynamicLinkService()
-                        .createGroupJoinLink(widget.profile.uid,"profile")
+                        .createGroupJoinLink(widget.profile.username,"profile")
                         .then((value) async {
                       await Share.share(value,
                           subject: "Share " + widget.profile.getName()+" Profile",
@@ -243,14 +248,20 @@ class _ProfilePageState extends State<ProfilePage> {
                     },
                   ),
                 ),
-              Text(
-                "Member of",
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              myClubs()
+              if(widget.fromRoom == false)Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Member of",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  myClubs(),
+                ],
+              )
             ],
           ),
         ),
@@ -260,7 +271,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget myClubs() {
     return StreamBuilder(
-        stream: Database.getMyClubs(),
+        stream: Database.getMyClubs(widget.profile.uid),
         builder: (context, snapshot) {
           if(snapshot.hasError){
             print(snapshot.error.toString());
@@ -274,24 +285,22 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: ListView(
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
-                    children: club.map((e) => InkWell(
-                      onTap: () {
-                        Get.to(() => ViewClub(club: e,));
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        margin: EdgeInsets.only(right: 5),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Style.SelectedItemGrey),
-                        child: Center(
-                            child: Text(
-                              e.title.substring(0,2).toUpperCase(),
-                              style: TextStyle(fontFamily: "InterSemiBold"),
-                            )),
-                      ),
+                    children: club.map((e) => Container(
+                      margin: EdgeInsets.only(right: 6),
+                      child: InkWell(
+                        onTap: () {
+                          Get.to(() => ViewClub(club: e,));
+                        },
+                        child: RoundImage(
+                          url: e.imageurl,
+                          width: 40,
+                          height: 40,
+                          borderRadius: 15,
+                          txt: e.title,
+                          txtsize: 16,
+                        ),
 
+                      ),
                     )).toList(),
                   ),
                 ),
@@ -321,7 +330,28 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             );
           }else{
-            return Container();
+             return InkWell(
+              onTap: () {
+                if(userModel.clubs.length >= 3){
+                  topTrayPopup("You can only add 3 clubs");
+                }else{
+                  Get.to(() => NewClub());
+                }
+
+              },
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Style.SelectedItemGrey),
+                child: Center(
+                    child: Text(
+                      "+",
+                      style: TextStyle(fontSize: 20),
+                    )),
+              ),
+            );
           }
         });
   }
@@ -339,75 +369,50 @@ class _ProfilePageState extends State<ProfilePage> {
               child:
                   const Text('Share Profile..', style: TextStyle(fontSize: 16)),
               onPressed: () {
-                if (widget.room != null) {
-                  final RenderBox box = context.findRenderObject();
-                  DynamicLinkService()
-                      .createGroupJoinLink(widget.room.roomid)
-                      .then((value) async {
-                    Navigator.pop(context);
-                    await Share.share(value,
-                        subject: "Join " + widget.room.title,
-                        sharePositionOrigin:
-                            box.localToGlobal(Offset.zero) & box.size);
-                  });
-                }
+                final RenderBox box = context.findRenderObject();
+                DynamicLinkService()
+                    .createGroupJoinLink(widget.profile.username,"profile")
+                    .then((value) async {
+                  await Share.share(value,
+                      subject: "Share " + widget.profile.getName()+" Profile",
+                      sharePositionOrigin:
+                      box.localToGlobal(Offset.zero) &
+                      box.size);
+                });
               },
             ),
             CupertinoActionSheetAction(
-              child: const Text('Block',
+              child:  Text(userModel.blocked.contains(widget.profile.uid) == true ? 'Unblock' : "Block",
                   style: TextStyle(color: Colors.red, fontSize: 16)),
               onPressed: () {
                 Navigator.pop(context);
-                var alert = new CupertinoAlertDialog(
-                  title: new Text("Block ${widget.profile.getName()}"),
-                  content: new Text(
-                      'This will prevent them from entering rooms where you are a speaker, and we\'ll warn you about rooms where they are speaking'),
-                  actions: <Widget>[
-                    new CupertinoDialogAction(
-                        child: const Text('Cancel'),
-                        isDestructiveAction: true,
-                        onPressed: () async {
-                          Navigator.pop(context);
-                        }),
-                    new CupertinoDialogAction(
-                        child: const Text('Block'),
-                        isDefaultAction: true,
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }),
-                  ],
-                );
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return alert;
-                    });
+                if(userModel.blocked.contains(widget.profile.uid)){
+                  unBlockProfile(context,myprofile: userModel,reportuser: widget.profile);
+                }else{
+                  blockProfile(context,myprofile: userModel,reportuser: widget.profile);
+                }
+
               },
             ),
-            if (widget.fromRoom == true)
+            if (widget.fromRoom == true && widget.room.ownerid == userModel.uid)
               CupertinoActionSheetAction(
                 child: const Text('Remove from room',
                     style: TextStyle(color: Colors.red, fontSize: 16)),
                 onPressed: () {
                   Navigator.pop(context);
-                  roomsRef.doc(widget.room.roomid).delete();
+                  widget.room.users.removeAt(widget.room.users.indexWhere((element) => element.uid == widget.profile.uid));
+                  Database().updateRoomData(widget.room.roomid, {
+                    "users":widget.room.users
+                  });
                 },
               ),
-            if (widget.fromRoom == true)
+            if (widget.fromRoom == true && widget.room.ownerid == userModel.uid)
               CupertinoActionSheetAction(
-                child: const Text('Remove and report',
+                child: const Text('End Room',
                     style: TextStyle(color: Colors.red, fontSize: 16)),
                 onPressed: () {
                   Navigator.pop(context);
                   roomsRef.doc(widget.room.roomid).delete();
-                },
-              ),
-            if (widget.fromRoom == false)
-              CupertinoActionSheetAction(
-                child: const Text('Report an incident',
-                    style: TextStyle(color: Colors.red, fontSize: 16)),
-                onPressed: () {
-                  Navigator.pop(context);
                 },
               ),
           ],
@@ -435,7 +440,10 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             InkWell(
               onTap: (){
-                updateUserPhoto();
+                if(widget.profile.uid == Get.find<UserController>().user.uid){
+                  updateUserPhoto();
+                }
+
               },
               child: RoundImage(
                 url: widget.profile.imageurl,
@@ -493,11 +501,16 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       InkWell(
                         onTap: () {
-                          if (userModel.following
-                              .contains(widget.profile.uid)) {
-                            Database().unFolloUser(widget.profile.uid);
-                          } else {
-                            Database().folloUser(widget.profile);
+                          if(userModel.blocked.contains(widget.profile.uid)){
+                            unBlockProfile(context,myprofile: userModel,reportuser: widget.profile);
+                          }else{
+                            if (userModel.following
+                                .contains(widget.profile.uid)) {
+                              Database().unFolloUser(widget.profile.uid);
+                            } else {
+                              Database().folloUser(widget.profile);
+                            }
+
                           }
                           setState(() {});
                         },
@@ -506,7 +519,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              color: Colors.blue),
+                              color: userModel.blocked.contains(widget.profile.uid) ? Colors.red : Colors.blue),
                           child: Text(
                             followtxt,
                             style: TextStyle(color: Colors.white),
@@ -739,6 +752,50 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+
+
+  Future<void> _showMyDialog(setState) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: false,
+          title: const Text('Add a profile photo'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 10,),
+              InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                  _getFromGallery(setState,ImageSource.gallery);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text("Choose from galley"),
+                ),
+              ),
+              SizedBox(height: 20,),
+              InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                  _getFromGallery(setState,ImageSource.camera);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text("Take photo"),
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   /*
       user profile photo
    */
@@ -775,7 +832,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       InkWell(
                         onTap: () {
-                          _getFromGallery(setState);
+                          _showMyDialog(setState);
                         },
                         child: _imageFile !=null ? Container(
                           width: 150,

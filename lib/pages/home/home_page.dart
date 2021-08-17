@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
             actions: <Widget>[
               new CupertinoDialogAction(
                   child: const Text('Update Now'),
-                  isDestructiveAction: true,
+                  isDestructiveAction: event.docs[0].data()["forced"],
                   onPressed: () async {
                     String url = "";
                     if (Platform.isAndroid) {

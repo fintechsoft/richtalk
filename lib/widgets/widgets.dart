@@ -18,3 +18,4 @@ export 'raised_hands_view.dart';
 export 'bottom_nav.dart';
 export 'scheduled_room_item.dart';
 export 'room_title.dart';
+export 'block.dart';

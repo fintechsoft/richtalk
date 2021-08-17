@@ -100,7 +100,7 @@ class _RommiesScreenState extends State<RommiesScreen>
   }
 
   Future<void> _joinexistingroom(Room room) async {
-    // Get.find<CurrentRoomController>().room = null;
+
     ClientRole role;
 
     //CHECK USER IF IS THE OWNER or he already exists in the room
@@ -164,6 +164,7 @@ class _RommiesScreenState extends State<RommiesScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalScaffoldKey,
       body: Container(
         child: Stack(
           children: [
@@ -271,7 +272,19 @@ class _RommiesScreenState extends State<RommiesScreen>
   Widget buildRoomCard(Room room) {
     return GestureDetector(
       onTap: () {
-        _joinexistingroom(room);
+        //check if there is a blocked user who is the speaker
+        List<String> blocked = [];
+        room.users.forEach((element) {
+          if(element.usertype =="speaker" || element.usertype =="host" && myProfile.blocked.contains(element.uid)){
+            blocked.add(element.uid);
+          }
+        });
+        if(blocked.length > 0){
+          showBlockedUsersAlert(context,blocked.length);
+        }else{
+          _joinexistingroom(room);
+        }
+
       },
       child: Container(
         margin: const EdgeInsets.symmetric(
@@ -453,11 +466,12 @@ class _RommiesScreenState extends State<RommiesScreen>
       ],
     );
   }
+  final globalScaffoldKey = GlobalKey<ScaffoldState>();
 
   enterRoom(String roomid, Room room, ClientRole role) {
     showModalBottomSheet(
       isScrollControlled: true,
-      context: context,
+      context: globalScaffoldKey.currentContext,
       builder: (rc) {
         return RoomScreen(
           roomid: roomid,

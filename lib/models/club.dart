@@ -12,6 +12,7 @@ class Club {
   bool membersprivate;
   Timestamp publisheddate;
   List<String> members;
+  List<String> followers;
   List<String> invited;
   List<Interest> topics;
 
@@ -26,6 +27,7 @@ class Club {
       this.membercanstartrooms,
       this.membersprivate,
       this.publisheddate,
+      this.followers,
       this.members,
       this.topics});
 
@@ -34,7 +36,7 @@ class Club {
       "title": title,
       "description": description,
       "ownerid": ownerid,
-      "imageurl": imageurl,
+      "iconurl": imageurl,
       "invited": invited,
       "allowfollowers": allowfollowers,
       "membercanstartrooms": membercanstartrooms,
@@ -42,6 +44,7 @@ class Club {
       "publisheddate": publisheddate,
       "topics": topics,
       "members": members,
+      "followers": followers,
     };
   }
 
@@ -58,6 +61,9 @@ class Club {
     // List<Interest> topics = List<Interest>.from(json["topics"].map((item) => item["title"]));
     List<String> members =
         List<String>.from(json["members"].map((item) => item));
+    List<String> followers = json["followers"] == null ? [] :
+        List<String>.from(json["followers"].map((item) => item));
+
     List<String> invited = json["invited"] != null
         ? List<String>.from(json["invited"].map((item) => item))
         : [];
@@ -65,7 +71,7 @@ class Club {
       id: club.id,
       title: json['title'],
       description: json['description'],
-      imageurl: json['imageurl'] ?? "",
+      imageurl: json['iconurl'] ?? "",
       invited: invited,
       ownerid: json['ownerid'],
       allowfollowers: json['allowfollowers'] ?? false,
@@ -74,6 +80,7 @@ class Club {
       publisheddate: json['publisheddate'],
       topics: topics,
       members: members,
+      followers: followers,
     );
   }
 }

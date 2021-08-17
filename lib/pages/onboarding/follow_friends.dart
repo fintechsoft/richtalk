@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/models/models.dart';
 import 'package:roomies/pages/home/home_page.dart';
 import 'package:roomies/services/database.dart';
@@ -158,6 +157,8 @@ class _FollowFriendsState extends State<FollowFriends> with WidgetsBindingObserv
                                     return singleItem(users[index]);
                                   },
                                 );
+                              }else{
+                                return noDataWidget("No friends to follow fo now");
                               }
                             }
                           )),

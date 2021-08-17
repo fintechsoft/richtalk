@@ -12,6 +12,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'select_interests.dart';
 
 //ignore: must_be_immutable
@@ -217,7 +218,9 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               InkWell(
                 onTap: () {
-                  Get.to(() => InterestsPick());
+                  Get.to(() => InterestsPick(
+
+                  ));
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -267,93 +270,123 @@ class _SettingsPageState extends State<SettingsPage> {
                     color: Colors.white),
                 child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "What's New",
-                            style: (TextStyle(fontSize: 16)),
-                          ),
-                          Icon(
-                            CupertinoIcons.arrow_up_right,
-                            size: 20,
-                            color: Colors.grey,
-                          ),
-                        ],
+                    InkWell(
+                      onTap: () async{
+                        if (await canLaunch("https://google.com"))
+                        await launch("https://google.com");
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "What's New",
+                              style: (TextStyle(fontSize: 16)),
+                            ),
+                            Icon(
+                              CupertinoIcons.arrow_up_right,
+                              size: 20,
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     Divider(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "FAQ / Contact Us",
-                            style: (TextStyle(fontSize: 16)),
-                          ),
-                          Icon(
-                            CupertinoIcons.arrow_up_right,
-                            size: 20,
-                            color: Colors.grey,
-                          ),
-                        ],
+                    InkWell(
+                      onTap: () async{
+                        if (await canLaunch("https://google.com"))
+                          await launch("https://google.com");
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "FAQ / Contact Us",
+                              style: (TextStyle(fontSize: 16)),
+                            ),
+                            Icon(
+                              CupertinoIcons.arrow_up_right,
+                              size: 20,
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     Divider(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Community Guidelines",
-                            style: (TextStyle(fontSize: 16)),
-                          ),
-                          Icon(
-                            CupertinoIcons.arrow_up_right,
-                            size: 20,
-                            color: Colors.grey,
-                          ),
-                        ],
+                    InkWell(
+                      onTap: () async{
+                        if (await canLaunch("https://google.com"))
+                          await launch("https://google.com");
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Community Guidelines",
+                              style: (TextStyle(fontSize: 16)),
+                            ),
+                            Icon(
+                              CupertinoIcons.arrow_up_right,
+                              size: 20,
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     Divider(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Terms of Service",
-                            style: (TextStyle(fontSize: 16)),
-                          ),
-                          Icon(
-                            CupertinoIcons.arrow_up_right,
-                            size: 20,
-                            color: Colors.grey,
-                          ),
-                        ],
+                    InkWell(
+                      onTap: () async{
+                        if (await canLaunch("https://google.com"))
+                          await launch("https://google.com");
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Terms of Service",
+                              style: (TextStyle(fontSize: 16)),
+                            ),
+                            Icon(
+                              CupertinoIcons.arrow_up_right,
+                              size: 20,
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     Divider(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Privacy Policy",
-                            style: (TextStyle(fontSize: 16)),
-                          ),
-                          Icon(
-                            CupertinoIcons.arrow_up_right,
-                            size: 20,
-                            color: Colors.grey,
-                          ),
-                        ],
+                    InkWell(
+                      onTap: () async{
+                        if (await canLaunch("https://google.com"))
+                          await launch("https://google.com");
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Privacy Policy",
+                              style: (TextStyle(fontSize: 16)),
+                            ),
+                            Icon(
+                              CupertinoIcons.arrow_up_right,
+                              size: 20,
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     Divider(),

@@ -6,12 +6,10 @@ import 'package:roomies/Notifications/push_nofitications.dart';
 import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/functions/functions.dart';
 import 'package:roomies/models/models.dart';
-import 'package:roomies/pages/home/home_page.dart';
 import 'package:roomies/pages/home/select_interests.dart';
 import 'package:roomies/pages/room/upcoming_roomsreen.dart';
 import 'package:roomies/util/firebase_refs.dart';
 import 'package:roomies/util/utils.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -47,8 +45,6 @@ class Database {
     UserModel user = Get.find<OnboardingController>().onboardingUser;
     if (user.imagefile != null) {
       String fileName = basename(user.imagefile.path);
-      print(user.imagefile);
-      print(fileName);
       Reference firebaseSt =
           FirebaseStorage.instance.ref().child('profile/$fileName');
       UploadTask uploadTask = firebaseSt.putFile(user.imagefile);
@@ -56,24 +52,33 @@ class Database {
       await uploadTask.whenComplete(() async {
         String storagePath = await firebaseSt.getDownloadURL();
         user.imageurl = storagePath;
+
       });
-      String link = Get.find<UserController>().user.imageurl;
-      link =  link.split("/")[7];
-      link = link.replaceAll("%20"," ");
-      link = link.replaceAll("%2C", ",");
-      link = link.substring(0, link.indexOf('.jpg'));
-      link = link.replaceAll("%2F", "/");
-      if (update == true) {
-        Reference storageReferance = FirebaseStorage.instance.ref();
-        storageReferance
-            .child("/"+link+".jpg")
-            .delete()
-            .then((_) => print(
-                'Successfully deleted ${Get.find<UserController>().user.imageurl} storage item'));
-        updateProfileData(Get.find<UserController>().user.uid, {
-          "imageurl" : user.imageurl
-        });
+
+      try{
+        //remove previous image
+        if(update == true && Get.find<UserController>().user.imageurl !=null){
+          updateProfileData(Get.find<UserController>().user.uid, {
+            "imageurl" : user.imageurl
+          });
+          String link = Get.find<UserController>().user.imageurl;
+          link =  link.split("/")[7];
+          link = link.replaceAll("%20"," ");
+          link = link.replaceAll("%2C", ",");
+          link = link.substring(0, link.indexOf('.jpg'));
+          link = link.replaceAll("%2F", "/");
+          Reference storageReferance = FirebaseStorage.instance.ref();
+          storageReferance
+              .child("/"+link+".jpg")
+              .delete()
+              .then((_) => print(
+              'Successfully deleted ${Get.find<UserController>().user.imageurl} storage item'));
+
+        }
+      }catch(e){
+        print("error deleting and updating the profile image");
       }
+
     }else{
       user.imageurl = "";
     }
@@ -141,7 +146,7 @@ class Database {
       "countrycode": user.countrycode,
       "firebasetoken": await FirebaseMessaging.instance.getToken(),
       "countryname": user.countryname,
-      "phonenumber": FirebaseAuth.instance.currentUser.phoneNumber,
+      "phonenumber": "${user.countrycode+user.phonenumber}",
       "profileImage": user.imageurl,
       "interests": [],
       "isNewUser": true,
@@ -518,6 +523,7 @@ class Database {
   }
 
   static List<UserModel> _usersFromFirebase(QuerySnapshot querySnapshot) {
+    print(querySnapshot.docs.length);
     return querySnapshot.docs.map((e) => UserModel.fromJson(e.data())).toList();
   }
 
@@ -632,6 +638,10 @@ class Database {
           "membersprivate": membersprivate
         });
 
+        await clubRef.doc(ref.id).update({
+          "uid" : ref.id
+        });
+
         await updateProfileData(Get.find<UserController>().user.uid, {
           "clubs": FieldValue.arrayUnion([ref.id])
         });
@@ -718,10 +728,10 @@ class Database {
   }
 
   //get my clubs
-  static Stream<List<Club>> getMyClubs() {
+  static Stream<List<Club>> getMyClubs(String id) {
     return clubRef
         .where("members",
-            arrayContainsAny: [Get.find<UserController>().user.uid])
+            arrayContainsAny: [id])
         .orderBy("published_date", descending: true)
         .snapshots()
         .map(_clubsFromFirebase);
@@ -757,7 +767,51 @@ class Database {
   }
 
   static friendsToFollow() {
-    print(Get.put(UserController()).user.countrycode);
     return usersRef.where("countrycode", isEqualTo: Get.put(UserController()).user.countrycode).orderBy("membersince", descending: true).snapshots().map(_usersFromFirebase);
+  }
+
+  static Stream<List<UserModel>> searchUser(String txt){
+    if(txt.isEmpty) return usersRef.where("username", isLessThanOrEqualTo: txt).snapshots().map(_usersFromFirebase);
+    if(txt.isNotEmpty) return usersRef.where("username", isGreaterThanOrEqualTo: txt).snapshots().map(_usersFromFirebase);
+    return null;
+  }
+
+  static Stream<List<Club>> searchClub(String txt){
+    if(txt.isEmpty) return clubRef.where("title", isLessThanOrEqualTo: txt).snapshots().map(_clubsFromFirebase);
+    if(txt.isNotEmpty) return clubRef.where("title", isGreaterThanOrEqualTo: txt).snapshots().map(_clubsFromFirebase);
+    return null;
+  }
+
+
+
+  //follow club
+  static followClub(Club club) async {
+    await clubRef.doc(club.id).update({
+      "followers": FieldValue.arrayUnion([Get.find<UserController>().user.uid])
+    });
+  }
+
+  //follow user
+  static unFolloClub(Club club) async {
+    await clubRef.doc(club.id).update({
+      "followers": FieldValue.arrayRemove([Get.find<UserController>().user.uid])
+    });
+  }
+
+  static  leaveClub(Club club) async {
+    await clubRef.doc(club.id).update({
+      "members": FieldValue.arrayRemove([Get.find<UserController>().user.uid]),
+    });
+  }
+
+  static getClubFollowers(Club club) {
+    if(club.followers.length > 0){
+
+      return usersRef
+          .where("uid", whereIn: club.followers)
+          .snapshots()
+          .map(_usersFromFirebase);
+    }
+    return null;
   }
 }

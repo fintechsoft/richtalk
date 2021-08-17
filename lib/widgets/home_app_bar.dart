@@ -1,7 +1,6 @@
 import 'package:roomies/models/user_model.dart';
 import 'package:roomies/pages/home/search_view.dart';
 import 'package:roomies/pages/room/upcoming_roomsreen.dart';
-import 'package:roomies/widgets/round_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

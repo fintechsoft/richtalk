@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/models/models.dart';
 import 'package:roomies/services/database.dart';
 import 'package:roomies/util/utils.dart';
@@ -63,7 +64,7 @@ class _SelectHostClubState extends State<SelectHostClub> {
                     ),
                     Divider(),
                     StreamBuilder(
-                        stream: Database.getMyClubs(),
+                        stream: Database.getMyClubs(Get.find<UserController>().user.uid),
                         builder: (context, snapshot) {
                           if(snapshot.hasError){
                             print(snapshot.error.toString());

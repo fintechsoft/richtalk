@@ -1,6 +1,7 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:roomies/controllers/controllers.dart';
 import 'package:roomies/models/models.dart';
+import 'package:roomies/pages/clubs/view_club.dart';
 import 'package:roomies/pages/home/profile_page.dart';
 import 'package:roomies/pages/room/upcoming_roomsreen.dart';
 import 'package:roomies/pages/room/room_screen.dart';
@@ -28,7 +29,6 @@ class DynamicLinkService {
         appStoreId: '1529768550',
       ),
     );
-
     final ShortDynamicLink dynamicUrl = await parameters.buildShortLink();
     return dynamicUrl.shortUrl.toString();
   }
@@ -75,21 +75,27 @@ class DynamicLinkService {
         });
       } //check if the shared link is an upcoming room
       else if (deepLink.queryParameters['type'] == "profile") {
-        usersRef.doc(groupid).get().then((value) async {
-          if (value.exists) {
+        print(groupid);
+        usersRef.where("username", isEqualTo: groupid).get().then((value) async {
+          if (value.docs.length > 0) {
             Get.to(
               () => ProfilePage(
-                profile: UserModel.fromJson(value.data()),
+                profile: UserModel.fromJson(value.docs[0].data()),
                 fromRoom: false,
               ),
             );
-          } else {
-            upcomingroomsRef.doc(groupid).get().then((value) async {
-              if (value.exists) {
-                UpcomingRoom room = UpcomingRoom.fromJson(value);
-                Get.to(() => UpcomingRoomScreen(room: room));
-              }
-            });
+          }
+        });
+      }//check if the shared link is an club
+      else if (deepLink.queryParameters['type'] == "club") {
+        print(groupid);
+        clubRef.doc(groupid).get().then((value) async {
+          if (value.exists) {
+            Get.to(
+              () => ViewClub(
+                club: Club.fromJson(value)
+              ),
+            );
           }
         });
       } else {
