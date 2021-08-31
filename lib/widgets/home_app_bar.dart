@@ -1,4 +1,5 @@
 import 'package:roomies/models/user_model.dart';
+import 'package:roomies/pages/home/invite_users.dart';
 import 'package:roomies/pages/home/search_view.dart';
 import 'package:roomies/pages/room/upcoming_roomsreen.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,7 +31,9 @@ class HomeAppBar extends StatelessWidget {
         Row(
           children: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.to(() => InviteContants());
+              },
               iconSize: 30,
               icon: Icon(CupertinoIcons.mail),
             ),

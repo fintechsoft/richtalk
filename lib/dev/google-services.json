@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "443190301690",
+    "project_id": "roomy-a3fd0",
+    "storage_bucket": "roomy-a3fd0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:443190301690:android:f8fca3241a6eea6cad4a43",
+        "android_client_info": {
+          "package_name": "com.aluta.roomies"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "443190301690-20ng26k3skpl8pjgc0h2165h8fk32ebu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aluta.roomies",
+            "certificate_hash": "b1fd654865ed157d250e66a5a39ed8efa262d0f5"
+          }
+        },
+        {
+          "client_id": "443190301690-ige3l513p8cj735maof13j8tqqd6di70.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aluta.roomies",
+            "certificate_hash": "6ccc98a100b5bb4afea0f59a26a5504d852eb170"
+          }
+        },
+        {
+          "client_id": "443190301690-o3hgfq9hoavuh1a2oluoanfsqfp56d3l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aluta.roomies",
+            "certificate_hash": "df5ee1180cf882a1e5aaedd35e4aff59a78db0e1"
+          }
+        },
+        {
+          "client_id": "443190301690-ae9uaadhejjcs5cn0kdqpq4rirrn317c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzfIGwTpssISZs1jZ0tHs6KMQzATDLgTU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "443190301690-ae9uaadhejjcs5cn0kdqpq4rirrn317c.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "443190301690-h4smv6gffjfgi58kabu0njscgfm6bf0r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.aluta.roomies",
+                "app_store_id": "123456789"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

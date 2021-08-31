@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'widgets.dart';
 
-class RoomProfile extends StatelessWidget {
+class RoomProfile extends StatefulWidget {
   final UserModel user;
   final Room room;
   final double size;
@@ -25,6 +25,24 @@ class RoomProfile extends StatelessWidget {
       : super(key: key);
 
   @override
+  _RoomProfileState createState() => _RoomProfileState();
+}
+
+class _RoomProfileState extends State<RoomProfile> {
+  bool short = true;
+  Function listener(shor, set){
+    short = !shor;
+    set(() {
+
+    });
+    setState(() {
+
+    });
+
+    print(short);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -32,30 +50,31 @@ class RoomProfile extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                showUserProfile(context, user,room);
+                showUserProfile(context, widget.user,room: widget.room,short: short);
+                // showShortUserProfile(context, user,room);
               },
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: bordercolor ?? Color(0xFFFFFFFF), width: 5),
+                      color: widget.bordercolor ?? Color(0xFFFFFFFF), width: 5),
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(size / 2 - size / 18),
-                      topRight: Radius.circular(size / 2 - size / 18),
-                      bottomRight: Radius.circular(size / 2 - size / 18),
-                      bottomLeft: Radius.circular(size / 2 - size / 18)),
+                      topLeft: Radius.circular(widget.size / 2 - widget.size / 18),
+                      topRight: Radius.circular(widget.size / 2 - widget.size / 18),
+                      bottomRight: Radius.circular(widget.size / 2 - widget.size / 18),
+                      bottomLeft: Radius.circular(widget.size / 2 - widget.size / 18)),
                 ),
                 child: RoundImage(
-                  url: user.imageurl,
-                  txt: user.firstname,
-                  width: size,
-                  height: size,
+                  url: widget.user.imageurl,
+                  txt: widget.user.firstname,
+                  width: widget.size,
+                  height: widget.size,
                   txtsize: 21,
                   borderRadius: 30,
                 ),
               ),
             ),
-            buildNewBadge(user.isNewUser),
-            buildMuteBadge(isMute),
+            buildNewBadge(widget.user.isNewUser),
+            buildMuteBadge(widget.isMute),
           ],
         ),
         SizedBox(
@@ -64,13 +83,20 @@ class RoomProfile extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            buildModeratorBadge(isModerator),
-            Text(
-              user.firstname,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
+            buildModeratorBadge(widget.isModerator),
+            Expanded(
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                children : [
+                Text(
+                  widget.user.firstname+" "+widget.user.lastname,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+                ]
               ),
             ),
           ],
@@ -78,6 +104,7 @@ class RoomProfile extends StatelessWidget {
       ],
     );
   }
+
   Widget buildModeratorBadge(bool isModerator) {
     return isModerator
         ? Container(

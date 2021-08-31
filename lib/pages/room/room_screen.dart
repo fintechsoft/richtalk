@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:roomies/controllers/controllers.dart';
+import 'package:roomies/dev/configs.dart';
 import 'package:roomies/functions/functions.dart';
 import 'package:roomies/models/models.dart';
 import 'package:roomies/util/utils.dart';
 import 'package:roomies/widgets/room_profile.dart';
 import 'package:roomies/services/dynamic_link_service.dart';
-import 'package:roomies/util/configs.dart';
 import 'package:roomies/util/firebase_refs.dart';
 import 'package:roomies/widgets/user_profile_image.dart';
 import 'package:roomies/widgets/widgets.dart';
@@ -51,6 +51,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
   var mycalluid = 0;
   StreamSubscription<DocumentSnapshot> roomlistener;
   final TextEditingController textController = new TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -106,6 +107,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
             builder: (context) {
               return alert;
             });
+        Get.find<CurrentRoomController>().room = null;
       } else {
         //update room variables and re-generate room object
         try {
@@ -145,7 +147,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
                           txtcolor: Colors.white,
                           fontSize: 16,
                           onPressed: () {
-                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            Get.back();
                           },
                         ),
                         CustomButton(
@@ -156,7 +158,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
                           onPressed: () {
                             activateDeactivateUser(
                                 raisehanduser, room, null, raisedhandsusers);
-                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            Get.back();
                           },
                         )
                       ],
@@ -294,6 +296,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
             ),
           )
         : Scaffold(
+            key: _scaffoldKey,
             appBar: AppBar(
               toolbarHeight: 150,
               automaticallyImplyLeading: false,
@@ -579,17 +582,14 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
       itemBuilder: (gc, index) {
         return AnimatedBuilder(
           animation: _colorTween,
-          builder: (context, child) => GestureDetector(
-            onTap: () {},
-            child: RoomProfile(
-              user: users[index],
-              isModerator: index == 0,
-              bordercolor:
-                  users[index].valume > 0 ? _colorTween.value : Colors.white,
-              isMute: room.users[index].callmute,
-              room: room,
-              size: 70,
-            ),
+          builder: (context, child) => RoomProfile(
+            user: users[index],
+            isModerator: index == 0,
+            bordercolor:
+                users[index].valume > 0 ? _colorTween.value : Colors.white,
+            isMute: room.users[index].callmute,
+            room: room,
+            size: 70,
           ),
         );
       },

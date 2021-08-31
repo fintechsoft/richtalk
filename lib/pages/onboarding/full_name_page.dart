@@ -1,4 +1,5 @@
 import 'package:roomies/controllers/controllers.dart';
+import 'package:roomies/util/utils.dart';
 import 'package:roomies/widgets/round_button.dart';
 import 'package:roomies/util/style.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +23,9 @@ class _FullNamePageState extends State<FullNamePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
     Get.put(OnboardingController());
   }
+
 
   @override
   Widget build(BuildContext context) {

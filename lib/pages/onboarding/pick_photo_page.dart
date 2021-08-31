@@ -27,7 +27,7 @@ class _PickPhotoPageState extends State<PickPhotoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: loading == true ? loadingWidget() :Container(
+        child: loading == true ? loadingWidget(context) :Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.only(
             top: 30,

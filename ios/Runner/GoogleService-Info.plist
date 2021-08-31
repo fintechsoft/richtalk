@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>443190301690-h4smv6gffjfgi58kabu0njscgfm6bf0r.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.443190301690-h4smv6gffjfgi58kabu0njscgfm6bf0r</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>443190301690-20ng26k3skpl8pjgc0h2165h8fk32ebu.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAfij410zj6Jpmz6_D1Jf4DkGICti3Ce8o</string>
+	<key>GCM_SENDER_ID</key>
+	<string>443190301690</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.aluta.roomies</string>
+	<key>PROJECT_ID</key>
+	<string>roomy-a3fd0</string>
+	<key>STORAGE_BUCKET</key>
+	<string>roomy-a3fd0.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:443190301690:ios:5c3ee4d35479ce78ad4a43</string>
+</dict>
+</plist>

@@ -76,11 +76,12 @@ class RoomCard extends StatelessWidget {
           margin: const EdgeInsets.only(top: 15, left: 25),
           txt: room.users[1].firstname,
           url: room.users[1].imageurl,
+          txtsize: 14,
         ) : Container(),
         RoundImage(
           url:room.users[0].imageurl,
           txt: room.users[0].firstname,
-          txtsize: 21,
+          txtsize: 14,
         ),
       ],
     );
@@ -91,28 +92,29 @@ class RoomCard extends StatelessWidget {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         for (var i = 0; i < len; i++)
-          Container(
-            child: Row(
-              children: [
-                Text(
-                  room.users[i].username !=null ? room.users[i].username : "",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
+          Row(
+            children: [
+              Text(
+                room.users[i].getName() !=null ? room.users[i].getName() : "",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
                 ),
-                SizedBox(
-                  width: 5,
-                ),
-                Icon(
-                  CupertinoIcons.chat_bubble_text,
-                  color: Colors.grey,
-                  size: 14,
-                ),
-              ],
-            ),
+                maxLines: 1,
+                overflow: TextOverflow.visible,
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Icon(
+                CupertinoIcons.chat_bubble_text,
+                color: Colors.grey,
+                size: 14,
+              ),
+            ],
           )
       ],
     );

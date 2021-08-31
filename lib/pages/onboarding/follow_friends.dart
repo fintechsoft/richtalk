@@ -93,8 +93,8 @@ class _FollowFriendsState extends State<FollowFriends> with WidgetsBindingObserv
                   SizedBox(height: 20,),
                   InkWell(
                       onTap: (){
-                        Get.to(() => HomePage());
                         Navigator.pop(context);
+                        Get.to(() => HomePage());
                       },
                       child: Text("YES", style: TextStyle(color: Style.AccentBlue),)
                   )

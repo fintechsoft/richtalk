@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:roomies/Notifications/push_nofitications.dart';
 import 'package:roomies/controllers/controllers.dart';
+import 'package:roomies/dev/configs.dart';
 import 'package:roomies/functions/functions.dart';
 import 'package:roomies/models/models.dart';
 import 'package:roomies/pages/home/select_interests.dart';
@@ -57,7 +59,8 @@ class Database {
 
       try{
         //remove previous image
-        if(update == true && Get.find<UserController>().user.imageurl !=null){
+        if(update == true){
+          if(Get.find<UserController>().user.imageurl ==null || Get.find<UserController>().user.imageurl.isEmpty) return;
           updateProfileData(Get.find<UserController>().user.uid, {
             "imageurl" : user.imageurl
           });
@@ -146,7 +149,7 @@ class Database {
       "countrycode": user.countrycode,
       "firebasetoken": await FirebaseMessaging.instance.getToken(),
       "countryname": user.countryname,
-      "phonenumber": "${user.countrycode+user.phonenumber}",
+      "phonenumber": FirebaseAuth.instance.currentUser.email !=null && FirebaseAuth.instance.currentUser.email.isNotEmpty ? "+"+FirebaseAuth.instance.currentUser.email.split('@')[0] : FirebaseAuth.instance.currentUser.phoneNumber,
       "profileImage": user.imageurl,
       "interests": [],
       "isNewUser": true,
@@ -350,6 +353,7 @@ class Database {
       ioc.badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
       final http = new IOClient(ioc);
+      print('$tokenpath?channel=$channel&uid=$uid');
       var url = Uri.parse('$tokenpath?channel=$channel&uid=$uid');
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -767,7 +771,11 @@ class Database {
   }
 
   static friendsToFollow() {
-    return usersRef.where("countrycode", isEqualTo: Get.put(UserController()).user.countrycode).orderBy("membersince", descending: true).snapshots().map(_usersFromFirebase);
+    return usersRef
+        .where("countrycode", isEqualTo: Get.put(UserController()).user.countrycode)
+        .where("uid", isNotEqualTo: FirebaseAuth.instance.currentUser.uid)
+        // .orderBy("membersince", descending: true)
+        .snapshots().map(_usersFromFirebase);
   }
 
   static Stream<List<UserModel>> searchUser(String txt){

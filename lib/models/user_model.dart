@@ -15,6 +15,7 @@ class UserModel {
   String username;
   Room activeRoom;
   String uid;
+  String contactsinvited;
   String phonenumber;
   String countrycode;
   String countryname;
@@ -47,6 +48,7 @@ class UserModel {
     this.subroomtopic,
     this.pausenotifications,
     this.subothernot,
+    this.contactsinvited,
     this.subtrend,
     this.interests,
     this.firebasetoken,
@@ -86,6 +88,7 @@ class UserModel {
     return {
       "sendfewernotifications": sendfewernotifications,
       "pausenotifications": pausenotifications,
+      "contactsinvited": contactsinvited,
       "pausedtime": pausedtime,
       "subothernot": subothernot,
       "blocked": blocked,
@@ -144,6 +147,7 @@ class UserModel {
       subroomtopic: json['subroomtopic'] ?? false,
       interests: interests,
       firstname: json['firstname'],
+      contactsinvited: json['contactsinvited'] ?? "",
       activeroom: json['activeroom'] ?? "",
       callerid: json['callerid'] ?? 0,
       valume: json['valume'] ?? 0,

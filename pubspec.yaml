@@ -2,7 +2,7 @@ name: roomies
 description: Roomies App.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.0.24+24
+version: 1.0.26+26
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -32,6 +32,8 @@ dependencies:
   package_info_plus: ^1.0.2
   url_launcher: ^6.0.9
   dotted_border: ^2.0.0
+  mailto: ^2.0.0
+  contacts_service: ^0.6.1
 
 dev_dependencies:
   flutter_test:

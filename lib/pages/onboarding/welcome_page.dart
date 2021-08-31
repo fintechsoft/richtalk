@@ -1,10 +1,24 @@
 import 'package:get/get.dart';
 import 'package:roomies/pages/onboarding/phone_number_page.dart';
+import 'package:roomies/util/utils.dart';
 import 'package:roomies/widgets/round_button.dart';
 import 'package:roomies/util/style.dart';
 import 'package:flutter/material.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
+
+
+  @override
+  _WelcomeScreenState createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Data.addInterests();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

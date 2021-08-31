@@ -279,6 +279,7 @@ class _RommiesScreenState extends State<RommiesScreen>
             blocked.add(element.uid);
           }
         });
+        print(blocked);
         if(blocked.length > 0){
           showBlockedUsersAlert(context,blocked.length);
         }else{

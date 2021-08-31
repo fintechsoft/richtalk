@@ -8,7 +8,7 @@ import 'package:roomies/widgets/round_image.dart';
 import 'package:flutter/material.dart';
 import 'package:roomies/pages/room/followers_match_grid_sheet.dart';
 
-List lobbyBottomSheets = [];
+List<RoomItem> lobbyBottomSheets = [];
 
 class LobbyBottomSheet extends StatefulWidget {
   final Function onButtonTap;
@@ -39,28 +39,7 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    lobbyBottomSheets = [
-
-      {
-        'image': 'assets/images/open.png',
-        'text': 'Open',
-        'club': null,
-        'selectedMessage': 'Start a room open to everyone',
-      },
-      {
-        'image': 'assets/images/social.png',
-        'text': 'Social',
-        'club': null,
-        'selectedMessage': 'Start a room with people I follow',
-      },
-      {
-        'image': 'assets/images/closed.png',
-        'text': 'Closed',
-        'club': null,
-        'selectedMessage': 'Start a room for people I choose',
-      },
-
-    ];
+    lobbyBottomSheets = RoomItem().getItems();
 
     clubRef
         .where("ownerid", isEqualTo: Get.find<UserController>().user.uid)
@@ -68,12 +47,13 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
         .then((value) {
       value.docs.forEach((element) {
         Club club = Club.fromJson(element);
-        lobbyBottomSheets.add({
+        RoomItem roomItem = RoomItem.fromJson({
           'image': '',
           'text': club.title,
           'selectedMessage': 'Start a room for ${club.title}',
           'club': club
         });
+        lobbyBottomSheets.add(roomItem);
       });
       setState(() {});
     });
@@ -133,7 +113,7 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
                           selectedButtonIndex = i;
                         });
                         widget.onChange(
-                            lobbyBottomSheets[selectedButtonIndex]['text']);
+                            lobbyBottomSheets[selectedButtonIndex].text);
                       },
                       child: Ink(
                         padding: const EdgeInsets.symmetric(
@@ -158,11 +138,11 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
                                 width: 80,
                                 height: 80,
                                 borderRadius: 20,
-                                path: lobbyBottomSheets[i]['image'],
+                                path: lobbyBottomSheets[i].image,
                               ),
                             ),
                             Text(
-                              lobbyBottomSheets[i]['text'],
+                              lobbyBottomSheets[i].text,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -187,7 +167,7 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
                           selectedButtonIndex = i;
                         });
                         widget.onChange(
-                            lobbyBottomSheets[selectedButtonIndex]['text']);
+                            lobbyBottomSheets[selectedButtonIndex].text);
                       },
                       child: Ink(
                         padding: const EdgeInsets.symmetric(
@@ -213,12 +193,12 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
                                 width: 80,
                                 height: 80,
                                 borderRadius: 20,
-                                url: lobbyBottomSheets[i]['image'],
-                                txt: lobbyBottomSheets[i]['text'],
+                                url: lobbyBottomSheets[i].image,
+                                txt: lobbyBottomSheets[i].text,
                               ),
                             ),
                             Text(
-                              lobbyBottomSheets[i]['text'].toString().length > 15 ? lobbyBottomSheets[i]['text'].toString().substring(0, 15)+"...." : lobbyBottomSheets[i]['text'].toString(),
+                              lobbyBottomSheets[i].text.toString().length > 15 ? lobbyBottomSheets[i].text.toString().substring(0, 15)+"...." : lobbyBottomSheets[i].text.toString(),
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontFamily: "InterBold"),
@@ -238,7 +218,7 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
             endIndent: 20,
           ),
           Text(
-            lobbyBottomSheets[selectedButtonIndex]['selectedMessage'],
+            lobbyBottomSheets[selectedButtonIndex].selectedMessage,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -247,7 +227,7 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
           SizedBox(
             height: 20,
           ),
-          lobbyBottomSheets[selectedButtonIndex]['text'] == "Closed" &&
+          lobbyBottomSheets[selectedButtonIndex].text == "Closed" &&
                   roomusers.length == 0
               ? CustomButton(
                   color: Style.AccentGreen,
@@ -286,10 +266,10 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
                   color: Style.AccentGreen,
                   onPressed: () {
                     widget.onButtonTap(
-                        lobbyBottomSheets[selectedButtonIndex]['text'],
+                        lobbyBottomSheets[selectedButtonIndex].text,
                         _textFieldController.text,
                         roomusers,
-                        lobbyBottomSheets[selectedButtonIndex]['club']);
+                        lobbyBottomSheets[selectedButtonIndex].club);
                   },
                   text: '🎉 Let\'s go',
                 )
