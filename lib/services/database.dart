@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:roomies/Notifications/push_nofitications.dart';
 import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/dev/configs.dart';
+import 'package:roomies/util/configs.dart';
 import 'package:roomies/functions/functions.dart';
 import 'package:roomies/models/models.dart';
 import 'package:roomies/pages/home/select_interests.dart';

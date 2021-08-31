@@ -1,7 +1,7 @@
-import 'package:roomies/dev/authenticate.dart';
-import 'package:roomies/dev/configs.dart';
-import 'package:roomies/dev/twilio/api.dart';
-import 'package:roomies/dev/twilio/model/verification.dart';
+import 'package:roomies/services/authenticate.dart';
+import 'package:roomies/twilio/api.dart';
+import 'package:roomies/twilio/model/verification.dart';
+import 'package:roomies/util/configs.dart';
 import 'package:roomies/util/utils.dart';
 import 'package:roomies/widgets/round_button.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +90,9 @@ class _SmsScreenState extends State<SmsScreen> {
             child: TextFormField(
               textAlign: TextAlign.center,
               controller: _smsController,
-              enabled: APP_ENV_DEV == true && widget.logintype == "test" ? false : true,
+              enabled: APP_ENV_DEV == true && widget.logintype == "test"
+                  ? false
+                  : true,
               autocorrect: false,
               autofocus: APP_ENV_DEV == true && widget.logintype == "test",
               decoration: InputDecoration(
@@ -135,10 +137,8 @@ class _SmsScreenState extends State<SmsScreen> {
             setState(() {
               loading = true;
             });
-            if (widget.logintype == "test") {
-              await AuthService()
-                  .signInWithEmail(widget.phone)
-                  .then((value) {
+            if (APP_ENV_DEV) {
+              await AuthService().signInWithEmail(widget.phone).then((value) {
                 print("response from service " + value.toString());
                 setState(() {
                   loading = false;
@@ -146,8 +146,9 @@ class _SmsScreenState extends State<SmsScreen> {
               });
             } else {
               // print("widget.logintype"+widget.logintype);
-              if (widget.logintype == "twilio") {
-                var twilioResponse = await _twilioPhoneVerify.verifySmsCode(phone: widget.phone, code: _smsController.text);
+              if (ENABLE_TWILIO_AUTH) {
+                var twilioResponse = await _twilioPhoneVerify.verifySmsCode(
+                    phone: widget.phone, code: _smsController.text);
 
                 if (twilioResponse.successful) {
                   if (twilioResponse.verification.status ==
@@ -171,11 +172,12 @@ class _SmsScreenState extends State<SmsScreen> {
                 } else {
                   //print(twilioResponse.errorMessage);
                 }
-              } else {
+              } else if (ENABLE_FIREBASE_AUTH) {
                 await AuthService()
-                    .signInWithOTP(widget.verificationId, _smsController.text,widget.phone)
+                    .signInWithOTP(widget.verificationId, _smsController.text,
+                        widget.phone)
                     .then((value) {
-                      print(value);
+                  print(value);
                   if (value == "null") {
                     errortxt = "Otp is not valid";
                     setState(() {

@@ -1,7 +1,7 @@
 import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/dev/configs.dart';
-import 'package:roomies/dev/twilio/api.dart';
+import 'package:roomies/util/configs.dart';
 import 'package:roomies/models/models.dart';
+import 'package:roomies/twilio/api.dart';
 import 'package:roomies/widgets/round_button.dart';
 import 'package:roomies/widgets/widgets.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -277,23 +277,49 @@ class _PhoneScreenState extends State<PhoneScreen> {
           loading = true;
           error = "";
         });
-        var twilioResponse = await _twilioPhoneVerify
-            .sendSmsCode(user.countrycode + "" + _phoneNumberController.text);
 
-        if (twilioResponse.successful) {
-          logintype = "twilio";
-          //code sent
-          setState(() {
-            loading = false;
-          });
-          Get.to(() => SmsScreen(
+        //USE EITHER FIREBASE OR TWILIO FOR AUTH (-ONLY ON DEVELOPMENT MODE-)
+        if(APP_ENV_DEV){
+          var twilioResponse = await _twilioPhoneVerify.sendSmsCode(user.countrycode + "" + _phoneNumberController.text);
+          if (twilioResponse.successful) {
+            logintype = "twilio";
+            //code sent
+            setState(() {
+              loading = false;
+            });
+            Get.to(() => SmsScreen(
               phone: user.countrycode + "" + _phoneNumberController.text, logintype: logintype,));
-        } else {
-          print(twilioResponse.statusCode);
-          print(twilioResponse.errorMessage);
-          logintype = "firebase";
-          verifyPhone(user.countrycode + "" + _phoneNumberController.text);
+          } else {
+            print(twilioResponse.statusCode);
+            print(twilioResponse.errorMessage);
+            logintype = "firebase";
+            verifyPhone(user.countrycode + "" + _phoneNumberController.text);
+          }
+        }else {
+          //USE TWILIO FOR AUTHNTICATIONS
+          if (ENABLE_TWILIO_AUTH) {
+            var twilioResponse = await _twilioPhoneVerify
+                .sendSmsCode(
+                user.countrycode + "" + _phoneNumberController.text);
+
+            if (twilioResponse.successful) {
+              logintype = "twilio";
+              //code sent
+              setState(() {
+                loading = false;
+              });
+              Get.to(() =>
+                  SmsScreen(
+                    phone: user.countrycode + "" + _phoneNumberController.text,
+                    logintype: logintype,));
+            }
+          }
+          //USE FIREBASE FOR AUTHNTICATIONS
+          if (ENABLE_FIREBASE_AUTH) {
+            verifyPhone(user.countrycode + "" + _phoneNumberController.text);
+          }
         }
+
       }
 
   }

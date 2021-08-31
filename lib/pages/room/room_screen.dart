@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/dev/configs.dart';
+import 'package:roomies/util/configs.dart';
 import 'package:roomies/functions/functions.dart';
 import 'package:roomies/models/models.dart';
 import 'package:roomies/util/utils.dart';

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:roomies/dev/twilio/data/repo_impl.dart';
-import 'package:roomies/dev/twilio/model/email_channel_configuration.dart';
-import 'package:roomies/dev/twilio/model/twilio_reponse.dart';
+import 'package:roomies/twilio/data/repo_impl.dart';
+import 'package:roomies/twilio/model/email_channel_configuration.dart';
+import 'package:roomies/twilio/model/twilio_reponse.dart';
 
 import 'data/repo.dart';
 

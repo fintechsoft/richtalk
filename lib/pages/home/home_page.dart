@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/dev/configs.dart';
+import 'package:roomies/util/configs.dart';
 import 'package:roomies/pages/home/profile_page.dart';
 import 'package:roomies/pages/home/follower_page.dart';
 import 'package:roomies/pages/room/roomies_screen.dart';

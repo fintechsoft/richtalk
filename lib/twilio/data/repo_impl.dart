@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
-import 'package:roomies/dev/twilio/data/repo.dart';
-import 'package:roomies/dev/twilio/endpoints.dart';
-import 'package:roomies/dev/twilio/model/email_channel_configuration.dart';
-import 'package:roomies/dev/twilio/model/twilio_reponse.dart';
-import 'package:roomies/dev/twilio/model/verification.dart';
+import 'package:roomies/twilio/data/repo.dart';
+import 'package:roomies/twilio/endpoints.dart';
+import 'package:roomies/twilio/model/email_channel_configuration.dart';
+import 'package:roomies/twilio/model/twilio_reponse.dart';
+import 'package:roomies/twilio/model/verification.dart';
 
 class TwilioVerifyRepositoryImpl implements TwilioVerifyRepository {
   final String baseUrl;
