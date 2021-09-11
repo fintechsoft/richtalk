@@ -74,6 +74,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
     _colorTween = ColorTween(begin: Colors.white, end: Colors.grey)
         .animate(_animationController);
 
+
     //setting room object from the parameters from the previous screen
     room = widget.room;
 
@@ -252,6 +253,14 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
     }, joinChannelSuccess: (channel, uid, elapsed) async {
       print('onJoinChannel: $channel, uid: $uid');
 
+      roomsRef.doc(room.roomid).update({
+        "users": room.users
+            .map((i) =>
+            i.toMap(
+                usertype: i.usertype, callmute: i.callmute, callerid: myProfile.uid == i.uid ? uid : i.callerid))
+            .toList(),
+      });
+
       // await Database().updateRoomData(room.roomid, {
       //   "users": FieldValue.arrayUnion([myProfile.toMap(usertype: "others")]),
       // });
@@ -279,8 +288,8 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
       print('userJoined: $uid');
     }, audioVolumeIndication:
         (List<AudioVolumeInfo> speakers, int totalVolume) {
-      // print("totalVolume ${totalVolume}");
       speakers.forEach((eleme) {
+        print("AudioVolumeInfo ${eleme.toJson()}");
         //CHECK IF SOUND IS FROM THE CURRENT USER
         bounceRings(eleme, totalVolume);
       });
@@ -737,29 +746,34 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
 
   //bouncine ring functionality when user is speaking
   void bounceRings(AudioVolumeInfo eleme, int totalVolume) {
-    if (eleme.uid == 0 && totalVolume > 0) {
-      room
-          .users[room.users.indexWhere((element) =>
-              element.usertype == "host" || element.usertype == "speaker")]
-          .valume = totalVolume;
-      if (_animationController.status == AnimationStatus.completed) {
-        _animationController.reverse();
-      } else {
-        if(mounted) _animationController.forward();
-      }
-    } else if (room.users
+    print("bounceRings ${eleme.uid} $totalVolume");
+    if(eleme.volume ==0) return;
+    if (room.users
                 .indexWhere((element) => element.callerid == eleme.uid) !=
-            -1 &&
-        totalVolume > 0) {
+            -1 ) {
+
+      print("else bb");
       room
           .users[
-              room.users.indexWhere((element) => element.callerid == eleme.uid)]
+              room.users.indexWhere((element) => element.callerid == eleme.uid && element.callmute == false )]
           .valume = totalVolume;
-      if (_animationController.status == AnimationStatus.completed) {
-        _animationController.reverse();
-      } else {
+      setState(() {
+
+      });
+      // _animationController.forward();
+      // if (_animationController.status == AnimationStatus.completed) {
+      //   print("reverse");
+      //   _animationController.reverse();
+      // } else {
         _animationController.forward();
-      }
+      // }
+
+      _animationController.addStatusListener((status) {
+        print("status $status");
+        if(status == AnimationStatus.completed){
+          _animationController.reverse();
+        }
+      });
     }
   }
 }
