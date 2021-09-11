@@ -275,7 +275,7 @@ class _RommiesScreenState extends State<RommiesScreen>
         //check if there is a blocked user who is the speaker
         List<String> blocked = [];
         room.users.forEach((element) {
-          if(element.usertype =="speaker" || element.usertype =="host" && myProfile.blocked.contains(element.uid)){
+          if((element.usertype =="speaker" || element.usertype =="host") && myProfile.blocked.contains(element.uid)){
             blocked.add(element.uid);
           }
         });
