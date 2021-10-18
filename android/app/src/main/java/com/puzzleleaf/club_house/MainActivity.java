@@ -1,4 +1,4 @@
-package com.aluta.roomies;
+package mother.eye.richtalk;
 
 import io.flutter.embedding.android.FlutterActivity;
 
