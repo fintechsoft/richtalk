@@ -1,9 +1,9 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/pages/home/home_page.dart';
-import 'package:roomies/pages/onboarding/full_name_page.dart';
-import 'package:roomies/pages/onboarding/welcome_page.dart';
-import 'package:roomies/services/database.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/pages/home/home_page.dart';
+import 'package:richtalk/pages/onboarding/full_name_page.dart';
+import 'package:richtalk/pages/onboarding/welcome_page.dart';
+import 'package:richtalk/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -79,12 +79,20 @@ class AuthService {
   Future signInWithOTP(verId, smsCode,[String phone]) async {
     PhoneAuthCredential authCreds = PhoneAuthProvider.credential(verificationId: verId, smsCode: smsCode);
     try {
-      print("authCreds ${authCreds}");
 
       var result = await FirebaseAuth.instance.signInWithCredential(authCreds);
       if (result.user != null) {
-        FirebaseAuth.instance.currentUser.delete();
-        signInWithEmail(phone);
+        Database().getUserProfile(result.user.uid).then((value) async {
+          Get.put(UserController()).user = value;
+          await Database().updateProfileData(result.user.uid, {
+            "firebasetoken" : await FirebaseMessaging.instance.getToken()
+          });
+          if(value !=null){
+            return Get.offAll(()=>HomePage());
+          }else{
+            return Get.to(()=>FullNamePage());
+          }
+        });
       } else {
         print("Error");
       }

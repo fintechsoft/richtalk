@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:richtalk/util/style.dart';
 
- topTrayPopup(String title, {Color bgcolor = Colors.red }){
+ topTrayPopup(String title, {Color bgcolor = Style.pinkAccent }){
    Get.snackbar("",
       " $title",
       // " you  raised your hand! we'll let the speakers know you want to talk..",

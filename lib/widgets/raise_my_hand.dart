@@ -3,8 +3,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:roomies/functions/functions.dart';
-import 'package:roomies/models/models.dart';
+import 'package:richtalk/functions/functions.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/util/style.dart';
 
 raiseMyHandView(BuildContext context, Room room, UserModel myProfile) {
   showModalBottomSheet(
@@ -58,7 +59,7 @@ raiseMyHandView(BuildContext context, Room room, UserModel myProfile) {
                               horizontal: 21, vertical: 12),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
-                              color: Colors.red
+                              color: Style.pinkAccent
                           ),
                           child: Text(
                             "Never mind",
@@ -73,7 +74,7 @@ raiseMyHandView(BuildContext context, Room room, UserModel myProfile) {
                           horizontal: 8),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
-                          color: Colors.red
+                          color: Style.pinkAccent
                       ),
                       child: TextButton.icon(
                           onPressed: () async {

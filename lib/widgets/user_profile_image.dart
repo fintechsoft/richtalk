@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/pages/home/profile_page.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/pages/home/profile_page.dart';
 class UserProfileImage extends StatelessWidget {
   final String type;
   final Color bordercolor;

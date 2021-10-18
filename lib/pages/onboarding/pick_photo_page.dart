@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/widgets/round_button.dart';
-import 'package:roomies/util/style.dart';
-import 'package:roomies/pages/home/home_page.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/widgets/round_button.dart';
+import 'package:richtalk/util/style.dart';
+import 'package:richtalk/pages/home/home_page.dart';
+import 'package:richtalk/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -42,11 +42,11 @@ class _PickPhotoPageState extends State<PickPhotoPage> {
                     setState(() {
                       loading = true;
                     });
-                      Get.find<OnboardingController>().imageFile = null;
-                        await Database().createUserInfo(FirebaseAuth.instance.currentUser.uid);
-                      setState(() {
-                        loading = false;
-                      });
+                    Get.find<OnboardingController>().imageFile = null;
+                    await Database().createUserInfo(FirebaseAuth.instance.currentUser.uid);
+                    setState(() {
+                      loading = false;
+                    });
                   },
                   child: Align(
                     alignment: Alignment.centerRight,
@@ -93,7 +93,7 @@ class _PickPhotoPageState extends State<PickPhotoPage> {
 
   Widget buildTitle() {
     return Text(
-      'Add your photo?',
+      'Add your profile Pic?',
       style: TextStyle(
         fontSize: 25,
       ),
@@ -115,18 +115,18 @@ class _PickPhotoPageState extends State<PickPhotoPage> {
             borderRadius: BorderRadius.circular(80),
           ),
           child: _imageFile !=null ? Container(
-                child: ClipOval(
-                  child: Image.file(
-                    _imageFile,
-                    height: 200,
-                    width: 200,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ) : Icon(
+            child: ClipOval(
+              child: Image.file(
+                _imageFile,
+                height: 200,
+                width: 200,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ) : Icon(
             Icons.add_photo_alternate_outlined,
             size: 100,
-            color: Style.AccentBlue,
+            color: Style.pinkAccent,
           ),
         ),
       ),
@@ -135,9 +135,8 @@ class _PickPhotoPageState extends State<PickPhotoPage> {
 
   Widget buildBottom(BuildContext context) {
     return CustomButton(
-      color: Style.AccentBlue,
-      minimumWidth: 230,
-      disabledColor: Style.AccentBlue.withOpacity(0.3),
+      color: Style.pinkAccent,
+      disabledColor: Style.pinkAccent.withOpacity(0.3),
       onPressed: _imageFile == null ? null : () async{
         setState(() {
           loading = true;
@@ -157,10 +156,6 @@ class _PickPhotoPageState extends State<PickPhotoPage> {
                 color: Colors.white,
                 fontSize: 20,
               ),
-            ),
-            Icon(
-              Icons.arrow_right_alt,
-              color: Colors.white,
             ),
           ],
         ),

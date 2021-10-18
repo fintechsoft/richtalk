@@ -1,7 +1,7 @@
-import 'package:roomies/models/models.dart';
-import 'package:roomies/models/user_model.dart';
-import 'package:roomies/util/style.dart';
-import 'package:roomies/widgets/round_image.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/models/user_model.dart';
+import 'package:richtalk/util/style.dart';
+import 'package:richtalk/widgets/round_image.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets.dart';
@@ -30,7 +30,7 @@ class RoomProfile extends StatefulWidget {
 
 class _RoomProfileState extends State<RoomProfile> {
   bool short = true;
-  Function listener(shor, set){
+   listener(shor, set){
     short = !shor;
     set(() {
 
@@ -38,8 +38,6 @@ class _RoomProfileState extends State<RoomProfile> {
     setState(() {
 
     });
-
-    print(short);
   }
 
   @override
@@ -73,7 +71,8 @@ class _RoomProfileState extends State<RoomProfile> {
                 ),
               ),
             ),
-            buildNewBadge(widget.user.isNewUser),
+            //buildNewBadge(widget.user.isNewUser),
+            buildNewLeader(widget.isModerator),
             buildMuteBadge(widget.isMute),
           ],
         ),
@@ -83,7 +82,7 @@ class _RoomProfileState extends State<RoomProfile> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            buildModeratorBadge(widget.isModerator),
+            // buildModeratorBadge(widget.isModerator),
             Expanded(
               child: Wrap(
                 alignment: WrapAlignment.center,
@@ -110,7 +109,7 @@ class _RoomProfileState extends State<RoomProfile> {
         ? Container(
             margin: const EdgeInsets.only(right: 5),
             decoration: BoxDecoration(
-              color: Style.AccentGreen,
+              color: Style.pinkAccent,
               borderRadius: BorderRadius.circular(30),
             ),
             child: Icon(
@@ -145,34 +144,64 @@ class _RoomProfileState extends State<RoomProfile> {
           : Container(),
     );
   }
-
-  Widget buildNewBadge(bool isNewUser) {
-    return Positioned(
-      left: 0,
-      bottom: 0,
-      child: isNewUser
-          ? Container(
-              width: 25,
-              height: 25,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(50),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    offset: Offset(0, 1),
-                  )
-                ],
-              ),
-              child: Text(
-                '🎉',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-              ),
-            )
-          : Container(),
-    );
-  }
+Widget buildNewLeader(bool isNewUser) {
+  return Positioned(
+    left: 0,
+    bottom: 0,
+    child: isNewUser
+        ? Container(
+            width: 25,
+            height: 25,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(50),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  offset: Offset(0, 1),
+                )
+              ],
+            ),
+            child:
+            Image.asset("assets/images/badge.png", width: 10,),
+            // Text(
+            //   '🎉',
+            //   textAlign: TextAlign.center,
+            //   style: TextStyle(
+            //     fontSize: 18,
+            //   ),
+            // ),
+          )
+        : Container(),
+  );
+}
+  // Widget buildNewBadge(bool isNewUser) {
+  //   return Positioned(
+  //     left: 0,
+  //     bottom: 0,
+  //     child: isNewUser
+  //         ? Container(
+  //             width: 25,
+  //             height: 25,
+  //             decoration: BoxDecoration(
+  //               color: Colors.white,
+  //               borderRadius: BorderRadius.circular(50),
+  //               boxShadow: [
+  //                 BoxShadow(
+  //                   color: Colors.grey.withOpacity(0.5),
+  //                   offset: Offset(0, 1),
+  //                 )
+  //               ],
+  //             ),
+  //             child: Text(
+  //               '🎉',
+  //               textAlign: TextAlign.center,
+  //               style: TextStyle(
+  //                 fontSize: 18,
+  //               ),
+  //             ),
+  //           )
+  //         : Container(),
+  //   );
+  // }
 }

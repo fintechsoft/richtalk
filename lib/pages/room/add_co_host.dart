@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/util/style.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/util/style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 List<UserModel> selectedusers = [];

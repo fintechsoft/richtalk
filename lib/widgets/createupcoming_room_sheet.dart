@@ -2,12 +2,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/pages/room/add_co_host.dart';
-import 'package:roomies/pages/room/new_upcoming_room.dart';
-import 'package:roomies/pages/room/upcoming_roomsreen.dart';
-import 'package:roomies/util/utils.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/pages/room/add_co_host.dart';
+import 'package:richtalk/pages/room/new_upcoming_room.dart';
+import 'package:richtalk/pages/room/upcoming_roomsreen.dart';
+import 'package:richtalk/util/utils.dart';
 
 
 List<UserModel> hosts = [Get.find<UserController>().user];

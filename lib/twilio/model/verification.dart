@@ -1,6 +1,6 @@
 
 
-import 'package:roomies/twilio/helpers.dart';
+import 'package:richtalk/twilio/helpers.dart';
 
 enum VerificationStatus { pending, approved, cancelled }
 class Verification {

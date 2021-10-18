@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/util/style.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/util/style.dart';
 import 'package:flutter/material.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/widgets/widgets.dart';
 
 class ScheduleCard extends StatefulWidget {
   @override
@@ -56,7 +56,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                                   upcomingroomBottomSheet(context, room,false, false);
                                 },
                                 child: Card(
-                                  color: Style.AccentBrown,
+                                  color: Colors.white,
                                   elevation: 2,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15)),

@@ -1,12 +1,13 @@
-import 'package:roomies/models/user_model.dart';
-import 'package:roomies/pages/home/invite_users.dart';
-import 'package:roomies/pages/home/search_view.dart';
-import 'package:roomies/pages/room/upcoming_roomsreen.dart';
+import 'package:richtalk/models/user_model.dart';
+import 'package:richtalk/pages/home/invite_users.dart';
+import 'package:richtalk/pages/home/search_view.dart';
+import 'package:richtalk/pages/room/upcoming_roomsreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:roomies/pages/room/notifications.dart';
-import 'package:roomies/widgets/user_profile_image.dart';
+import 'package:richtalk/pages/room/notifications.dart';
+import 'package:richtalk/util/style.dart';
+import 'package:richtalk/widgets/user_profile_image.dart';
 class HomeAppBar extends StatelessWidget {
   final UserModel profile;
   final Function onProfileTab;
@@ -66,7 +67,7 @@ class HomeAppBar extends StatelessWidget {
                         height: 13,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),
-                          color: Colors.red
+                          color: Style.pinkAccent
                         ),
                       ),
                     )

@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:roomies/models/models.dart';
+import 'package:richtalk/models/models.dart';
 /*
   type : Class
   packages used: Getx

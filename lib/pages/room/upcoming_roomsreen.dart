@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/widgets/upcomingroom_card.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/widgets/upcomingroom_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/widgets/widgets.dart';
 
 final eventcontroller = TextEditingController();
 final descriptioncontroller = TextEditingController();

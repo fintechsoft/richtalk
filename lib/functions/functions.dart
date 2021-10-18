@@ -5,11 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/pages/room/room_screen.dart';
-import 'package:roomies/util/utils.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/pages/room/room_screen.dart';
+import 'package:richtalk/util/utils.dart';
+import 'package:richtalk/widgets/widgets.dart';
 
 /*
   type : Class

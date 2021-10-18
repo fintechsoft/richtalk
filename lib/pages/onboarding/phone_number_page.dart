@@ -1,16 +1,17 @@
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/util/configs.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/twilio/api.dart';
-import 'package:roomies/widgets/round_button.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/util/configs.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/twilio/api.dart';
+import 'package:richtalk/widgets/round_button.dart';
+import 'package:richtalk/widgets/widgets.dart';
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:roomies/util/style.dart';
+import 'package:richtalk/util/style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'sms_screen.dart';
+
 
 class PhoneScreen extends StatefulWidget {
   @override
@@ -37,7 +38,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
         accountSid: accountSid, // replace with Account SID
         authToken: authToken, // replace with Auth Token
         serviceSid: serviceSid // replace with Service SIDe with Service SID
-        );
+    );
   }
 
   @override
@@ -62,7 +63,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
             ),
             Text(
               error,
-              style: TextStyle(color: Colors.red),
+              style: TextStyle(color: Style.pinkAccent),
             ),
             Spacer(),
             buildBottom(),
@@ -91,7 +92,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
       child: Row(
         children: [
           CountryCodePicker(
-            initialSelection: 'KE',
+            initialSelection: 'IN',
             showCountryOnly: false,
             alignLeft: false,
             onInit: (code) {
@@ -174,32 +175,27 @@ class _PhoneScreenState extends State<PhoneScreen> {
           height: 30,
         ),
         CustomButton(
-          color: Style.AccentBlue,
-          minimumWidth: 230,
-          disabledColor: Style.AccentBlue.withOpacity(0.3),
+          color: Style.pinkAccent,
+          disabledColor: Style.pinkAccent.withOpacity(0.3),
           onPressed: onSignUpButtonClick,
           child: Container(
-            width: 100,
+            width: 80,
             child: loading == true
                 ? Center(
-                    child: CircularProgressIndicator(),
-                  )
+              child: CircularProgressIndicator(),
+            )
                 : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Next',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      ),
-                      Icon(
-                        Icons.arrow_right_alt,
-                        color: Colors.white,
-                      ),
-                    ],
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Next',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
                   ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -214,7 +210,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
     final PhoneVerificationFailed verificationfailed = (authException) {
       if (APP_ENV_DEV == true) {
         Get.to(() => SmsScreen(
-            phone: user.countrycode + "" + _phoneNumberController.text, logintype: "test",));
+          phone: user.countrycode + "" + _phoneNumberController.text, logintype: "test",));
 
       }else{
         setState(() {
@@ -243,7 +239,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
 
     await FirebaseAuth.instance.verifyPhoneNumber(
 
-        /// Make sure to prefix with your country code
+      /// Make sure to prefix with your country code
         phoneNumber: phoneNumber,
 
         ///No duplicated SMS will be sent out upon re-entry (before timeout).
@@ -273,54 +269,54 @@ class _PhoneScreenState extends State<PhoneScreen> {
         error = "Enter Phone Number";
       });
     } else {
-        setState(() {
-          loading = true;
-          error = "";
-        });
+      setState(() {
+        loading = true;
+        error = "";
+      });
 
-        //USE EITHER FIREBASE OR TWILIO FOR AUTH (-ONLY ON DEVELOPMENT MODE-)
-        if(APP_ENV_DEV){
-          var twilioResponse = await _twilioPhoneVerify.sendSmsCode(user.countrycode + "" + _phoneNumberController.text);
+      //USE EITHER FIREBASE OR TWILIO FOR AUTH (-ONLY ON DEVELOPMENT MODE-)
+      if(APP_ENV_DEV){
+        var twilioResponse = await _twilioPhoneVerify.sendSmsCode(user.countrycode + "" + _phoneNumberController.text);
+        if (twilioResponse.successful) {
+          logintype = "twilio";
+          //code sent
+          setState(() {
+            loading = false;
+          });
+          Get.to(() => SmsScreen(
+            phone: user.countrycode + "" + _phoneNumberController.text, logintype: logintype,));
+        } else {
+          print(twilioResponse.statusCode);
+          print(twilioResponse.errorMessage);
+          logintype = "firebase";
+          verifyPhone(user.countrycode + "" + _phoneNumberController.text);
+        }
+      }else {
+        //USE TWILIO FOR AUTHNTICATIONS
+        if (ENABLE_TWILIO_AUTH) {
+          var twilioResponse = await _twilioPhoneVerify
+              .sendSmsCode(
+              user.countrycode + "" + _phoneNumberController.text);
+
           if (twilioResponse.successful) {
             logintype = "twilio";
             //code sent
             setState(() {
               loading = false;
             });
-            Get.to(() => SmsScreen(
-              phone: user.countrycode + "" + _phoneNumberController.text, logintype: logintype,));
-          } else {
-            print(twilioResponse.statusCode);
-            print(twilioResponse.errorMessage);
-            logintype = "firebase";
-            verifyPhone(user.countrycode + "" + _phoneNumberController.text);
-          }
-        }else {
-          //USE TWILIO FOR AUTHNTICATIONS
-          if (ENABLE_TWILIO_AUTH) {
-            var twilioResponse = await _twilioPhoneVerify
-                .sendSmsCode(
-                user.countrycode + "" + _phoneNumberController.text);
-
-            if (twilioResponse.successful) {
-              logintype = "twilio";
-              //code sent
-              setState(() {
-                loading = false;
-              });
-              Get.to(() =>
-                  SmsScreen(
-                    phone: user.countrycode + "" + _phoneNumberController.text,
-                    logintype: logintype,));
-            }
-          }
-          //USE FIREBASE FOR AUTHNTICATIONS
-          if (ENABLE_FIREBASE_AUTH) {
-            verifyPhone(user.countrycode + "" + _phoneNumberController.text);
+            Get.to(() =>
+                SmsScreen(
+                  phone: user.countrycode + "" + _phoneNumberController.text,
+                  logintype: logintype,));
           }
         }
-
+        //USE FIREBASE FOR AUTHNTICATIONS
+        if (ENABLE_FIREBASE_AUTH) {
+          verifyPhone(user.countrycode + "" + _phoneNumberController.text);
+        }
       }
+
+    }
 
   }
 }

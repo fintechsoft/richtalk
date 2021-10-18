@@ -1,16 +1,16 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/util/firebase_refs.dart';
-import 'package:roomies/util/style.dart';
-import 'package:roomies/widgets/round_image.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/util/firebase_refs.dart';
+import 'package:richtalk/util/style.dart';
+import 'package:richtalk/widgets/round_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:roomies/functions/functions.dart';
+import 'package:richtalk/functions/functions.dart';
 import 'package:intl/intl.dart';
 import '../../widgets/widgets.dart';
 

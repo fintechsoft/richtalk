@@ -1,9 +1,7 @@
-
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:roomies/services/authenticate.dart';
-import 'package:roomies/util/style.dart';
+import 'package:richtalk/services/authenticate.dart';
+import 'package:richtalk/util/style.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,7 +26,12 @@ AndroidNotificationChannel channel;
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 void main() async {
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
 
+  };
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   fireNotiInit();
@@ -119,12 +122,12 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Roomies',
+      title: 'RichTalk',
       theme: ThemeData(
-        scaffoldBackgroundColor: Style.LightBrown,
+        scaffoldBackgroundColor: Colors.white,
         fontFamily: "RobotoRegular",
         appBarTheme: AppBarTheme(
-          color: Style.LightBrown,
+          color: Colors.white,
           textTheme: TextTheme(
             bodyText1: TextStyle(
               fontSize: 21,

@@ -1,8 +1,8 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/util/utils.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/util/utils.dart';
 
 roomTitle([Room room]){
   return Column(
@@ -24,7 +24,7 @@ roomTitle([Room room]){
           ),
           Icon(
             Icons.home,
-            color: Style.AccentGreen,
+            color: Style.pinkAccent,
             size: 18,
           )
         ],

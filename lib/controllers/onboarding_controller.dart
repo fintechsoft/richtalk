@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:roomies/models/models.dart';
+import 'package:richtalk/models/models.dart';
 import 'package:get/get.dart';
 /*
   type : Class

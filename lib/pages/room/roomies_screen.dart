@@ -3,31 +3,33 @@ import 'dart:async';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:loading_indicator/loading_indicator.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/functions/functions.dart';
-import 'package:roomies/pages/home/home_page.dart';
-import 'package:roomies/pages/room/room_screen.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/services/dynamic_link_service.dart';
-import 'package:roomies/util/firebase_refs.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/functions/functions.dart';
+import 'package:richtalk/pages/home/home_page.dart';
+import 'package:richtalk/pages/room/room_screen.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/services/dynamic_link_service.dart';
+import 'package:richtalk/util/firebase_refs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:roomies/util/utils.dart';
-import 'package:roomies/widgets/noitem_widget.dart';
-import 'package:roomies/widgets/room_card.dart';
-import 'package:roomies/models/room.dart';
-import 'package:roomies/widgets/round_button.dart';
-import 'package:roomies/util/style.dart';
-import 'package:roomies/widgets/lobby_bottom_sheet.dart';
+import 'package:richtalk/util/utils.dart';
+import 'package:richtalk/widgets/noitem_widget.dart';
+import 'package:richtalk/widgets/room_card.dart';
+import 'package:richtalk/models/room.dart';
+import 'package:richtalk/widgets/round_button.dart';
+import 'package:richtalk/util/style.dart';
+import 'package:richtalk/widgets/lobby_bottom_sheet.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/widgets/schedule_card_old.dart';
-import 'package:roomies/widgets/user_profile_image.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/widgets/schedule_card_old.dart';
+import 'package:richtalk/widgets/user_profile_image.dart';
+import 'package:richtalk/widgets/widgets.dart';
 
 class RommiesScreen extends StatefulWidget {
+  bool showbutton = false;
+  RommiesScreen({this.showbutton});
   @override
   _RommiesScreenState createState() => _RommiesScreenState();
 }
@@ -49,6 +51,7 @@ class _RommiesScreenState extends State<RommiesScreen>
 
   bool showhalfroom = false;
 
+
   @override
   void initState() {
     super.initState();
@@ -58,7 +61,6 @@ class _RommiesScreenState extends State<RommiesScreen>
       myProfile = UserModel.fromJson(event.data());
       Get.find<UserController>().user = myProfile;
       setState(() {
-
       });
     });
   }
@@ -163,7 +165,9 @@ class _RommiesScreenState extends State<RommiesScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return
+      SafeArea(child:
+      Scaffold(
       key: globalScaffoldKey,
       body: Container(
         child: Stack(
@@ -227,7 +231,10 @@ class _RommiesScreenState extends State<RommiesScreen>
                         },
                       ),
                       buildGradientContainer(),
-                      buildStartRoomButton(),
+                      Visibility(
+                          visible: widget.showbutton,
+                          child: buildStartRoomButton()),
+
                     ],
                   ),
                 ),
@@ -249,7 +256,9 @@ class _RommiesScreenState extends State<RommiesScreen>
           ],
         ),
       ),
-    );
+    ),
+      );
+
   }
 
   Widget buildScheduleCard() {
@@ -306,8 +315,8 @@ class _RommiesScreenState extends State<RommiesScreen>
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          Style.LightBrown.withOpacity(0.2),
-          Style.LightBrown,
+          Colors.white.withOpacity(0.2),
+          Colors.white,
         ],
       )),
     );
@@ -319,35 +328,35 @@ class _RommiesScreenState extends State<RommiesScreen>
       children: [
         Stack(
           children: [
-            Positioned(
-              left: 30,
-              child: Stack(
-                children: [
-                  InkWell(
-                      onTap: () {
-                        pageController.animateToPage(0,
-                            duration: Duration(milliseconds: 500),
-                            curve: Curves.ease);
-                      },
-                      child: Icon(
-                        CupertinoIcons.circle_grid_3x3,
-                        size: 30,
-                      )),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      height: 15,
-                      width: 15,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Style.AccentGreen),
-                    ),
-                  )
-                ],
-              ),
-              top: 15,
-            ),
+            // Positioned(
+            //   left: 30,
+            //   child: Stack(
+            //     children: [
+            //       InkWell(
+            //           onTap: () {
+            //             pageController.animateToPage(0,
+            //                 duration: Duration(milliseconds: 500),
+            //                 curve: Curves.ease);
+            //           },
+            //           child: Icon(
+            //             CupertinoIcons.circle_grid_3x3,
+            //             size: 30,
+            //           )),
+            //       Positioned(
+            //         bottom: 0,
+            //         right: 0,
+            //         child: Container(
+            //           height: 15,
+            //           width: 15,
+            //           decoration: BoxDecoration(
+            //               borderRadius: BorderRadius.circular(50),
+            //               color: Style.pinkAccent),
+            //         ),
+            //       )
+            //     ],
+            //   ),
+            //   top: 15,
+            // ),
             Center(
               child: Container(
                 margin: const EdgeInsets.only(bottom: 20),
@@ -356,7 +365,7 @@ class _RommiesScreenState extends State<RommiesScreen>
                     onPressed: () {
                       showBottomSheet();
                     },
-                    color: Style.AccentGreen,
+                    color: Style.pinkAccent,
                     text: '+ Start a room'),
               ),
             ),
@@ -386,81 +395,84 @@ class _RommiesScreenState extends State<RommiesScreen>
                   topRight: Radius.circular(50),
                 ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        activeroom.users.length > 1
-                            ? Container(
-                              child: UserProfileImage(
-                                  user: activeroom.users[1],
-                                  width: 45,
-                                  height: 45,
-                                  borderRadius: 20,
-                                ),
-                            )
-                            : Container(),
-                        Container(
-                          margin: EdgeInsets.only(left: 42),
-                          child: UserProfileImage(
-                            user: activeroom.users[0],
-                            width: 45,
-                            height: 45,
-                            borderRadius: 20,
-                          ),
-                        ),
-                        activeroom.users.length > 2
-                            ? RoundImage(
-                                margin: EdgeInsets.only(left: 84),
-                                width: 45,
-                                height: 45,
-                                borderRadius: 20,
-                                url: "",
-                                txt: "+" +
-                                    (activeroom.users.length - 2).toString(),
-                              )
-                            : Container(),
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      await Functions.leaveChannel(
-                          room: activeroom,
-                          currentUser: myProfile,
-                          context: context,
-                          quit: false);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 10.0,
-                        horizontal: 10.0,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(24.0),
-                      ),
-                      child: const Text.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(
-                              text: '✌🏾',
-                              style: TextStyle(fontSize: 15.0),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  buildBottomNav(
-                      activeroom, context, myProfile, activeroom.raisedhands),
-                ],
-              ),
+              child:
+             Column(
+               children: <Widget>[
+                 Text(activeroom.title, style:TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                 Row(
+                   mainAxisAlignment: MainAxisAlignment.center,
+                   children: [
+                     Expanded(
+                       child: Stack(
+                         children: [
+                           activeroom.users.length > 1
+                               ? Container(
+                             child: UserProfileImage(
+                               user: activeroom.users[1],
+                               width: 45,
+                               height: 45,
+                               borderRadius: 20,
+                             ),
+                           )
+                               : Container(),
+                           Container(
+                             margin: EdgeInsets.only(left: 42),
+                             child: UserProfileImage(
+                               user: activeroom.users[0],
+                               width: 45,
+                               height: 45,
+                               borderRadius: 20,
+                             ),
+                           ),
+                           activeroom.users.length > 2
+                               ? RoundImage(
+                             margin: EdgeInsets.only(left: 84),
+                             width: 45,
+                             height: 45,
+                             borderRadius: 20,
+                             url: "",
+                             txt: "+" +
+                                 (activeroom.users.length - 2).toString(),
+                           )
+                               : Container(),
+                         ],
+                       ),
+                     ),
+                     // GestureDetector(
+                     //   onTap: () async {
+                     //     await Functions.leaveChannel(
+                     //         room: activeroom,
+                     //         currentUser: myProfile,
+                     //         context: context,
+                     //         quit: false);
+                     //   },
+                     //   child: Container(
+                     //     padding: const EdgeInsets.symmetric(
+                     //       vertical: 10.0,
+                     //       horizontal: 10.0,
+                     //     ),
+                     //     decoration: BoxDecoration(
+                     //       color: Colors.grey[300],
+                     //       borderRadius: BorderRadius.circular(24.0),
+                     //     ),
+                     //     child: const Text.rich(
+                     //       TextSpan(
+                     //         children: [
+                     //           TextSpan(
+                     //             text: '✌🏾',
+                     //             style: TextStyle(fontSize: 15.0),
+                     //           ),
+                     //         ],
+                     //       ),
+                     //     ),
+                     //   ),
+                     // ),
+                   ],
+                 ),
+               ],
+             ),
+
+
             ),
           );
         })

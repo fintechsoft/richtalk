@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/services/database.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/services/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:roomies/util/utils.dart';
-import 'package:roomies/widgets/user_profile_image.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/util/utils.dart';
+import 'package:richtalk/widgets/user_profile_image.dart';
+import 'package:richtalk/widgets/widgets.dart';
 
 class UpcomingRoomCard extends StatefulWidget {
   final UpcomingRoom room;
@@ -52,7 +52,7 @@ class _UpcomingRoomCardState extends State<UpcomingRoomCard> {
                                 element.uid ==
                                 Get.find<UserController>().user.uid) !=
                             -1
-                        ? Colors.red
+                        ? Style.pinkAccent
                         : Colors.black,
                   ),
                   onTap: () async {
@@ -83,7 +83,7 @@ class _UpcomingRoomCardState extends State<UpcomingRoomCard> {
                       ),
                       Icon(
                         Icons.home,
-                        color: Style.AccentGreen,
+                        color: Style.pinkAccent,
                         size: 18,
                       )
                     ],

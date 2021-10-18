@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
-import 'package:roomies/twilio/data/repo.dart';
-import 'package:roomies/twilio/endpoints.dart';
-import 'package:roomies/twilio/model/email_channel_configuration.dart';
-import 'package:roomies/twilio/model/twilio_reponse.dart';
-import 'package:roomies/twilio/model/verification.dart';
+import 'package:richtalk/twilio/data/repo.dart';
+import 'package:richtalk/twilio/endpoints.dart';
+import 'package:richtalk/twilio/model/email_channel_configuration.dart';
+import 'package:richtalk/twilio/model/twilio_reponse.dart';
+import 'package:richtalk/twilio/model/verification.dart';
 
 class TwilioVerifyRepositoryImpl implements TwilioVerifyRepository {
   final String baseUrl;
@@ -34,7 +34,6 @@ class TwilioVerifyRepositoryImpl implements TwilioVerifyRepository {
   Future<TwilioResponse> sendSmsCode(String phone) async {
     // TODO: implement sendEmailCode
     String url = '$baseUrl${TwilioVerifyEndpoint.verification}';
-    print("url ${url}");
 
     return await resolveHttpRequest(
         url: url,

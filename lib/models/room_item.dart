@@ -1,4 +1,4 @@
-import 'package:roomies/models/models.dart';
+import 'package:richtalk/models/models.dart';
 
 class RoomItem{
   final String image;
@@ -22,8 +22,7 @@ class RoomItem{
       'image': 'assets/images/open.png',
       'text': 'Open',
       'club': null,
-      "location": false,
-      'selectedMessage': 'Start a room open to everyone',
+      'selectedMessage': 'Start a room open to world',
     };
     RoomItem roomItem = RoomItem.fromJson(map);
     lobbyBottomSheets.add(roomItem);
@@ -31,7 +30,6 @@ class RoomItem{
       'image': 'assets/images/social.png',
       'text': 'Social',
       'club': null,
-      "location": false,
       'selectedMessage': 'Start a room with people I follow',
     };
     RoomItem roomItem1 = RoomItem.fromJson(map1);
@@ -42,22 +40,10 @@ class RoomItem{
       'image': 'assets/images/closed.png',
       'text': 'Closed',
       'club': null,
-      "location": false,
       'selectedMessage': 'Start a room for people I choose',
     };
     RoomItem roomItem2 = RoomItem.fromJson(map2);
     lobbyBottomSheets.add(roomItem2);
-
-
-    Map map3 = {
-      'image': 'assets/images/closed.png',
-      'text': 'By Location',
-      'club': null,
-      "location": true,
-      'selectedMessage': 'Start a room for within your location',
-    };
-    RoomItem roomItem3 = RoomItem.fromJson(map3);
-    lobbyBottomSheets.add(roomItem3);
     return lobbyBottomSheets;
   }
 }

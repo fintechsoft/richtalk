@@ -1,4 +1,4 @@
-import 'package:roomies/models/user_model.dart';
+import 'package:richtalk/models/user_model.dart';
 /*
   type : Model
  */

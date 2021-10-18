@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/util/firebase_refs.dart';
-import 'package:roomies/widgets/round_button.dart';
-import 'package:roomies/util/style.dart';
-import 'package:roomies/widgets/round_image.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/util/firebase_refs.dart';
+import 'package:richtalk/widgets/round_button.dart';
+import 'package:richtalk/util/style.dart';
+import 'package:richtalk/widgets/round_image.dart';
 import 'package:flutter/material.dart';
-import 'package:roomies/pages/room/followers_match_grid_sheet.dart';
+import 'package:richtalk/pages/room/followers_match_grid_sheet.dart';
 
 List<RoomItem> lobbyBottomSheets = [];
 
@@ -91,7 +91,7 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
               child: Text(
                 '+ Add a Topic',
                 style: TextStyle(
-                  color: Style.AccentGreen,
+                  color: Style.pinkAccent,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -161,7 +161,7 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
                 children: [
                   for (var i = 3, len = lobbyBottomSheets.length; i < len; i++)
                     InkWell(
-                      borderRadius: BorderRadius.circular(15),
+                      // borderRadius: BorderRadius.circular(15),
                       onTap: () {
                         setState(() {
                           selectedButtonIndex = i;
@@ -170,10 +170,10 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
                             lobbyBottomSheets[selectedButtonIndex].text);
                       },
                       child: Ink(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
-                        ),
+                        // padding: const EdgeInsets.symmetric(
+                        //   horizontal: 10,
+                        //   vertical: 5,
+                        // ),
                         width: MediaQuery.of(context).size.width * 0.3,
                         decoration: BoxDecoration(
                             color: i == selectedButtonIndex
@@ -230,7 +230,7 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
           lobbyBottomSheets[selectedButtonIndex].text == "Closed" &&
                   roomusers.length == 0
               ? CustomButton(
-                  color: Style.AccentGreen,
+                  color: Style.pinkAccent,
                   onPressed: () {
                     showModalBottomSheet(
                         backgroundColor: Colors.white,
@@ -263,7 +263,7 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
                   text: 'Choose People',
                 )
               : CustomButton(
-                  color: Style.AccentGreen,
+                  color: Style.pinkAccent,
                   onPressed: () {
                     widget.onButtonTap(
                         lobbyBottomSheets[selectedButtonIndex].text,
@@ -308,7 +308,7 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
               TextButton(
                 child: Container(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                    color: Colors.red,
+                    color: Style.pinkAccent,
                     child: Text(
                       'CANCEL',
                       style: TextStyle(color: Colors.white),
@@ -321,7 +321,7 @@ class _LobbyBottomSheetState extends State<LobbyBottomSheet> {
               ),
               TextButton(
                 child: Container(
-                    color: Colors.red,
+                    color: Style.pinkAccent,
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                     child: Text(
                       'SET TOPIC',

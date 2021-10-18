@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/util/style.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/util/style.dart';
 import 'package:flutter/material.dart';
 
 class ScheduleCardOld extends StatelessWidget {
@@ -25,7 +25,7 @@ class ScheduleCardOld extends StatelessWidget {
             ),
             margin: EdgeInsets.symmetric(horizontal: 15),
             decoration: BoxDecoration(
-              color: Style.AccentBrown,
+              color: Colors.white,
               borderRadius: BorderRadius.circular(15),
             ),
             child: Column(
@@ -87,7 +87,7 @@ class ScheduleCardOld extends StatelessWidget {
                   ),
                   Icon(
                     Icons.home,
-                    color: Style.AccentGreen,
+                    color: Style.pinkAccent,
                     size: 10,
                   )
                 ],

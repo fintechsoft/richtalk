@@ -6,12 +6,12 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_indicator/loading_indicator.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/pages/clubs/view_club.dart';
-import 'package:roomies/pages/home/select_interests.dart';
-import 'package:roomies/pages/room/followers_list.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/util/utils.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/pages/clubs/view_club.dart';
+import 'package:richtalk/pages/home/select_interests.dart';
+import 'package:richtalk/pages/room/followers_list.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/util/utils.dart';
 
 class NewClub extends StatefulWidget {
   @override
@@ -450,7 +450,7 @@ class _NewClubState extends State<NewClub> {
             : Icon(
                 Icons.add_photo_alternate_outlined,
                 size: 80,
-                color: Style.AccentGreen,
+                color: Style.pinkAccent,
               ),
       ),
     );

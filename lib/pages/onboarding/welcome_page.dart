@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-import 'package:roomies/pages/onboarding/phone_number_page.dart';
-import 'package:roomies/util/utils.dart';
-import 'package:roomies/widgets/round_button.dart';
-import 'package:roomies/util/style.dart';
+import 'package:richtalk/pages/onboarding/phone_number_page.dart';
+import 'package:richtalk/util/utils.dart';
+import 'package:richtalk/widgets/round_button.dart';
+import 'package:richtalk/util/style.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -22,24 +22,47 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      //appBar: AppBar(),
       body: Container(
-        padding: const EdgeInsets.only(
-          left: 50,
-          right: 50,
-          bottom: 60,
-        ),
+        //padding: const EdgeInsets.all(20),
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            buildTitle(),
+            // buildTitle(),
+            Text(
+              'Rt.',
+              style: TextStyle(
+                fontSize: 80,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w800,
+                color: Style.pinkAccent,
+              ),
+            ),
+            Text(
+              'Welcome to Rich Talk',
+              style: TextStyle(
+                  fontSize: 28,
+                  fontFamily: 'Roboto-Light'
+              ),
+            ),
+            Text(
+              'Your Network is your Net Worth',
+              style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Roboto'
+              ),
+            ),
             SizedBox(
               height: 40,
             ),
-            Expanded(
-              child: buildContents(),
-            ),
+            // Expanded(
+            //   child: buildContents(),
+            // ),
             buildBottom(context),
+
           ],
         ),
       ),
@@ -48,9 +71,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   Widget buildTitle() {
     return Text(
-      '🎉 Welcome to Roomy!',
+      '🎉 Rt.',
       style: TextStyle(
         fontSize: 25,
+        fontFamily: 'Roboto-bold',
+        fontWeight: FontWeight.w800,
       ),
     );
   }
@@ -96,14 +121,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         CustomButton(
-          color: Style.AccentGreen,
+          color: Style.pinkAccent,
           onPressed: () {
             Get.to(() => PhoneScreen());
           },
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 5),
+            width: 150,
             child: Row(
-              mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
@@ -113,10 +138,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     fontSize: 20,
                   ),
                 ),
-                Icon(
-                  Icons.arrow_right_alt,
-                  color: Colors.white,
-                ),
+
               ],
             ),
           ),
@@ -130,7 +152,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         //     Text(
         //       'Have an invite text?',
         //       style: TextStyle(
-        //         color: Style.AccentBlue,
+        //         color: Style.pinkAccent,
         //       ),
         //     ),
         //     SizedBox(
@@ -139,13 +161,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         //     Text(
         //       'Sign in',
         //       style: TextStyle(
-        //         color: Style.AccentBlue,
+        //         color: Style.pinkAccent,
         //         fontWeight: FontWeight.bold,
         //       ),
         //     ),
         //     Icon(
         //       Icons.arrow_right_alt,
-        //       color: Style.AccentBlue,
+        //       color: Style.pinkAccent,
         //     ),
         //   ],
         // ),

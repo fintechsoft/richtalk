@@ -1,10 +1,10 @@
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/widgets/round_button.dart';
-import 'package:roomies/util/style.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/widgets/round_button.dart';
+import 'package:richtalk/util/style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/widgets/widgets.dart';
 
 import 'pick_photo_page.dart';
 
@@ -109,9 +109,8 @@ class _UsernamePageState extends State<UsernamePage> {
     return loading == true ? Center(
       child: CircularProgressIndicator(),
     ) : CustomButton(
-      color: Style.AccentBlue,
-      minimumWidth: 230,
-      disabledColor: Style.AccentBlue.withOpacity(0.3),
+      color: Style.pinkAccent,
+      disabledColor: Style.pinkAccent.withOpacity(0.3),
       onPressed: onNextButtonClick,
       child: Container(
         child: Row(
@@ -123,10 +122,6 @@ class _UsernamePageState extends State<UsernamePage> {
                 color: Colors.white,
                 fontSize: 20,
               ),
-            ),
-            Icon(
-              Icons.arrow_right_alt,
-              color: Colors.white,
             ),
           ],
         ),

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/util/utils.dart';
-import 'package:roomies/widgets/top_tray_popup.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/util/utils.dart';
+import 'package:richtalk/widgets/top_tray_popup.dart';
 
 Future<void> blockProfile(BuildContext context, {UserModel myprofile,UserModel reportuser}) async {
   return showDialog<void>(

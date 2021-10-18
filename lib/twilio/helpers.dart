@@ -1,6 +1,6 @@
 
 
-import 'package:roomies/twilio/model/verification.dart';
+import 'package:richtalk/twilio/model/verification.dart';
 
 String stringFromEnum(val) => val.toString().split('.').last;
 

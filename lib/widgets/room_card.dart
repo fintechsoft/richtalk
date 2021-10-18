@@ -1,9 +1,10 @@
-import 'package:roomies/models/room.dart';
-import 'package:roomies/widgets/round_image.dart';
+import 'package:richtalk/models/room.dart';
+import 'package:richtalk/util/style.dart';
+import 'package:richtalk/widgets/round_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:roomies/widgets/widgets.dart';
-
+import 'package:richtalk/widgets/widgets.dart';
+import 'package:intl/intl.dart';
 class RoomCard extends StatelessWidget {
   final Room room;
 
@@ -11,24 +12,23 @@ class RoomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var date = DateTime.fromMillisecondsSinceEpoch(room.createdtime);
+    var formattedDate = DateFormat.jm().format(date);
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 20,
         vertical: 10,
       ),
       decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              offset: Offset(0, 1),
-            )
-          ]),
+          color: Color(0xfff4adcf),
+          borderRadius: BorderRadius.circular(20)
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+
+          Text(formattedDate,style:TextStyle(fontWeight: FontWeight.bold),),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -48,7 +48,7 @@ class RoomCard extends StatelessWidget {
           ),
           Row(
             children: [
-               if(room.users.length > 0) buildProfileImages(),
+              if(room.users.length > 0) buildProfileImages(),
               SizedBox(
                 width: 10,
               ),
@@ -111,7 +111,7 @@ class RoomCard extends StatelessWidget {
               ),
               Icon(
                 CupertinoIcons.chat_bubble_text,
-                color: Colors.grey,
+                color: Colors.black,
                 size: 14,
               ),
             ],
@@ -126,30 +126,30 @@ class RoomCard extends StatelessWidget {
         Text(
           '${room.users.length}',
           style: TextStyle(
-            color: Colors.grey,
+            color: Colors.black,
           ),
         ),
         Icon(
           Icons.supervisor_account,
-          color: Colors.grey,
+          color: Colors.black,
           size: 14,
         ),
         Text(
           '  /  ',
           style: TextStyle(
-            color: Colors.grey,
+            color: Colors.black,
             fontSize: 10,
           ),
         ),
         Text(
           '${room.speakerCount}',
           style: TextStyle(
-            color: Colors.grey,
+            color: Colors.black,
           ),
         ),
         Icon(
           CupertinoIcons.chat_bubble_text,
-          color: Colors.grey,
+          color: Colors.black,
           size: 14,
         ),
       ],

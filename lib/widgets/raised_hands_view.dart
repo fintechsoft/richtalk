@@ -2,9 +2,10 @@
 //raised hands bottom sheet widget
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/util/style.dart';
+import 'package:richtalk/widgets/widgets.dart';
 
 Widget raisedHandsView(StateSetter mystate, Room room, BuildContext context, List<UserModel> raisedhandsusers) {
   return Container(
@@ -129,7 +130,7 @@ Widget raisedHandsView(StateSetter mystate, Room room, BuildContext context, Lis
                     padding:
                     EdgeInsets.symmetric(vertical: 6, horizontal: 10),
                     decoration: BoxDecoration(
-                      color: user.callmute == true ? Colors.grey : Colors.red,
+                      color: user.callmute == true ? Colors.grey : Style.pinkAccent,
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(25),
                           topRight: Radius.circular(25),

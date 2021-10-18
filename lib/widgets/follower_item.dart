@@ -1,9 +1,9 @@
-import 'package:roomies/models/user_model.dart';
-import 'package:roomies/util/style.dart';
-import 'package:roomies/widgets/round_button.dart';
-import 'package:roomies/widgets/round_image.dart';
+import 'package:richtalk/models/user_model.dart';
+import 'package:richtalk/util/style.dart';
+import 'package:richtalk/widgets/round_button.dart';
+import 'package:richtalk/widgets/round_image.dart';
 import 'package:flutter/material.dart';
-import 'package:roomies/functions/functions.dart';
+import 'package:richtalk/functions/functions.dart';
 import 'package:intl/intl.dart';
 
 class FollowerItem extends StatelessWidget {
@@ -37,7 +37,7 @@ class FollowerItem extends StatelessWidget {
                   width: 13,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(50),
-                      color: user.online == true ? Style.AccentGreen : Colors.green[100],
+                      color: user.online == true ? Style.pinkAccent : Colors.green[100],
                       border: Border.all(width: 1,color: Colors.white)
                   ),
                 ),
@@ -80,12 +80,12 @@ class FollowerItem extends StatelessWidget {
                 Text(
                   '+ Room',
                   style: TextStyle(
-                    color: Style.AccentGreen,
+                    color: Style.pinkAccent,
                   ),
                 ),
                 Icon(
                   Icons.lock,
-                  color: Style.AccentGreen,
+                  color: Style.pinkAccent,
                   size: 15,
                 ),
               ],

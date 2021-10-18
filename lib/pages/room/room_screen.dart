@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/util/configs.dart';
-import 'package:roomies/functions/functions.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/util/utils.dart';
-import 'package:roomies/widgets/room_profile.dart';
-import 'package:roomies/services/dynamic_link_service.dart';
-import 'package:roomies/util/firebase_refs.dart';
-import 'package:roomies/widgets/user_profile_image.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/util/configs.dart';
+import 'package:richtalk/functions/functions.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/util/utils.dart';
+import 'package:richtalk/widgets/room_profile.dart';
+import 'package:richtalk/services/dynamic_link_service.dart';
+import 'package:richtalk/util/firebase_refs.dart';
+import 'package:richtalk/widgets/user_profile_image.dart';
+import 'package:richtalk/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -40,11 +40,12 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
   UserModel myProfile = Get.put(UserController()).user;
   bool waitinguser = false;
   Room room;
-  String currentUserType = "",error = "";
+  String currentUserType = "", error = "";
   List<UserModel> otherusers = [];
   List<UserModel> raisedhandsusers = [];
   List<UserModel> _tempListOfUsers = [];
   List<UserModel> speakerusers = [];
+  List<UserModel> leaderusers=[];
   AnimationController _animationController;
   Animation _colorTween;
   int index = -2;
@@ -74,15 +75,16 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
     _colorTween = ColorTween(begin: Colors.white, end: Colors.grey)
         .animate(_animationController);
 
-
     //setting room object from the parameters from the previous screen
     room = widget.room;
 
     //start listening for changes in the room
     roomlistener =
         roomsRef.doc(widget.roomid).snapshots().listen((event) async {
-          print("listener");
-      if (event.exists == false && room.ownerid != myProfile.uid && error.isEmpty) {
+      print("listener");
+      if (event.exists == false &&
+          room.ownerid != myProfile.uid &&
+          error.isEmpty) {
         //notify user when room has been deleted
         var alert = new CupertinoAlertDialog(
           title: new Text('Room is not longer available'),
@@ -113,26 +115,27 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
         //update room variables and re-generate room object
         try {
           speakerusers.clear();
+          leaderusers.clear();
           otherusers.clear();
 
           room = Room.fromJson(event);
           //POPULATE USERS WHO HAVE RAISED THEIR HANDS
           if (room.raisedhands.length > raisedhandsusers.length) {
             raisedhandsusers = room.raisedhands;
-            if(room.ownerid == myProfile.uid) {
-              UserModel raisehanduser = room.raisedhands.length == 1 ? room
-                  .raisedhands[0] : room.raisedhands[room.raisedhands.length -
-                  1];
-              Get.snackbar("",
-                  "",
+            if (room.ownerid == myProfile.uid) {
+              UserModel raisehanduser = room.raisedhands.length == 1
+                  ? room.raisedhands[0]
+                  : room.raisedhands[room.raisedhands.length - 1];
+              Get.snackbar("", "",
                   snackPosition: SnackPosition.TOP,
                   borderRadius: 0,
-                  titleText: Text("👋 ${raisehanduser.firstname + " " +
-                      raisehanduser
-                          .lastname} has something to say, Invite them as speaker?",
-                    style: TextStyle(fontSize: 16,
+                  titleText: Text(
+                    "👋 ${raisehanduser.firstname + " " + raisehanduser.lastname} has something to say, Invite them as speaker?",
+                    style: TextStyle(
+                        fontSize: 16,
                         color: Colors.white,
-                        fontFamily: "InterBold"),),
+                        fontFamily: "InterBold"),
+                  ),
                   margin: EdgeInsets.all(0),
                   backgroundColor: Colors.green,
                   colorText: Colors.white,
@@ -143,7 +146,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomButton(
-                          color: Colors.white70,
+                          color: Colors.black,
                           text: "Dismiss",
                           txtcolor: Colors.white,
                           fontSize: 16,
@@ -152,9 +155,9 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
                           },
                         ),
                         CustomButton(
-                          color: Colors.white,
+                          color: Style.pinkAccent,
                           text: "Invite to speak",
-                          txtcolor: Colors.green,
+                          txtcolor: Colors.white,
                           fontSize: 16,
                           onPressed: () {
                             activateDeactivateUser(
@@ -168,7 +171,6 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
             }
           }
 
-
           Get.find<CurrentRoomController>().room = room;
           _tempListOfUsers = room.users;
 
@@ -179,9 +181,13 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
               currentUserType = room.users[index].usertype;
             }
             var speakers = room.users.where((row) =>
-                (row.usertype.contains("host")) ||
-                row.usertype.contains("speaker"));
+                (row.usertype.contains("speaker") ));
             speakerusers.addAll(speakers);
+
+            var leaders = room.users.where((row) =>
+            (row.usertype.contains("host"))|| row.usertype.contains("moderator")
+            );
+            leaderusers.addAll(leaders);
 
             var others =
                 room.users.where((row) => (row.usertype.contains("others")));
@@ -246,8 +252,12 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
     engine.setEventHandler(RtcEngineEventHandler(error: (code) async {
       print('onError: $code');
       //delete rooms that has token expire
-      if(code.toString() == "ErrorCode.TokenExpired" && APP_ENV_DEV == true){
-        Functions.deleteRoom(room:room,currentuser:myProfile, context: context, roomlistener:roomlistener);
+      if (code.toString() == "ErrorCode.TokenExpired" && APP_ENV_DEV == true) {
+        Functions.deleteRoom(
+            room: room,
+            currentuser: myProfile,
+            context: context,
+            roomlistener: roomlistener);
         error = code.toString();
       }
     }, joinChannelSuccess: (channel, uid, elapsed) async {
@@ -255,9 +265,10 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
 
       roomsRef.doc(room.roomid).update({
         "users": room.users
-            .map((i) =>
-            i.toMap(
-                usertype: i.usertype, callmute: i.callmute, callerid: myProfile.uid == i.uid ? uid : i.callerid))
+            .map((i) => i.toMap(
+                usertype: i.usertype,
+                callmute: i.callmute,
+                callerid: myProfile.uid == i.uid ? uid : i.callerid))
             .toList(),
       });
 
@@ -291,7 +302,22 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
       speakers.forEach((eleme) {
         print("AudioVolumeInfo ${eleme.toJson()}");
         //CHECK IF SOUND IS FROM THE CURRENT USER
-        bounceRings(eleme, totalVolume);
+        int index;
+        if (eleme.uid == 0) {
+          index =
+              room.users.indexWhere((element) => element.uid == myProfile.uid);
+        } else {
+          index =
+              room.users.indexWhere((element) => eleme.uid == element.callerid);
+          print("talking ${room.users[index].firstname}");
+        }
+        room.users[index].valume = totalVolume;
+        if (_animationController.status == AnimationStatus.completed) {
+          print("reverse");
+          _animationController.reverse();
+        } else {
+          _animationController.forward();
+        }
       });
     }));
   }
@@ -299,49 +325,59 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return waitinguser == true
-        ? Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          )
-        : Scaffold(
+        ?
+    SafeArea(child: Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    ))
+        :
+    Padding(
+      padding: EdgeInsets.only(top: 20),
+      child:Scaffold(
             key: _scaffoldKey,
             appBar: AppBar(
-              toolbarHeight: 150,
-              automaticallyImplyLeading: false,
+              toolbarHeight: 50,
+              automaticallyImplyLeading: true,
+              backgroundColor: Style.pinkAccent,
+              iconTheme: IconThemeData(
+                color: Colors.white, //change your color here
+              ),
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  InkWell(
-                    onTap: () {
-                      Get.find<UserController>().room = room;
-                      Navigator.pop(context);
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.keyboard_arrow_down,
-                          size: 30,
-                        ),
+                  // InkWell(
+                  //   onTap: () {
+                  //     Get.find<UserController>().room = room;
+                  //     Navigator.pop(context);
+                  //   },
+                  //   child:
+                  //
+                  //   Row(
+                  //     children: [
+                  //       Icon(
+                  //         Icons.keyboard_arrow_down,
+                  //         size: 30,
+                  //       ),
                         Text(
-                          'Hallway',
+                          room.title,
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontSize: 18,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Spacer(),
-                  UserProfileImage(
-                    user: myProfile,
-                    width: 40,
-                    height: 40,
-                    txtsize: 16,
-                    borderRadius: 20,
-                  ),
+                         ),
+                  //     ],
+                  //   ),
+                  // ),
+                  //Spacer(),
+                  // UserProfileImage(
+                  //   user: myProfile,
+                  //   width: 40,
+                  //   height: 40,
+                  //   txtsize: 16,
+                  //   borderRadius: 20,
+                  // ),
                 ],
               ),
             ),
@@ -353,6 +389,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
               ),
               decoration: BoxDecoration(
                 color: Colors.white,
+                boxShadow: [BoxShadow(color: Style.pinkAccent,blurRadius: 2.0,spreadRadius: 15.0),],
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(30),
                   topLeft: Radius.circular(30),
@@ -363,15 +400,24 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
                   SingleChildScrollView(
                     padding: const EdgeInsets.only(
                       bottom: 80,
-                      top: 20,
+                      top: 10,
                     ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        buildTitle(room),
-                        SizedBox(
-                          height: 10,
-                        ),
+                        //buildTitle(room),
+                        // SizedBox(
+                        //   height: 10,
+                        // ),
+                        buildSpeakers(leaderusers),
+                        Divider(),
+                        Text("Speakers",style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.black,
+                        ), textAlign: TextAlign.start,),
                         buildSpeakers(speakerusers),
+                        Divider(),
                         buildOthers(otherusers),
                       ],
                     ),
@@ -383,7 +429,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
               ),
             ),
             // bottomSheet: buildBottom(context, room),
-          );
+          ),);
   }
 
   //bottomsheet widget to control the room privacy
@@ -425,7 +471,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
                                         ),
                                         CupertinoActionSheetAction(
                                           child: const Text(
-                                              'Followed by the moderator',
+                                              'Followed by the Leader',
                                               style: TextStyle(
                                                   color: Colors.blue,
                                                   fontSize: 16)),
@@ -459,9 +505,81 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
                 ),
               ],
             ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              index != -2 && index != -1 && room.users[index].usertype != "others"
+                  ? GestureDetector(
+                onTap: () {
+                  //initiate raising a hand
+                  callMuteUnmute(room,index, state);
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(5.0),
+
+                  child: index != -1 && room.users[index].callmute == true
+                      ? const Icon(CupertinoIcons.mic_off, size: 30.0)
+                      : const Icon(CupertinoIcons.mic_fill, size: 30.0),
+                ),
+              )
+                  : Text(""),
+              room != null && room.users[index].usertype=="others"
+              ?buildBottomNav(room, context, myProfile, room.raisedhands)
+              :Text(""),
+              // room != null && myProfile.uid == room.ownerid
+              //     ? GestureDetector(
+              //   onTap: () {
+              //     showModalBottomSheet(
+              //         context: context,
+              //         shape: RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.only(
+              //             topLeft: Radius.circular(15),
+              //             topRight: Radius.circular(15),
+              //           ),
+              //         ),
+              //         builder: (context) {
+              //           return StatefulBuilder(builder:
+              //               (BuildContext context, StateSetter mystate) {
+              //             return raisedHandsView(mystate, room, context, raisedhandsusers);
+              //           });
+              //         });
+              //   },
+              //   child: Container(
+              //     padding: EdgeInsets.all(5),
+              //     decoration: BoxDecoration(
+              //       shape: BoxShape.circle,
+              //       color: Style.pinkAccent,
+              //     ),
+              //     child: Stack(
+              //       alignment: Alignment.center,
+              //       children: [
+              //         const Icon(CupertinoIcons.hand_raised, size: 30.0,color: Colors.white,),
+              //         room.raisedhands.length > 0
+              //             ? Positioned(
+              //           right: 0.6,
+              //           top: 0.8,
+              //           child: Container(
+              //             height: 18.0,
+              //             width: 18.0,
+              //             child: Center(
+              //               child: Text(
+              //                 "${room.raisedhands.length}",
+              //                 style: TextStyle(color: Colors.white),
+              //               ),
+              //             ),
+              //             decoration: BoxDecoration(
+              //               shape: BoxShape.circle,
+              //               color: Style.pinkAccent,
+              //             ),
+              //           ),
+              //         )
+              //             : Text(""),
+              //       ],
+              //     ),
+              //   ),
+              // )
+              //     : Text(""),
               GestureDetector(
                 onTap: () async => await Functions.leaveChannel(
                     room: room,
@@ -469,37 +587,34 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
                     context: context,
                     roomlistener: roomlistener,
                     quit: true),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 10.0,
-                    horizontal: 16.0,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(24.0),
-                  ),
-                  child: const Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '✌🏾',
-                          style: TextStyle(fontSize: 15.0),
-                        ),
-                        TextSpan(
-                          text: 'Leave quietly',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 1.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                child:
+                Container(
+                  padding: const EdgeInsets.all(5.0),
+                  child: const Icon(CupertinoIcons.square_arrow_right, size: 30.0, color: Style.pinkAccent,),
                 ),
+                // const Text.rich(
+                //   TextSpan(
+                //     children: [
+                //
+                //       TextSpan(
+                //         text: '✌🏾',
+                //         style: TextStyle(fontSize: 15.0),
+                //       ),
+                //       TextSpan(
+                //         text: 'Leave Room',
+                //         style: TextStyle(
+                //           color: Style.pinkAccent,
+                //           fontSize: 14.0,
+                //           fontWeight: FontWeight.w600,
+                //           letterSpacing: 1.0,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+
               ),
-              buildBottomNav(room, context, myProfile, raisedhandsusers, state)
+              //buildBottomNav(room, context, myProfile, raisedhandsusers, state)
             ],
           )
         ],
@@ -549,21 +664,24 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
                             },
                           ),
                         ],
-                        cancelButton: room.ownerid == myProfile.uid ? null : CupertinoActionSheetAction(
-                          child: Text(
-                            'End Room',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                          onPressed: () {
-                            print("end room");
-                            Functions.quitRoomandPop(
-                                roomlistener: roomlistener, context: context);
-                            roomlistener.cancel();
-                            roomsRef.doc(room.roomid).delete();
-                            Navigator.of(context, rootNavigator: true)
-                                .pop("Cancel");
-                          },
-                        )),
+                        cancelButton: room.ownerid == myProfile.uid
+                            ? null
+                            : CupertinoActionSheetAction(
+                                child: Text(
+                                  'End Room',
+                                  style: TextStyle(color: Style.pinkAccent),
+                                ),
+                                onPressed: () {
+                                  print("end room");
+                                  Functions.quitRoomandPop(
+                                      roomlistener: roomlistener,
+                                      context: context);
+                                  roomlistener.cancel();
+                                  roomsRef.doc(room.roomid).delete();
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop("Cancel");
+                                },
+                              )),
                   );
                 },
                 iconSize: 30,
@@ -591,15 +709,18 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
       itemBuilder: (gc, index) {
         return AnimatedBuilder(
           animation: _colorTween,
-          builder: (context, child) => RoomProfile(
-            user: users[index],
-            isModerator: index == 0,
-            bordercolor:
-                users[index].valume > 0 ? _colorTween.value : Colors.white,
-            isMute: room.users[index].callmute,
-            room: room,
-            size: 70,
-          ),
+          builder: (context, child){
+            print("log talking ${users[index].valume > 0 && users[index].callmute == false ? room.users[index].firstname+" "+users[index].valume.toString() : ""}");
+            return RoomProfile(
+              user: users[index],
+              isModerator: index == 0,
+              bordercolor:
+              users[index].valume > 0 && users[index].callmute == false ? _colorTween.value : Colors.white,
+              isMute: room.users[index].callmute,
+              room: room,
+              size: 70,
+            );
+          },
         );
       },
     );
@@ -610,17 +731,26 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Text(
-            'Others in the room',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-              color: Colors.grey.withOpacity(0.6),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children:[
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              users.length.toString()+' Listener',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Colors.black,
+              ),
             ),
           ),
+            CustomButton(text: "invite",color: Style.pinkAccent,fontSize: 14 , onPressed: (){
+              pingPeopleRoom(context, room);
+            },)
+          ]
         ),
+
         GridView.builder(
           shrinkWrap: true,
           physics: ScrollPhysics(),
@@ -744,33 +874,45 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin {
     return _searchList;
   }
 
+  //mute user mic
+  void callMuteUnmute(Room room, int index, StateSetter state) {
+
+    room.users[index].callmute = !room.users[index].callmute;
+    engine.muteLocalAudioStream(room.users[index].callmute);
+
+    roomsRef.doc(room.roomid).update({
+      "users": room.users
+          .map((i) =>
+          i.toMap(
+              usertype: i.usertype, callmute: i.callmute, callerid: i.callerid))
+          .toList(),
+    });
+    state(() {});
+  }
+
   //bouncine ring functionality when user is speaking
   void bounceRings(AudioVolumeInfo eleme, int totalVolume) {
     print("bounceRings ${eleme.uid} $totalVolume");
-    if(eleme.volume ==0) return;
-    if (room.users
-                .indexWhere((element) => element.callerid == eleme.uid) !=
-            -1 ) {
-
+    if (eleme.volume == 0) return;
+    if (room.users.indexWhere((element) => element.callerid == eleme.uid) !=
+        -1) {
       print("else bb");
       room
-          .users[
-              room.users.indexWhere((element) => element.callerid == eleme.uid && element.callmute == false )]
+          .users[room.users.indexWhere((element) =>
+              element.callerid == eleme.uid && element.callmute == false)]
           .valume = totalVolume;
-      setState(() {
-
-      });
+      setState(() {});
       // _animationController.forward();
       // if (_animationController.status == AnimationStatus.completed) {
       //   print("reverse");
       //   _animationController.reverse();
       // } else {
-        _animationController.forward();
+      _animationController.forward();
       // }
 
       _animationController.addStatusListener((status) {
         print("status $status");
-        if(status == AnimationStatus.completed){
+        if (status == AnimationStatus.completed) {
           _animationController.reverse();
         }
       });

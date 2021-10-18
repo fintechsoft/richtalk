@@ -1,9 +1,9 @@
-import 'package:roomies/services/authenticate.dart';
-import 'package:roomies/twilio/api.dart';
-import 'package:roomies/twilio/model/verification.dart';
-import 'package:roomies/util/configs.dart';
-import 'package:roomies/util/utils.dart';
-import 'package:roomies/widgets/round_button.dart';
+import 'package:richtalk/services/authenticate.dart';
+import 'package:richtalk/twilio/api.dart';
+import 'package:richtalk/twilio/model/verification.dart';
+import 'package:richtalk/util/configs.dart';
+import 'package:richtalk/util/utils.dart';
+import 'package:richtalk/widgets/round_button.dart';
 import 'package:flutter/material.dart';
 
 class SmsScreen extends StatefulWidget {
@@ -38,7 +38,7 @@ class _SmsScreenState extends State<SmsScreen> {
         accountSid: accountSid, // replace with Account SID
         authToken: authToken, // replace with Auth Token
         serviceSid: serviceSid // replace with Service SID
-        );
+    );
   }
 
   @override
@@ -48,17 +48,18 @@ class _SmsScreenState extends State<SmsScreen> {
       appBar: AppBar(),
       body: Container(
         alignment: Alignment.center,
-        padding: const EdgeInsets.only(top: 30, bottom: 60),
+        padding: const EdgeInsets.only(top: 30, bottom: 10),
         child: Column(
           children: [
             title(),
             SizedBox(height: 50),
             form(),
-            Spacer(),
+            //Spacer(),
+            SizedBox(height: 20),
             loading == true
                 ? Center(
-                    child: CircularProgressIndicator(),
-                  )
+              child: CircularProgressIndicator(),
+            )
                 : bottom(),
           ],
         ),
@@ -71,7 +72,7 @@ class _SmsScreenState extends State<SmsScreen> {
       padding: const EdgeInsets.only(left: 80.0, right: 80.0),
       child: Text(
         'Enter the code we just texted you',
-        style: TextStyle(fontSize: 25),
+        style: TextStyle(fontSize: 18),
         textAlign: TextAlign.center,
       ),
     );
@@ -114,7 +115,7 @@ class _SmsScreenState extends State<SmsScreen> {
         if (errortxt.isNotEmpty)
           Text(
             errortxt,
-            style: TextStyle(color: Colors.red),
+            style: TextStyle(color: Style.pinkAccent),
           ),
         Text(
           'Didnt receive it? Tap to resend.',
@@ -127,11 +128,10 @@ class _SmsScreenState extends State<SmsScreen> {
   Widget bottom() {
     return Column(
       children: [
-        SizedBox(height: 30),
+        SizedBox(height: 10),
         CustomButton(
-          color: Style.AccentBlue,
-          minimumWidth: 230,
-          disabledColor: Style.AccentBlue.withOpacity(0.3),
+          color: Style.pinkAccent,
+          disabledColor: Style.pinkAccent.withOpacity(0.3),
           onPressed: () async {
             errortxt = "";
             setState(() {
@@ -175,7 +175,7 @@ class _SmsScreenState extends State<SmsScreen> {
               } else if (ENABLE_FIREBASE_AUTH) {
                 await AuthService()
                     .signInWithOTP(widget.verificationId, _smsController.text,
-                        widget.phone)
+                    widget.phone)
                     .then((value) {
                   print(value);
                   if (value == "null") {
@@ -197,10 +197,9 @@ class _SmsScreenState extends State<SmsScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Next',
+                  'Verify',
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
-                Icon(Icons.arrow_right_alt, color: Colors.white),
               ],
             ),
           ),

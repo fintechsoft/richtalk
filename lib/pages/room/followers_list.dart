@@ -2,15 +2,15 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/util/firebase_refs.dart';
-import 'package:roomies/util/style.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/util/firebase_refs.dart';
+import 'package:richtalk/util/style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:roomies/widgets/noitem_widget.dart';
+import 'package:richtalk/widgets/noitem_widget.dart';
 
 //ignore: must_be_immutable
 class FollowersList extends StatefulWidget {
@@ -282,7 +282,7 @@ class _FollowersListState extends State<FollowersList>
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 decoration: BoxDecoration(
                     border: Border.all(
-                      color: Style.indigo,
+                      color: Style.pinkAccent,
                       width: 2,
                       style: BorderStyle.solid,
                     ),
@@ -291,7 +291,7 @@ class _FollowersListState extends State<FollowersList>
                   "Invite",
                   textScaleFactor: 1,
                   style: TextStyle(
-                    color: Style.indigo,
+                    color: Style.pinkAccent,
                   ),
                 ),
               ),

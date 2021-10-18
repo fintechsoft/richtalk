@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/services/authenticate.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/util/firebase_refs.dart';
-import 'package:roomies/util/style.dart';
-import 'package:roomies/widgets/round_image.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/services/authenticate.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/util/firebase_refs.dart';
+import 'package:richtalk/util/style.dart';
+import 'package:richtalk/widgets/round_image.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +53,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Style.AccentBrown,
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -232,7 +232,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Interests",
+                        "Spaces",
                         style: (TextStyle(fontSize: 16)),
                       ),
                       Row(
@@ -413,7 +413,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       children: [
                         Text(
                           "Logout",
-                          style: (TextStyle(fontSize: 16, color: Colors.red)),
+                          style: (TextStyle(fontSize: 16, color: Style.pinkAccent)),
                         ),
                       ],
                     ),
@@ -511,7 +511,7 @@ class _SettingsPageState extends State<SettingsPage> {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
-      backgroundColor: Style.AccentBrown,
+      backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
         topLeft: Radius.circular(15),
@@ -592,7 +592,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               Text(
                                 "Deactivate Account",
                                 style: (TextStyle(
-                                    fontSize: 16, color: Colors.red)),
+                                    fontSize: 16, color: Style.pinkAccent)),
                               ),
                             ],
                           ),
@@ -616,7 +616,7 @@ class _SettingsPageState extends State<SettingsPage> {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
-      backgroundColor: Style.AccentBrown,
+      backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
         topLeft: Radius.circular(15),

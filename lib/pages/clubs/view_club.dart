@@ -9,16 +9,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/functions/functions.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/pages/home/select_interests.dart';
-import 'package:roomies/pages/room/followers_list.dart';
-import 'package:roomies/pages/room/new_upcoming_room.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/services/dynamic_link_service.dart';
-import 'package:roomies/util/utils.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/functions/functions.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/pages/home/select_interests.dart';
+import 'package:richtalk/pages/room/followers_list.dart';
+import 'package:richtalk/pages/room/new_upcoming_room.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/services/dynamic_link_service.dart';
+import 'package:richtalk/util/utils.dart';
+import 'package:richtalk/widgets/widgets.dart';
 import 'package:share/share.dart';
 //ignore: must_be_immutable
 class ViewClub extends StatefulWidget {
@@ -317,7 +317,7 @@ class _ViewClubState extends State<ViewClub> with SingleTickerProviderStateMixin
                         ),
                         Icon(
                           Icons.home,
-                          color: Style.AccentGreen,
+                          color: Style.pinkAccent,
                           size: 25,
                         )
                       ],
@@ -345,7 +345,7 @@ class _ViewClubState extends State<ViewClub> with SingleTickerProviderStateMixin
                                   horizontal: 15, vertical: 10),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(30),
-                                  color: Style.indigo),
+                                  color: Style.pinkAccent),
                               child: Text(
                                 "Schedule a Room",
                                 style: TextStyle(
@@ -370,7 +370,7 @@ class _ViewClubState extends State<ViewClub> with SingleTickerProviderStateMixin
                                 "Add Members",
                                 style: TextStyle(
                                     fontSize: 16,
-                                    color: Style.indigo,
+                                    color: Style.pinkAccent,
                                     fontFamily: "InterSemiBold"),
                               ),
                             ),
@@ -406,7 +406,7 @@ class _ViewClubState extends State<ViewClub> with SingleTickerProviderStateMixin
                               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(30),
-                                  color: Style.indigo),
+                                  color: Style.pinkAccent),
                               child: Text(
                                 "Member",
                                 style: TextStyle(
@@ -430,7 +430,7 @@ class _ViewClubState extends State<ViewClub> with SingleTickerProviderStateMixin
                               padding: EdgeInsets.symmetric(horizontal: 30, vertical: 5),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(30),
-                                  color: Style.indigo),
+                                  color: Style.pinkAccent),
                               child: Text("Join",
                                 style: TextStyle(
                                     fontSize: 18,
@@ -460,7 +460,7 @@ class _ViewClubState extends State<ViewClub> with SingleTickerProviderStateMixin
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(30),
                                   border: Border.all(
-                                    color: Style.indigo,
+                                    color: Style.pinkAccent,
                                     width: 2.0,
                                   ),
                                   color: Colors.white),
@@ -468,7 +468,7 @@ class _ViewClubState extends State<ViewClub> with SingleTickerProviderStateMixin
                                 widget.club.followers.contains(Get.find<UserController>().user.uid) ? "Unfollow" : "Follow",
                                 style: TextStyle(
                                     fontSize: 18,
-                                    color: Style.indigo,
+                                    color: Style.pinkAccent,
                                     fontFamily: "InterSemiBold"),
                               ),
                             ),
@@ -748,7 +748,7 @@ class _ViewClubState extends State<ViewClub> with SingleTickerProviderStateMixin
           Container(
             height: 35,
             child: TabBar(
-              indicatorColor: Style.indigo,
+              indicatorColor: Style.pinkAccent,
               indicatorWeight: 3,
               controller: _tabController,
               labelColor: Colors.black,
@@ -899,7 +899,7 @@ class _ViewClubState extends State<ViewClub> with SingleTickerProviderStateMixin
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               decoration: BoxDecoration(
                   border: Border.all(
-                    color: Style.indigo,
+                    color: Style.pinkAccent,
                     width: 2,
                     style: BorderStyle.solid,
                   ),
@@ -914,7 +914,7 @@ class _ViewClubState extends State<ViewClub> with SingleTickerProviderStateMixin
                     : "Follow",
                 textScaleFactor: 1,
                 style: TextStyle(
-                  color: Style.indigo,
+                  color: Style.pinkAccent,
                 ),
               ),
             ),
@@ -945,7 +945,7 @@ class _ViewClubState extends State<ViewClub> with SingleTickerProviderStateMixin
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
-      backgroundColor: Style.AccentBrown,
+      backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
         topLeft: Radius.circular(15),

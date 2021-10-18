@@ -1,7 +1,7 @@
 
 
-import 'package:roomies/twilio/model/email_channel_configuration.dart';
-import 'package:roomies/twilio/model/twilio_reponse.dart';
+import 'package:richtalk/twilio/model/email_channel_configuration.dart';
+import 'package:richtalk/twilio/model/twilio_reponse.dart';
 
 abstract class TwilioVerifyRepository {
   Future<TwilioResponse> sendSmsCode(String phone);

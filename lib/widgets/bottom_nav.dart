@@ -2,28 +2,26 @@
 //bottom widget of the room screen
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/pages/room/room_screen.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/util/utils.dart';
-import 'package:roomies/widgets/raise_my_hand.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/pages/room/room_screen.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/util/utils.dart';
+import 'package:richtalk/widgets/raise_my_hand.dart';
+import 'package:richtalk/widgets/widgets.dart';
 
 Widget buildBottomNav(Room room, BuildContext context, UserModel myProfile, List<UserModel> raisedhandsusers, [StateSetter state]) {
   if(room ==null) return Container();
   int index = room.users.indexWhere((element) => element.uid == myProfile.uid);
   return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      GestureDetector(
-        onTap: () {
-          pingPeopleRoom(context, room);
-        },
-        child: const Icon(CupertinoIcons.add_circled_solid, size: 40.0),
-      ),
-      SizedBox(
-        width: 10,
-      ),
+      // GestureDetector(
+      //   onTap: () {
+      //     pingPeopleRoom(context, room);
+      //   },
+      //   child: const Icon(CupertinoIcons.add_circled_solid, size: 40.0),
+      // ),
+
       room != null && myProfile.uid == room.ownerid
           ? GestureDetector(
         onTap: () {
@@ -67,7 +65,7 @@ Widget buildBottomNav(Room room, BuildContext context, UserModel myProfile, List
                   ),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.red,
+                    color: Style.pinkAccent,
                   ),
                 ),
               )
@@ -77,9 +75,7 @@ Widget buildBottomNav(Room room, BuildContext context, UserModel myProfile, List
         ),
       )
           : Text(""),
-      SizedBox(
-        width: 10,
-      ),
+
       room.users
           .indexWhere((element) => element.uid == myProfile.uid) != -1 &&
           room.users[room.users

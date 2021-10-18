@@ -1,7 +1,7 @@
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/util/utils.dart';
-import 'package:roomies/widgets/round_button.dart';
-import 'package:roomies/util/style.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/util/utils.dart';
+import 'package:richtalk/widgets/round_button.dart';
+import 'package:richtalk/util/style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -30,7 +30,9 @@ class _FullNamePageState extends State<FullNamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+      ),
       body: Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.only(top: 30, bottom: 60),
@@ -179,9 +181,8 @@ class _FullNamePageState extends State<FullNamePage> {
 
   Widget buildBottom() {
     return CustomButton(
-      color: Style.AccentBlue,
-      minimumWidth: 230,
-      disabledColor: Style.AccentBlue.withOpacity(0.3),
+      color: Style.pinkAccent,
+      disabledColor: Style.pinkAccent.withOpacity(0.3),
       onPressed: onNextButtonClick,
       child: Container(
         child: Row(
@@ -193,10 +194,6 @@ class _FullNamePageState extends State<FullNamePage> {
                 color: Colors.white,
                 fontSize: 20,
               ),
-            ),
-            Icon(
-              Icons.arrow_right_alt,
-              color: Colors.white,
             ),
           ],
         ),

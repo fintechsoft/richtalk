@@ -3,9 +3,9 @@
 //remove user from being speaker
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/pages/room/room_screen.dart';
-import 'package:roomies/util/utils.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/pages/room/room_screen.dart';
+import 'package:richtalk/util/utils.dart';
 
 void activateDeactivateUser(UserModel user, Room room, StateSetter setState, List<UserModel> raisedhandsusers) {
   if (room.raisedhands.indexWhere((element) => element.uid == user.uid) ==

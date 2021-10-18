@@ -3,12 +3,11 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/services/dynamic_link_service.dart';
-import 'package:roomies/util/utils.dart';
-import 'package:roomies/widgets/user_profile_image.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/services/dynamic_link_service.dart';
+import 'package:richtalk/util/utils.dart';
+import 'package:richtalk/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InviteContants extends StatefulWidget {
@@ -48,7 +47,7 @@ class _InviteContantsState extends State<InviteContants> {
         children: [
           Center(child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text("Who is a great addition to Roomies?", style: TextStyle(
+            child: Text("Who is a great addition to Richtalk?", style: TextStyle(
               fontSize: 18
             ),),
           )),
@@ -161,7 +160,7 @@ class _InviteContantsState extends State<InviteContants> {
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
               decoration: BoxDecoration(
                   border: Border.all(
-                    color: Style.indigo,
+                    color: Style.pinkAccent,
                     width: 2,
                     style: BorderStyle.solid,
                   ),
@@ -169,7 +168,7 @@ class _InviteContantsState extends State<InviteContants> {
               child: Text("Invite",
                 textScaleFactor: 1,
                 style: TextStyle(
-                    color: Style.indigo,
+                    color: Style.pinkAccent,
                     fontFamily: "InterSemiBold",
                     fontSize: 13
                 ),
@@ -193,12 +192,12 @@ class _InviteContantsState extends State<InviteContants> {
   _textMe(Contact contact,String link) async {
 
     // Android
-    String uri = 'sms:${contact.phones.first.value}?body=Hey ${contact.displayName} - You should join us on Roomies. Here is the link! $link';
+    String uri = 'sms:${contact.phones.first.value}?body=Hey ${contact.displayName} - You should join us on RichTalk. Here is the link! $link';
     if (await canLaunch(uri)) {
       await launch(uri);
     } else {
       // iOS
-      String uri = 'sms:${contact.phones.first.value}?body=Hey ${contact.displayName} - You should join us on Roomies. Here is the link! $link';
+      String uri = 'sms:${contact.phones.first.value}?body=Hey ${contact.displayName} - You should join us on RichTalk. Here is the link! $link';
       if (await canLaunch(uri)) {
         await launch(uri);
       } else {

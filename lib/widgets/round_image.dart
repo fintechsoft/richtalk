@@ -19,7 +19,7 @@ class RoundImage extends StatelessWidget {
       width: width,
       margin: margin,
       decoration: BoxDecoration(
-        color: Colors.grey[350],
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(borderRadius),
         image: url.isNotEmpty || path.isNotEmpty ? DecorationImage(
           image: path.isNotEmpty ? AssetImage(path) : NetworkImage(url),

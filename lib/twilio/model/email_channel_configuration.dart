@@ -1,17 +1,17 @@
 class EmailChannelConfiguration {
   String from;
-  String from_name;
-  String template_id;
+  String fromName;
+  String templateId;
   String usernameSubstitution;
 
   EmailChannelConfiguration(
-      {this.from, this.from_name, this.template_id, this.usernameSubstitution});
+      {this.from, this.fromName, this.templateId, this.usernameSubstitution});
 
   Map<String, dynamic> toMap() {
     return {
       'from': this.from,
-      'from_name': this.from_name,
-      'template_id': this.template_id,
+      'from_name': this.fromName,
+      'template_id': this.templateId,
       'substitutions': {
         if (this.usernameSubstitution != null)
           "username": this.usernameSubstitution

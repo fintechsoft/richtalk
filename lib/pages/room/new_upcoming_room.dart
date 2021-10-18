@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/pages/clubs/select_hsost_club.dart';
-import 'package:roomies/pages/room/add_co_host.dart';
-import 'package:roomies/pages/room/upcoming_roomsreen.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/util/utils.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/pages/clubs/select_hsost_club.dart';
+import 'package:richtalk/pages/room/add_co_host.dart';
+import 'package:richtalk/pages/room/upcoming_roomsreen.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/util/utils.dart';
+import 'package:richtalk/widgets/widgets.dart';
 import 'package:intl/intl.dart';
 
 //ignore: must_be_immutable
@@ -67,7 +67,7 @@ class _NewUpcomingRoomState extends State<NewUpcomingRoom> {
     print("hosts ${hosts.length}");
 
     return Scaffold(
-      backgroundColor: Style.AccentBrown,
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset : false,
       body: Container(
         padding:
@@ -90,7 +90,7 @@ class _NewUpcomingRoomState extends State<NewUpcomingRoom> {
                             },
                             child: Text(
                               "Cancel",
-                              style: TextStyle(fontSize: 20, color: Colors.red),
+                              style: TextStyle(fontSize: 20, color: Style.pinkAccent),
                             ),
                           ),
                           Text(
@@ -585,7 +585,7 @@ class _NewUpcomingRoomState extends State<NewUpcomingRoom> {
                                     Text(
                                       "Delete Event",
                                       style: (TextStyle(
-                                          fontSize: 16, color: Colors.red)),
+                                          fontSize: 16, color: Style.pinkAccent)),
                                     ),
                                   ],
                                 ),

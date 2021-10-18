@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:roomies/widgets/widgets.dart';
 
 import '../models/models.dart';
 import '../pages/home/profile_page.dart';

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:roomies/models/room.dart';
+import 'package:richtalk/models/room.dart';
 /*
   type : Model
  */

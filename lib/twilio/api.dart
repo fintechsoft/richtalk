@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:roomies/twilio/data/repo_impl.dart';
-import 'package:roomies/twilio/model/email_channel_configuration.dart';
-import 'package:roomies/twilio/model/twilio_reponse.dart';
+import 'package:richtalk/twilio/data/repo_impl.dart';
+import 'package:richtalk/twilio/model/email_channel_configuration.dart';
+import 'package:richtalk/twilio/model/twilio_reponse.dart';
 
 import 'data/repo.dart';
 
@@ -16,7 +16,7 @@ class TwilioPhoneVerify {
     _repository = TwilioVerifyRepositoryImpl(
         baseUrl: 'https://verify.twilio.com/v2/Services/$serviceSid',
         authorization:
-            'Basic ' + base64Encode(utf8.encode('${accountSid}:$authToken')));
+            'Basic ' + base64Encode(utf8.encode('$accountSid:$authToken')));
   }
 
   Future<TwilioResponse> sendSmsCode(String phone) async {

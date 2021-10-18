@@ -3,22 +3,22 @@ import 'dart:io';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:roomies/Notifications/push_nofitications.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/util/configs.dart';
-import 'package:roomies/functions/functions.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/pages/home/select_interests.dart';
-import 'package:roomies/pages/room/upcoming_roomsreen.dart';
-import 'package:roomies/util/firebase_refs.dart';
-import 'package:roomies/util/utils.dart';
+import 'package:richtalk/Notifications/push_nofitications.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/util/configs.dart';
+import 'package:richtalk/functions/functions.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/pages/home/select_interests.dart';
+import 'package:richtalk/pages/room/upcoming_roomsreen.dart';
+import 'package:richtalk/util/firebase_refs.dart';
+import 'package:richtalk/util/utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/io_client.dart';
 import 'package:path/path.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/widgets/widgets.dart';
 
 class Database {
   //get profile user data
@@ -159,7 +159,7 @@ class Database {
     await usersRef.doc(id).set(data);
     FirebaseMessaging.instance.subscribeToTopic("all");
     Get.to(() => InterestsPick(
-      title: "Add your interests so we can begin to personalize Roomies for you. Interests are private to you",
+      title: "Add your spaces so we can begin to personalize Richtalk for you. Interests are private to you",
       showbackarrow: false,
       fromsignup: true,
     ));

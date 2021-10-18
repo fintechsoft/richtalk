@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:roomies/models/models.dart';
+import 'package:richtalk/models/models.dart';
 /*
   type : Model
  */

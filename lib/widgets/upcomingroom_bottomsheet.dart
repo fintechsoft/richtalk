@@ -5,13 +5,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/pages/room/room_screen.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/services/dynamic_link_service.dart';
-import 'package:roomies/util/style.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/pages/room/room_screen.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/services/dynamic_link_service.dart';
+import 'package:richtalk/util/style.dart';
+import 'package:richtalk/widgets/widgets.dart';
 import 'package:share/share.dart';
 
 Future<Widget> upcomingroomBottomSheet(BuildContext context, UpcomingRoom room,
@@ -99,7 +99,7 @@ Future<Widget> upcomingroomBottomSheet(BuildContext context, UpcomingRoom room,
                                 ),
                                 Icon(
                                   Icons.home,
-                                  color: Style.AccentGreen,
+                                  color: Style.pinkAccent,
                                   size: 18,
                                 )
                               ],
@@ -169,7 +169,7 @@ Future<Widget> upcomingroomBottomSheet(BuildContext context, UpcomingRoom room,
                                     snackPosition: SnackPosition.BOTTOM,
                                     borderRadius: 0,
                                     margin: EdgeInsets.all(0),
-                                    backgroundColor: Colors.red,
+                                    backgroundColor: Style.pinkAccent,
                                     colorText: Colors.white,
                                     messageText: Text.rich(TextSpan(
                                       children: [
@@ -208,7 +208,7 @@ Future<Widget> upcomingroomBottomSheet(BuildContext context, UpcomingRoom room,
                           : Container(
                               margin: EdgeInsets.symmetric(horizontal: 20),
                               child: CustomButton(
-                                  color: Style.AccentGreen,
+                                  color: Style.pinkAccent,
                                   text: "Start the room",
                                   minimumWidth: double.infinity * 0.8,
                                   onPressed: () async {

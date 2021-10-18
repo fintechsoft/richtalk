@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/util/utils.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/util/utils.dart';
 //ignore: must_be_immutable
 class SelectHostClub extends StatefulWidget {
   Club selectedclub;
@@ -26,7 +26,7 @@ class _SelectHostClubState extends State<SelectHostClub> {
             Container(
               height: 80,
               child: CupertinoNavigationBar(
-                backgroundColor: Style.LightBrown,
+                backgroundColor: Colors.white,
                 padding: EdgeInsetsDirectional.only(top: 15, end: 10,bottom: 10),
                 leading: GestureDetector(
                   onTap: () {

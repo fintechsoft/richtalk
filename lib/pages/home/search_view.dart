@@ -1,18 +1,18 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/pages/clubs/view_club.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/util/firebase_refs.dart';
-import 'package:roomies/util/style.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/pages/clubs/view_club.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/util/firebase_refs.dart';
+import 'package:richtalk/util/style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:roomies/widgets/noitem_widget.dart';
-import 'package:roomies/widgets/user_profile_image.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/widgets/noitem_widget.dart';
+import 'package:richtalk/widgets/user_profile_image.dart';
+import 'package:richtalk/widgets/widgets.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({
@@ -121,13 +121,13 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver, Si
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Style.AccentBrown,
+      // backgroundColor: Colors.white,
       body: CupertinoPageScaffold(
-        backgroundColor: Style.AccentBrown,
+        // backgroundColor: Colors.white,
         navigationBar: CupertinoNavigationBar(
           border: null,
           padding: EdgeInsetsDirectional.only(top: 20),
-          backgroundColor: Style.AccentBrown,
+          backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           leading: CupertinoButton(
             padding: EdgeInsets.zero,
@@ -143,7 +143,7 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver, Si
           middle: Text(
             "EXPLORE",
             textScaleFactor: 1.0,
-            style: TextStyle(fontSize: 18, fontFamily: "InterLight"),
+            style: TextStyle(fontSize: 18, fontFamily: "Roboto"),
           ),
         ),
         child: Container(
@@ -178,7 +178,7 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver, Si
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.fromLTRB(8.0, 13.0, 8.0, 8.0),
                             prefixIcon: Icon(Icons.search),
-                            hintText: "Find People and Clubs",
+                            hintText: "Find What you wish",
                             border: InputBorder.none,
                             focusedBorder: InputBorder.none,
                             enabledBorder: InputBorder.none,
@@ -251,7 +251,7 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver, Si
         Container(
           height: 35,
           child: TabBar(
-            indicatorColor: Style.indigo,
+            indicatorColor: Style.pinkAccent,
             indicatorWeight: 3,
             controller: _tabController,
             labelColor: Colors.black,
@@ -410,7 +410,7 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver, Si
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
               decoration: BoxDecoration(
                   border: Border.all(
-                    color: Style.indigo,
+                    color: Style.pinkAccent,
                     width: 2,
                     style: BorderStyle.solid,
                   ),
@@ -421,9 +421,9 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver, Si
                     : "Follow",
                 textScaleFactor: 1,
                 style: TextStyle(
-                  color: Style.indigo,
-                  fontFamily: "InterSemiBold",
-                  fontSize: 13
+                    color: Style.pinkAccent,
+                    fontFamily: "InterSemiBold",
+                    fontSize: 13
                 ),
               ),
             ),

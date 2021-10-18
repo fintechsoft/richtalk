@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 class CustomButton extends StatelessWidget {
   final String text;
   final double fontSize;
@@ -50,7 +49,7 @@ class CustomButton extends StatelessWidget {
           isCircle
               ? CircleBorder()
               : RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30),bottomRight: Radius.circular(30)),
           ),
         ),
         padding: MaterialStateProperty.all<EdgeInsets>(padding),
@@ -60,9 +59,9 @@ class CustomButton extends StatelessWidget {
       child: text.isNotEmpty ? Text(
         text,
         style: TextStyle(
-          fontSize: fontSize,
-          color: txtcolor,
-            fontFamily: "InterBold"
+            fontSize: fontSize,
+            color: txtcolor,
+            fontFamily: "Roboto"
         ),
       ) : child,
     );

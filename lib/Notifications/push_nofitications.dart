@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
-import 'package:roomies/util/configs.dart';
+import 'package:richtalk/util/configs.dart';
 
 
 class PushNotificationsManager {

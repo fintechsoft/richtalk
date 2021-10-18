@@ -1,13 +1,13 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
-import 'package:roomies/controllers/controllers.dart';
-import 'package:roomies/util/configs.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/pages/clubs/view_club.dart';
-import 'package:roomies/pages/home/profile_page.dart';
-import 'package:roomies/pages/room/upcoming_roomsreen.dart';
-import 'package:roomies/pages/room/room_screen.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/util/firebase_refs.dart';
+import 'package:richtalk/controllers/controllers.dart';
+import 'package:richtalk/util/configs.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/pages/clubs/view_club.dart';
+import 'package:richtalk/pages/home/profile_page.dart';
+import 'package:richtalk/pages/room/upcoming_roomsreen.dart';
+import 'package:richtalk/pages/room/room_screen.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/util/firebase_refs.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:get/get.dart';
 

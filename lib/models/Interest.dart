@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:richtalk/util/style.dart';
 /*
   type : Model
  */
@@ -8,7 +9,7 @@ class Interest extends GetxController{
   bool active;
   String id;
   IconData icon;
-  Color bgcolor = Colors.red;
+  Color bgcolor = Style.pinkAccent;
   Color txtcolor = Colors.white;
 
   get txtucolor => txtcolor.value;

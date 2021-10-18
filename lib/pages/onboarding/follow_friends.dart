@@ -2,17 +2,18 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:roomies/models/models.dart';
-import 'package:roomies/pages/home/home_page.dart';
-import 'package:roomies/services/database.dart';
-import 'package:roomies/util/firebase_refs.dart';
-import 'package:roomies/util/style.dart';
+import 'package:richtalk/models/models.dart';
+import 'package:richtalk/pages/home/home_page.dart';
+import 'package:richtalk/services/database.dart';
+import 'package:richtalk/util/firebase_refs.dart';
+import 'package:richtalk/util/style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:roomies/widgets/noitem_widget.dart';
-import 'package:roomies/widgets/user_profile_image.dart';
-import 'package:roomies/widgets/widgets.dart';
+import 'package:richtalk/widgets/noitem_widget.dart';
+import 'package:richtalk/widgets/user_profile_image.dart';
+import 'package:richtalk/widgets/widgets.dart';
+
 
 class FollowFriends extends StatefulWidget {
   const FollowFriends({
@@ -57,8 +58,8 @@ class _FollowFriendsState extends State<FollowFriends> with WidgetsBindingObserv
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Style.LightBrown.withOpacity(0.2),
-              Style.LightBrown,
+              Colors.white.withOpacity(0.2),
+              Colors.white,
             ],
           )),
     );
@@ -74,7 +75,7 @@ class _FollowFriendsState extends State<FollowFriends> with WidgetsBindingObserv
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("Roomies will be be pretty quiet for you."),
+              Text("RichTalk will be be pretty quiet for you."),
               SizedBox(height: 20,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -88,7 +89,7 @@ class _FollowFriendsState extends State<FollowFriends> with WidgetsBindingObserv
                         });
                         Navigator.pop(context);
                       },
-                      child: Text("NEVER MIND", style: TextStyle(color: Style.AccentBlue),)
+                      child: Text("NEVER MIND", style: TextStyle(color: Style.pinkAccent),)
                   ),
                   SizedBox(height: 20,),
                   InkWell(
@@ -96,7 +97,7 @@ class _FollowFriendsState extends State<FollowFriends> with WidgetsBindingObserv
                         Navigator.pop(context);
                         Get.to(() => HomePage());
                       },
-                      child: Text("YES", style: TextStyle(color: Style.AccentBlue),)
+                      child: Text("YES", style: TextStyle(color: Style.pinkAccent),)
                   )
                 ],
               )
@@ -123,15 +124,15 @@ class _FollowFriendsState extends State<FollowFriends> with WidgetsBindingObserv
                     SizedBox(height: 30,),
                     Center(
                       child: Text(
-                        "Follow new friends to have access to their rooms",
+                        "Let's start by following people you may know...",
                         textScaleFactor: 1.0,
                         style: TextStyle(fontSize: 23, color: Colors.black, fontFamily: "InterSemiBold"),
                         textAlign: TextAlign.center,
                       ),
                     ),
                     SizedBox(height: 30,),
-                      Expanded(
-                          child: StreamBuilder(
+                    Expanded(
+                        child: StreamBuilder(
                             stream: Database.friendsToFollow(),
                             builder: (context, snapshot) {
                               if(snapshot.connectionState == ConnectionState.waiting){
@@ -161,7 +162,7 @@ class _FollowFriendsState extends State<FollowFriends> with WidgetsBindingObserv
                                 return noDataWidget("No friends to follow fo now");
                               }
                             }
-                          )),
+                        )),
                   ],
                 ),
                 Positioned(
@@ -187,8 +188,8 @@ class _FollowFriendsState extends State<FollowFriends> with WidgetsBindingObserv
                             }
 
                           },
-                          color: Style.AccentBlue,
-                          text: deselect == true ? "Skip ->" : 'Follow -> '),
+                          color: Style.pinkAccent,
+                          text: deselect == true ? "Skip" : 'Follow '),
                     ),
                   ),
                 ),
@@ -213,7 +214,7 @@ class _FollowFriendsState extends State<FollowFriends> with WidgetsBindingObserv
 
                       });
                     },
-                    child: Text(deselect == true ? "Or use our suggestons" : "Deselect all", style: TextStyle(color: Style.AccentBlue, fontFamily: "InterBold"),),
+                    child: Text(deselect == true ? "Or use our suggestons" : "Deselect all", style: TextStyle(color: Style.pinkAccent, fontFamily: "InterBold"),),
                   )
                 ],))
               ],
