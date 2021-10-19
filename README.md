@@ -1,10 +1,10 @@
-Roomies is flutter framework clubhouse like application, it supports both android and ios, its a audio social app for people to hold audio chats, rooms etc, you can pop in to existing rooms and participate in the discussion or you can create your rooms and invite people to join.
+Richtalk is flutter framework clubhouse like application, it supports both android and ios, its a audio social app for people to hold audio chats, rooms etc, you can pop in to existing rooms and participate in the discussion or you can create your rooms and invite people to join.
 
 Google play store demo url <br/>
 <a href="https://play.google.com/store/apps/details?id=mother.eye.richtalk"><img width="100" src="https://fgodex.com/images/gg.png" /></a>
 
 
-Roomies is Flutter framework application which supports both android and ios. Its clubhouse like app with all clubhouse features and much more.
+Richtalk is Flutter framework application which supports both android and ios. Its clubhouse like app with all clubhouse features and much more.
 
 Uses firebase for phone authentication, firestore to store user data, rooms info etc
 Agora for hosting audio conversations
@@ -40,4 +40,4 @@ For Advance customizations, Dart and or flutter knowledge is required .
 
 
 Support:
-roomies254@gmail.com
+richtalk.operations@gmail.com
