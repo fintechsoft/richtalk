@@ -22,6 +22,12 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>2.0.0</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>This app requires access to the photo library to update profile photo of users.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app require access to the microphone to allow speakers and other user to particiapte in room conversation</string>
+    <key>NSCameraUsageDescription</key>
+    <string>This app requires access to the camera to update profile pic for user profile and any other place that may required photo</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIBackgroundModes</key>
