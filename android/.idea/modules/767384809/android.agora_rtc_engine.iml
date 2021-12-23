@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":agora_rtc_engine" external.linked.project.path="$MODULE_DIR$/../../../../../../../../../software/flutter_windows_1.22.6-stable/flutter/.pub-cache/hosted/pub.dartlang.org/agora_rtc_engine-3.3.3/android" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="io.agora.agora_rtc_engine" external.system.module.version="1.0-SNAPSHOT" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="android-gradle" name="Android-Gradle">
+      <configuration>
+        <option name="GRADLE_PROJECT_PATH" value=":agora_rtc_engine" />
+        <option name="LAST_SUCCESSFUL_SYNC_AGP_VERSION" />
+        <option name="LAST_KNOWN_AGP_VERSION" value="4.0.0" />
+      </configuration>
+    </facet>
+    <facet type="kotlin-language" name="Kotlin">
+      <configuration version="4" platform="JVM 1.6" allPlatforms="JVM [1.6]" useProjectSettings="false">
+        <compilerSettings>
+          <option name="additionalArguments" value="-Xallow-no-source-files" />
+        </compilerSettings>
+        <compilerArguments>
+          <option name="destination" value="$MODULE_DIR$/../../../../build/agora_rtc_engine/tmp/kotlin-classes/debug" />
+          <option name="classpath" value="$MODULE_DIR$/../../../../build/agora_rtc_engine/intermediates/compile_only_not_namespaced_r_class_jar/debug/R.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/d25db21d0cf09eb7b58dba78fdeb469d/transformed/jetified-flutter_embedding_debug-1.0.0-b09f014e9658da6647361e7e416d1a159d34192d.jar;C:/Users/Fintechsoft/.gradle/caches/modules-2/files-2.1/androidx.lifecycle/lifecycle-common-java8/2.2.0/cd3478503da69b1a7e0319bd2d1389943db9b364/lifecycle-common-java8-2.2.0.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/daebd83d0b71a3d1ad582b0389d10438/transformed/fragment-1.1.0-api.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/daf607e513ca15aa64b3894154fe00f5/transformed/jetified-activity-1.0.0-api.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/3786cb113b17fc994184359ee739e780/transformed/viewpager-1.0.0-api.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/854ad883d75011eeaea9ba66a183f1ef/transformed/loader-1.0.0-api.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/1e56977e3640fe564401f680bb5d08a6/transformed/customview-1.0.0-api.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/c59ca21d152503a9dac19367b08b11f5/transformed/core-1.1.0-api.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/f79f1f8b08466b0b2ba5f91336c1d9b0/transformed/lifecycle-runtime-2.2.0-api.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/ef1caebc7c1fc4be1f1012e70640b0e1/transformed/jetified-savedstate-1.0.0-api.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/0adb739c07ceb15aaa31868216fe5343/transformed/lifecycle-livedata-2.0.0-api.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/4cb8bf7ab5c7066b012fd5bad00edb7e/transformed/lifecycle-livedata-core-2.0.0-api.jar;C:/Users/Fintechsoft/.gradle/caches/modules-2/files-2.1/androidx.lifecycle/lifecycle-common/2.2.0/4ef09a745007778eef83b92f8f23987a8ea59496/lifecycle-common-2.2.0.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/d1b096f359869dbe5694d2967c866691/transformed/core-runtime-2.0.0-api.jar;C:/Users/Fintechsoft/.gradle/caches/modules-2/files-2.1/androidx.arch.core/core-common/2.1.0/b3152fc64428c9354344bd89848ecddc09b6f07e/core-common-2.1.0.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/1b198933bbfcfa7d16f0efceb29d5c57/transformed/versionedparcelable-1.1.0-api.jar;C:/Users/Fintechsoft/.gradle/caches/modules-2/files-2.1/androidx.collection/collection/1.1.0/1f27220b47669781457de0d600849a5de0e89909/collection-1.1.0.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/e344f6dd783117379209503217e2448d/transformed/lifecycle-viewmodel-2.1.0-api.jar;C:/Users/Fintechsoft/.gradle/caches/modules-2/files-2.1/androidx.annotation/annotation/1.1.0/e3a6fb2f40e3a3842e6b7472628ba4ce416ea4c8/annotation-1.1.0.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/8af6460487b0e33dff6e5035a45df6fc/transformed/jetified-kotlin-stdlib-jdk8-1.3.72.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/418e7fc49932347728d97c98505528ab/transformed/jetified-kotlin-stdlib-jdk7-1.3.72.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/47c85176e0935f716c2612b32e5f113e/transformed/jetified-kotlin-stdlib-1.3.72.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/5b0cee35096c639b1540b0048f1610a2/transformed/jetified-kotlin-stdlib-common-1.3.72.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/86c7e6347846684fa332ce421984c49b/transformed/jetified-annotations-13.0.jar;C:/Users/Fintechsoft/.gradle/caches/transforms-3/da84f8d43c233799799d97815c8e26b3/transformed/jetified-full-sdk-3.3.2-api.jar;C:/Users/Fintechsoft/AppData/Local/Android/Sdk/platforms/android-28/android.jar" />
+          <option name="noStdlib" value="true" />
+          <option name="noReflect" value="true" />
+          <option name="moduleName" value="agora_rtc_engine_debug" />
+          <option name="jvmTarget" value="1.6" />
+          <option name="languageVersion" value="1.3" />
+          <option name="apiVersion" value="1.3" />
+          <option name="pluginOptions">
+            <array />
+          </option>
+          <option name="pluginClasspaths">
+            <array />
+          </option>
+          <option name="errors">
+            <ArgumentParseErrors />
+          </option>
+        </compilerArguments>
+      </configuration>
+    </facet>
+    <facet type="android" name="Android">
+      <configuration>
+        <option name="SELECTED_BUILD_VARIANT" value="debug" />
+        <option name="ASSEMBLE_TASK_NAME" value="assembleDebug" />
+        <option name="COMPILE_JAVA_TASK_NAME" value="compileDebugSources" />
+        <afterSyncTasks>
+          <task>generateDebugSources</task>
+        </afterSyncTasks>
+        <option name="ALLOW_USER_CONFIGURATION" value="false" />
+        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
+        <option name="RES_FOLDER_RELATIVE_PATH" value="/src/main/res" />
+        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/../../../../../../../../../software/flutter_windows_1.22.6-stable/flutter/.pub-cache/hosted/pub.dartlang.org/agora_rtc_engine-3.3.3/android/src/main/res;file://$MODULE_DIR$/../../../../../../../../../software/flutter_windows_1.22.6-stable/flutter/.pub-cache/hosted/pub.dartlang.org/agora_rtc_engine-3.3.3/android/src/debug/res;file://$MODULE_DIR$/../../../../build/agora_rtc_engine/generated/res/rs/debug" />
+        <option name="TEST_RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/../../../../../../../../../software/flutter_windows_1.22.6-stable/flutter/.pub-cache/hosted/pub.dartlang.org/agora_rtc_engine-3.3.3/android/src/androidTest/res;file://$MODULE_DIR$/../../../../../../../../../software/flutter_windows_1.22.6-stable/flutter/.pub-cache/hosted/pub.dartlang.org/agora_rtc_engine-3.3.3/android/src/androidTestDebug/res;file://$MODULE_DIR$/../../../../build/agora_rtc_engine/generated/res/rs/androidTest/debug" />
+        <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/src/main/assets" />
+        <option name="PROJECT_TYPE" value="1" />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7">
+    <output url="file://$MODULE_DIR$/../../../../build/agora_rtc_engine/intermediates/javac/debug/classes" />
+    <output-test url="file://$MODULE_DIR$/../../../../build/agora_rtc_engine/intermediates/javac/debugUnitTest/classes" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../../build/agora_rtc_engine/generated/aidl_source_output_dir/debug/out" />
+    <content url="file://$MODULE_DIR$/../../../../build/agora_rtc_engine/generated/aidl_source_output_dir/debugAndroidTest/out" />
+    <content url="file://$MODULE_DIR$/../../../../build/agora_rtc_engine/generated/ap_generated_sources/debug/out">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../build/agora_rtc_engine/generated/ap_generated_sources/debug/out" isTestSource="false" generated="true" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../../build/agora_rtc_engine/generated/ap_generated_sources/debugAndroidTest/out" />
+    <content url="file://$MODULE_DIR$/../../../../build/agora_rtc_engine/generated/ap_generated_sources/debugUnitTest/out" />
+    <content url="file://$MODULE_DIR$/../../../../build/agora_rtc_engine/generated/renderscript_source_output_dir/debug/out" />
+    <content url="file://$MODULE_DIR$/../../../../build/agora_rtc_engine/generated/renderscript_source_output_dir/debugAndroidTest/out" />
+    <content url="file://$MODULE_DIR$/../../../../build/agora_rtc_engine/generated/res/rs/androidTest/debug" />
+    <content url="file://$MODULE_DIR$/../../../../build/agora_rtc_engine/generated/res/rs/debug" />
+    <content url="file://$MODULE_DIR$/../../../../build/agora_rtc_engine/generated/source/buildConfig/androidTest/debug" />
+    <content url="file://$MODULE_DIR$/../../../../build/agora_rtc_engine/generated/source/buildConfig/debug">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../build/agora_rtc_engine/generated/source/buildConfig/debug" isTestSource="false" generated="true" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../../../../../../../software/flutter_windows_1.22.6-stable/flutter/.pub-cache/hosted/pub.dartlang.org/agora_rtc_engine-3.3.3/android">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../../../../../software/flutter_windows_1.22.6-stable/flutter/.pub-cache/hosted/pub.dartlang.org/agora_rtc_engine-3.3.3/android/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../../../../../software/flutter_windows_1.22.6-stable/flutter/.pub-cache/hosted/pub.dartlang.org/agora_rtc_engine-3.3.3/android/src/main/kotlin" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../../../../../../../software/flutter_windows_1.22.6-stable/flutter/.pub-cache/hosted/pub.dartlang.org/agora_rtc_engine-3.3.3/android/.gradle" />
+    </content>
+    <orderEntry type="jdk" jdkName="Android API 28 Platform" jdkType="Android SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Gradle: io.flutter:flutter_embedding_debug:1.0.0-b09f014e9658da6647361e7e416d1a159d34192d" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-common-java8:2.2.0" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-common:2.2.0" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.arch.core:core-common:2.1.0" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.collection:collection:1.1.0" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.annotation:annotation:1.1.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.3.72" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.3.72" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.fragment:fragment:1.1.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.activity:activity:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.viewpager:viewpager:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.loader:loader:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.customview:customview:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.core:core:1.1.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-runtime:2.2.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.savedstate:savedstate:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-livedata:2.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-livedata-core:2.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.arch.core:core-runtime:2.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.versionedparcelable:versionedparcelable:1.1.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-viewmodel:2.1.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: io.agora.rtc:full-sdk:3.3.2@aar" level="project" />
+  </component>
+</module>

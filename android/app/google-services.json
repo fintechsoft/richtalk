@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "513551120083-butm063g8jq0f7evc6b1b9ie4i4c6jg6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mother.eye.richtalk",
+            "certificate_hash": "f704b2bf4de173262dc8355282c7c27585a9b3d0"
+          }
+        },
+        {
           "client_id": "513551120083-i8dkb7pktlgmne80qk2s38ftesd03jn7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -37,6 +45,13 @@
             {
               "client_id": "513551120083-fm743q1rgdmt6gvg9ju90nv43kn5gmuq.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "513551120083-u77hi2c57s4kl6l8sa6733fe0rklq69d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "mother.eye.richtalk"
+              }
             }
           ]
         }
